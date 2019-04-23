@@ -26,14 +26,27 @@ namespace StarFoxBrowser
 
 		private void treeView_AfterExpand(object sender, TreeViewEventArgs e)
 		{
-			if (e.Node is Nodes.DataNode)
+			if (e.Node is DataNode)
 				((Nodes.DataNode)e.Node).Reload();
 		}
 
 		private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			if (e.Node is Nodes.DataNode)
-				propertyGrid.SelectedObject = ((Nodes.DataNode)e.Node).GetProperties();
+			if (e.Node is DataNode)
+			{
+				propertyGrid.SelectedObject = ((DataNode)e.Node).GetProperties();
+
+				if (propertyGrid.SelectedObject is Bitmap)
+				{
+					pictureBox.Image = (Bitmap)propertyGrid.SelectedObject;
+					pictureBox.Show();
+				}
+				else
+				{
+					pictureBox.Hide();
+					pictureBox.Image = null;
+				}
+			}
 		}
 	}
 }

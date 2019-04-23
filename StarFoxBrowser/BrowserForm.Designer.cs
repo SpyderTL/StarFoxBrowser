@@ -31,10 +31,12 @@
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.treeView = new System.Windows.Forms.TreeView();
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.pictureBox = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -49,6 +51,7 @@
 			// 
 			// splitContainer1.Panel2
 			// 
+			this.splitContainer1.Panel2.Controls.Add(this.pictureBox);
 			this.splitContainer1.Panel2.Controls.Add(this.propertyGrid);
 			this.splitContainer1.Size = new System.Drawing.Size(784, 561);
 			this.splitContainer1.SplitterDistance = 261;
@@ -72,6 +75,16 @@
 			this.propertyGrid.Size = new System.Drawing.Size(519, 561);
 			this.propertyGrid.TabIndex = 0;
 			// 
+			// pictureBox
+			// 
+			this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pictureBox.Location = new System.Drawing.Point(0, 0);
+			this.pictureBox.Name = "pictureBox";
+			this.pictureBox.Size = new System.Drawing.Size(519, 561);
+			this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox.TabIndex = 1;
+			this.pictureBox.TabStop = false;
+			// 
 			// BrowserForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -85,6 +98,7 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -94,6 +108,7 @@
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.TreeView treeView;
 		private System.Windows.Forms.PropertyGrid propertyGrid;
+		private System.Windows.Forms.PictureBox pictureBox;
 	}
 }
 
