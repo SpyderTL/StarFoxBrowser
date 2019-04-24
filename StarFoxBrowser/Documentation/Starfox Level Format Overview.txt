@@ -1,0 +1,31 @@
+The Starfox level format involves many types of "objects". Some are actually
+simple static polygon objects with x y z coordinates. Some have "behaviors"
+attached to them so that they'll move and react in a certain way. There are
+hundreds of different paths and behaviors that I have/had to describe and
+document for use in the level editor. Other types of level objects includes,
+rotations, palette set changes, music changes, screen transitions, camera
+movements, warps and asm branches. 
+
+Warps can make the game jump to any steps of any levels in the game, so it's
+trivial to let's say make the game jump from the middle of Corneria to Macbeth
+without a hitch, but keeping the Corneria background and music. There are
+special objects to change the bg in the middle of the game, like to make a
+transition from outdoor to a tunnel.
+
+The amount of things that can be done/edited in the game is staggering. A very
+special level object is the h78 object, wich is pure asm used to branch the
+level according to a the included asm routine. 
+
+For example a counter starting at 0 is incremented each time you -dont- go
+under a bonus arch in Corneria at 7EF0D9 in wram. (There are special invisible
+objects put under the arches to detect the arwing passage and trigger the
+counter if you are not under). When you get to the big blue arch with a
+closing/opening door the game reach the h78 asm object that checks if the
+"mistakes" counter was incremented. If it wasn't, the game jumps to the next
+object, wich is a twin blaster item. If you made mistakes and the counter is
+not 0 then the game jumps to after the twin blaster item so it doesn't appear.
+Just about the same routine applies to the Black Hole trick in Asteroid. It
+seem that most every levels have tasks that can be accomplished to have a
+hidden bonus item. I'm pretty sure not all of them have been documented. So
+anyone with a knowledge of SNES asm could build very interactive and non linear
+levels with maze like branches.

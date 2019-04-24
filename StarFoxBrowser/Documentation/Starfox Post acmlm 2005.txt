@@ -1,0 +1,143 @@
+I made great progress in the last weeks in building a StarFox level editor, and
+I now have a somewhat usable editor, but there is still much to do until it's
+object list is complete and more user friendly.
+
+The Starfox level format involves many types of "objects". Some are actually
+simple static polygon objects with x y z coordinates. Some have "behaviors"
+attached to them so that they'll move and react in a certain way. There are
+hundreds of different paths and behaviors that I have/had to describe and
+document for use in the level editor. Other types of level objects includes,
+rotations, palette set changes, music changes, screen transitions, camera
+movements, warps and asm branches. 
+
+Warps can make the game jump to any steps of any levels in the game, so it's
+trivial to let's say make the game jump from the middle of Corneria to Macbeth
+without a hitch, but keeping the Corneria background and music. There are
+special objects to change the bg in the middle of the game, like to make a
+transition from outdoor to a tunnel.
+
+The amount of things that can be done/edited in the game is staggering. A very
+special level object is the h78 object, wich is pure asm used to branch the
+level according to a the included asm routine. 
+
+For example a counter starting at 0 is incremented each time you -dont- go
+under a bonus arch in Corneria at 7EF0D9 in wram. (There are special invisible
+objects put under the arches to detect the arwing passage and trigger the
+counter if you are not under). When you get to the big blue arch with a
+closing/opening door the game reach the h78 asm object that checks if the
+"mistakes" counter was incremented. If it wasn't, the game jumps to the next
+object, wich is a twin blaster item. If you made mistakes and the counter is
+not 0 then the game jumps to after the twin blaster item so it doesn't appear.
+Just about the same routine applies to the Black Hole trick in Asteroid. It
+seem that most every levels have tasks that can be accomplished to have a
+hidden bonus item. I'm pretty sure not all of them have been documented. So
+anyone with a knowledge of SNES asm could build very interactive and non linear
+levels with maze like branches.
+
+Here is a screenshot of the current prototype:
+[img]http://membres.lycos.fr/nes3d/SFXLevelEditorSmall.png[/img]
+Here's a bigger version at:
+[url]http://membres.lycos.fr/nes3d/SFXLevelEditor.png[/url]
+
+My editor for now is not very visual and needs a little geeky knowledge (like
+knowing hexadecimal), it can show a real 3d version of each of the polygon
+objects when you select one in the level data list, but for now you can edit
+values (x y z, types etc) in level objects without seeing the level in 3d. You
+can select one or many objects, then copy, paste and duplicate them. SNES ROMs
+can be expanded easily so you can add one (or more) 32k bank at the end of the
+file to build entirely new levels (the whole game levels are contained in just
+two 32k banks). Just use the warp object to jump to the right address ($000020
+in reverse byte order game address) and make any of the original level jump to
+a new level. You can even jump back and forth between parts of the original and
+a new level. With the Duplicate button you can send duplicated objects to the
+next empty space in the extra 32k bank for example so you could build a level
+by taking parts of the multiple different original levels here and mix and move
+then them to create your own level.
+
+I’m releasing an online Shockwave of the level editor for now, because the
+stand alone version is not ready enough for me.
+But don’t worry you’ll get a WinXP and OSX version soon.
+
+This version is still early and some objects decriptions are either missing or
+wrong and there are some bugs here and there. 
+It’s a preview, if you want to wait for a more complete version then just wait.
+
+To run the Shockwave you need a relatively fast computer with a big screen,
+1024x768 is the bear minimum since the demo has a 1024 width, but you’ll have
+to find a way to remove the browser’s scrollbars out of the view.
+
+Ok so here is the StarFox Level editor address, try this one first:
+[url]http://membres.lycos.fr/nes3d/SFXLevelEditor.dcr[/url]
+
+if it doesn’t work (and you have Shockwave installed) then try this one:
+
+[url]http://membres.lycos.fr/StarFoxLevelEditor.htm[/url]
+
+I’m too tired to explain all the subtileties for now, but i’ll try to make a
+quick start guide.
+
+There are 2 banks used for the level in the game at $000005 and $00000D, and 
+I included an extra empty bank at $000020
+Most if not all hex adress used in the editor are in reverse byte order, and
+that may change in the future.
+The real ROM addresses of these can be found by multiplying the high byte by
+32768 and then adding the remaining 16-bit chunk +512
+
+So in the editor you can:
+-Select multiple objects with the shift key.
+-Copy them and paste them in empty spaces.
+-Delete objects to free space.
+
+-The “Open ROM” and “Run in SNES9x” don’t work in the online version, by some
+magic, the editor demo still works.
+-If you click on “warp:” or “br1:” etc. the editor will jump to the warp
+address. Use the Go Back button to get back.
+-Click on a location in the blue list to jump to other levels, default is
+Training.
+-You can edit any property of any object that has it’s value hilighted by
+clicking on it. You can even edit the br1, br2, br3 and b4 properties of h78
+asm objects without having to edit the code. 
+-When “duplicate at:” is selected, the duplicate button will duplicate objects
+at the next empty space found after the address (default is “000020” the start
+of the empty extra bank)
+-Most levels are initialised in the 0D bank but jump back in the 05 bank, you
+can use this warp object to jump to a new level at the 20 bank for example.
+-To create new objects, you can choose them by clicking the popup menu field at
+the right of the “new object” button, then click the button.
+-To paste and create objects, you must select an empty byte object that is
+followed by enough empty bytes objects to fit the object length.
+-When you click on the animated icon for an object it will open it in the 3d
+viewer on top.
+-You can rotate objects in the 3d viewer by dragging in the 3d view, holding
+alt will rotate on another axis.
+-You can use the “.” and “,” keys to step frames of an object when the
+animation is stopped.
+-When you click on the asm property of an h78 object, you get a disassembled
+version of the included asm code.
+-You can set initial condition for the register emulation bits, most objects
+dont require a change from the default.
+-If you click the Hex Data Mode button, you’ll get an hexdata: property field
+for objects instead of the individual properties.
+-The hexdata: property fields contains raw hex bytes not including the first
+byte wich is the “objtyp:” byte.
+-You can copy and paste values when they are selected. You can even copy some
+uneditable properties like “addr:” to a “warp:” property.
+-Click on “normal mode” to get the normal view of properties.
+
+The ztimer value sets a decrementing counter that is very important to the game
+engine. Until this counter reach zero, the games moves forward without drawing
+and loading anything.
+
+When the value reaches zero, the next object is loaded and displayed if it’s a
+polygon object. The game will then load and draw any following objects at a
+position relative to the current one, until it reaches a new ztimer setting.
+This is used to make gaps in game, but it makes the x y z coord system always
+relative to the last ztimer setting and that is one of the reason a more visual
+editor will be hard to do. Other reasons include the fact that the game is not
+as linear as we would think, and expressing level branches in a 3d level editor
+would not be an easy task.
+
+Oh well there is too much still to be said about it, I’d like to give you a
+detailled documentation of the level format, but this takes time and patience :)
+
+In the mean time, have fun with it!

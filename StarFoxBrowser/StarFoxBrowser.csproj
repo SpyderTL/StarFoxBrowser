@@ -61,7 +61,7 @@
     <Compile Include="Nodes\VertexList.cs" />
     <Compile Include="Nodes\Model.cs" />
     <Compile Include="Nodes\Usa10.cs" />
-    <Compile Include="Nodes\TreeNode.cs" />
+    <Compile Include="Nodes\DataNode.cs" />
     <Compile Include="Nodes\Vertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,6 +82,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\Arwing_Deconstruction.html" />
+    <None Include="Documentation\SFXedit 0.93 Documentation..html" />
+    <None Include="Documentation\Starfox Level Format Overview.txt" />
+    <None Include="Documentation\Starfox levels offsets.txt" />
+    <None Include="Documentation\Starfox Post acmlm 2005.txt" />
+    <None Include="Documentation\StarfoxEarlyHackingDiscoveries.txt" />
+    <None Include="Documentation\StarfoxObjectHeaders.txt" />
+    <None Include="Documentation\StarfoxObjectNames.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

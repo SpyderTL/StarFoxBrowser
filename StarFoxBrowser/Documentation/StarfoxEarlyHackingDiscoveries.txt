@@ -1,0 +1,306 @@
+That post maybe a little off topic since it is mainly about StarFox 1, maybe it needed it's own topic, but anyway...
+
+
+I've been trying to crack the StarFox level format for some time now, and I made some interesting discoveries. Some of
+
+you may call me crazy to try this game since it uses the FX chip, but I think that its simpler than you would think,
+
+after all the chip was designed by only one or two guys. I'm sure the FX chip isn't used to decompress everything in
+
+the game. I would guess that it's only used to decompress graphics. The textures used by the 3d system are
+
+uncompressed, the character dialog is too, in plain ascii. Aside from the dialog you can find these interesting
+
+strings in Starfox 1 (and in one of the early SF 2 betas).
+
+
+
+HOVER TANK WALKER REL AXIS REL AXIS DEMOGAME PAUSED REL AXIS
+
+LOADING BAY EMPTY NULL MISSILE1 MISSILE2 TLASER HMISSILE TM GUNMACH GUNLASER TRILASER SHOT
+
+GUN
+
+
+
+We all know that there is a Walker in Starfox 2 and a tank in SF 64, but this is Starfox 1 we are talking about... Also
+
+interesting is all the different weapon names. Maybe these could be activated? I wouldn't bet on that. 
+
+
+
+Aside from the near Final SF2 beta, two other were leaked. One is a fake I'm pretty sure, I never had any success on
+
+playing it and really it's content doesn't look at all like 65c816 code. The other is the one with a walker and an all
+
+range mode. Wild guess but this could also be a Starfox 1 beta. From what I can deduce from what I read about the story
+
+behind Starfox, Argonaut wanted to do an all range mode game a la StarGlider II (StarFox direct ancester) but Nintendo
+
+and Miyamoto made them do a game on rail (which is not a bad thing in my opinion). Anyway now that I think of it, it
+
+doesn't make as much sense as I thought...
+
+
+
+Now as for what I discovered data-wise in Starfox 1. 
+
+
+
+Unfortunatly for some reason some part of my discoveries apply to StarFox version 1.0 and some to 1.2. To differenciate
+
+the versions, the 1.0 version has bright red outline in the title screen logo, and version 1.2 logo has the same outline
+
+color more like dark red brown.
+
+
+
+At $284B There is a list of about 250 16-bit pointer begining with A1AC F8C0 20D3... These are pointers to a little
+
+more than half of the polygon objects used in the game. For example if you change all of these to $20D3 you'll find
+
+that almost all objects in the game have been changed to arwings! The actual data defining the general properties of
+
+these objects such as relative size and color set is 28 bytes long and found starting at $2E15 (substract $8000 and add
+
+$2E15 to the 16 bit pointers from $2848+ to get the actual ROM position). Note that these 28 bytes don't contain the
+
+polygon data, it's referenced by some pointer in this data. I documented almost all of these objects in this document:
+
+http://pages.infinit.net/voxel/STARFOX_OBJECTS.TXT This is from Starfox version 1.2 but only one byte seems to
+
+be different from version 1.0 in each 28 byte part. Note that in Starfox 2 final beta the equivalent data is in 30
+
+bytes chunks and unlike SF 1 it doesn't have any break in it's continuity.
+
+
+
+My document is an early version and there are couple of mistakes and I dont know the name of all bosses by heart, but
+
+almost every object (around 400 of them) have a little description at the right of the hex. I'm still trying to figure out the details
+
+of these 28 bytes chunks but I found the basics of it, here is an example: Let's take the Normal arwing entry, actually
+
+there are three of them, one is used for the other characters ships, but lets take just one for the example.
+
+
+
+73 F1 11 96 F1 00 00 00 B2 5D 24 00 0E 00 50 00 50 00 13 82 20 D3 20 D3 20 D3 20 D3 Normal arwing (version 1.2)
+
+73 F1 11 96 F1 00 00 00 AC 5D 24 00 0E 00 50 00 50 00 13 82 20 D3 20 D3 20 D3 20 D3 Normal arwing (in version 1.0)
+
+
+
+-73 F1 11 96 F1- is some kind of pointer that refers to the polygon data,you can change it to another object pointer,
+
+for example 01 E0 0C 42 E0 for the normal sized high polygon arwing. In my previous hack I only found a bigger high
+
+poly arwing and the way I patched it made it so that any objects you changed your arwing into made it invicible.
+
+
+
+Now if you change the arwing in all 3 entries the way I just described it will act like the real one and you won't be
+
+invincible. As for the rest of the 28 bytes, I don't know what the -00 00 00 B2 5D 24- part is but I'm pretty sure
+
+that -00 0E 00 50 00 50 00 - defines the scale of the object in the 3 axis. -13 82- is the color set for this object.
+
+If you change it to ED 82 you'll get an Arwing with the blue part changed to orange/red. C1 83 will get you a gray
+
+arwing and 7C 80 a completely black one. After that -20 D3- is the "object pointer". Again do $2E15+$D320-$8000 to get
+
+the ROM address, which is actually where this line of data can be found, I don't know why it's included there since
+
+it's implicit, but it seems some objects have different offsets than their own stored there. 
+
+
+
+The general rule is that you can take the last 2 bytes of the 28 bytes and it gives you the object pointer. Note that
+
+these pointers are the same that can be found at $284B in ROM. They are also to be found in part of the working RAM. At
+
+7E0448 and 7E0449 in WRAM in version 1.2 is the pointer for the rotating arwing in the title screen.
+
+
+
+Version 1.2 in RAM 
+
+7E0448-7E0449 Title screen Arwing object pointer.
+
+7E0450-7E0451 is a 16-bit value for it's X position
+
+7E0452-7E0453 Y pos
+
+7E0454-7E0455 Z pos (the arwing is constantly moving foward to go against the automatic level movement)
+
+7E0456 one byte for the Z rotation
+
+7E0457 Y rotation
+
+7E0458 X rotation
+
+
+
+These values while playing as well as many other similar data slots in this RAM area will contains the data for the
+
+onscreen objects presumably used by the FX chip directly. The data changes as the objects are loaded and in a non
+
+predictable way depending on if you shoot or not and if objects disapear. While in the continue screen you can change
+
+the current object to another object by using cheats at $7E0020 and $7E0021. For example 7E0020:85 7E0021:AC set it to
+
+Andross in a cube. This bonus feature in the continue screen comes straight from StarGlider II.
+
+
+
+These objects (those in the the doc) though seems to be part of macro objects for example the big walking robots
+
+holding blue columns are built from 2 objects. I'm looking for this macro object description data since these are
+
+probably referenced by the actual level data. Which is itself segmented in steps or chunks.
+
+
+
+In version 1.0 at $7E16FF and $7E1700 in RAM is a 16-bits pointer. This pointer represents the next chunk of level to
+
+be loaded (a chunk is a "step" like in the SF2 debug menu). At $7E16FD and $7E16FE in RAM is a 16-bit countdown to 0
+
+starting from a number which is different depending on the level chunk. When the timer reaches 0, the next level chunk
+
+from the pointer is loaded and the objects appear at the horizon.
+
+
+
+If you use a cheat to stop the timer you'll end up in a void, with no new objects appearing in sight. If you use a
+
+cheat to stop the timer at 0, almost all objects from a level will appear at the same time, and the game ends up
+
+slowing down to a complete halt because it can't handle that many polygons. If you use a cheat to set a specific 16-bit
+
+pointer at $7E16FF you can make part of a level loop endlessly. 
+
+
+
+A funny example, if you go into Corneria level 2 and activate these two cheats, 7E16FF:BB and 7E1700:01, you'll loop
+
+the part where one of your crew member will get attacked by an enemy. With these cheats activated you'll end up with
+
+dozens of arwings chased by dozens of enemies, and with each time a new character will blable something about being
+
+attacked. Then again, unfortunatly, the game will end up slowing down to a crawl.
+
+
+
+You can actually skip to any part of the game instantly though some problem arise from playing a space level on the
+
+ground and vice-versa. To find valid pointers you can use a watch feature in your emulator and watch adresses at 7E16FF
+
+and 7E1700.
+
+
+
+At 7E1FF9 and 7E1FFA is a 16-bit pointer for the starting level pointer, you can use a cheat at this adress to start at
+
+any level in a more "normal" way. It doesn't change while you are playing, only when you start a new level from the
+
+select screen. 
+
+
+
+Here is the data defining the level in a general way, something like "headers" for setting the weather, if it's a space
+
+level and other things. The values between ** are the level data pointers for 7E1FF9 and 7E1FFA, for example to start on
+
+the slot machine level use these cheats: 7E1FF9:E5 and 7E1FFA:48
+
+
+
+
+
+At $1D874 in ROM in Starfox Version 1.0
+
+--Level 3 Route (in order)
+
+>00 E6 00 03 04 14 00 *66 5D* 0D 58 01 04 4E 00 F8 FF FF 
+
+>02 04 00 03 04 0E 03 *4C 5F* 0D 59 01 04 4E 00 F8 04 4E 00 F8 02 0E 08 F8 FF FF 
+
+>01 32 00 03 09 08 05 *A7 5F* 0D 6A 01 02 0E 08 F8 02 0E 08 F8 02 0E 08 F8 03 0E 08 00 03 0E 08 00 FF FF 
+
+>01 54 00 03 12 05 09 *2A 60* 0D 6B 01 03 0E 08 00 03 0E 08 00 03 0E 08 00 03 0E 08 00 FF FF 
+
+>01 72 00 03 00 00 0F *85 60* 0D 72 01 FF FF 
+
+--Level 1 Route
+
+>01 56 02 03 06 15 00 *68 50* 0D 58 00 02 0E 08 F8 FF FF 
+
+>02 02 00 03 0B 11 02 *68 52* 0D 59 00 02 0E 08 F8 02 0E 08 F8 02 0E 08 F8 03 0E 08 00 03 0E 08 00 FF FF 
+
+>01 B4 00 03 14 0E 06 *C3 52* 0D 5A 00 03 0E 08 00 FF FF 
+
+>01 C6 00 03 18 0B 08 *86 55* 0D 5B 00 04 4E 00 F8 FF FF 
+
+>01 D8 00 03 00 00 0F *02 56* 0D 5C 00 FF FF 
+
+--Level 2 Route
+
+>01 62 02 03 06 17 00 *CF 63* 0D 6C 02 03 0E 08 00 03 0E 08 00 FF FF 
+
+>02 00 00 03 0C 15 01 *F6 65* 0D 6D 02 02 0E 08 F8 02 0E 08 F8 FF FF 
+
+>01 12 01 03 12 13 04 *51 66* 0D 6E 02 03 0E 08 00 03 0E 08 00 03 0E 08 00 03 0E 08 00 03 0E 08 00 FF FF 
+
+>01 34 01 03 1B 13 07 *D8 66* 0D 6F 02 02 0E 08 F8 04 4E 00 F8 FF FF 
+
+>01 4A 01 03 1C 0B 0B *1C 68* 0D 70 02 04 4E 00 F8 FF FF 
+
+>01 5C 01 03 00 00 0F *B9 68* 0D 74 02 FF FF 
+
+>01 4A 02 03 06 0F 03 *4C 5F* 0D 59 01 00 0E 08 F8 00 0E 08 F8 00 0E 08 F8 FF FF 
+
+--Black hole
+
+>02 06 00 03 0C 09 0A *A9 48* 0D 71 00 00 0E 08 F8 00 0E 08 F8 FF FF 
+
+>01 54 00 03 0D 0B 0A *A9 48* 0D 71 00 00 0E 08 00 00 0E 08 00 00 0E 08 F8 00 0E 08 F8 00 0E 08 00 00 0E 08 00 00 0E 08
+
+00 00 0E 08 00 00 0E 08 00 FF FF 
+
+>01 D8 00 03 0B 0E 0A *A9 48* 0D 71 00 00 0E 08 08 00 0E 08 08 00 0E 08 08 00 0E 08 08 00 0E 08 00 00 0E 08 00 00 0E 08
+
+00 00 0E 08 00 00 0E 08 00 00 0E 08 00 00 0E 08 00 00 0E 08 00 FF FF 
+
+--Two levels repeated from routes with some different parameters
+
+>01 34 01 03 09 10 02 *68 52* 0D 59 00 00 0E 00 F8 00 0E 00 F8 00 0E 08 F8 FF FF 
+
+>02 06 00 03 0C 19 01 *F6 65* 0D 6D 02 00 0E 08 00 00 0E 08 00 00 0E 08 00 00 0E 08 00 00 0E 08 00 00 0E 08 00 FF FF 
+
+--Venom levels
+
+>01 6E 02 03 00 00 0F *29 69* 0D FF FF 
+
+>00 03 00 00 0F *F5 60* 0D FF FF 
+
+>00 03 00 00 0F *7F 56* 0D FF FF 
+
+--Out of this world (slot machine)
+
+>00 03 00 00 0E *E5 48* 0D 73 00 FF FF
+
+
+
+Let's recapitulate, The levels in Starfox are segmented in chunks containing macro objects that include scenery, enemy
+
+and scenario events like ending a level or a crew ship being attacked.These macro objects are constructed from any of
+
+the 400 polygonal objects. The polygon data includes animation features.
+
+
+
+What I'm missing is the level data, the macro object data and the polygon data.Actually I know approximatly where the
+
+level data is, but I can't figure out it's format I would need to find a correlation between bytes and part of a level. 
+
+My research may eventually lead to a dead end, but anyway I did this mainly for my own "fun".
