@@ -32,24 +32,21 @@ namespace StarFoxBrowser.Nodes
 					{
 						case 0x00:
 							// 3D Object (16-bit vector) (8-bit lookup table index)
-							reader.ReadBytes(10);
-							//	var z = reader.ReadInt16();
-							//	var x = reader.ReadInt16();
-							//	var y = reader.ReadInt16();
-							//	var timer = reader.ReadUInt16();
-							//	var objectNumber = reader.ReadByte();       // Lookup object address in table at 0x2848
-							//	var end = reader.ReadByte();
-							//	var unknown = reader.ReadBytes(1);
+							//reader.ReadBytes(10);
+							var z = reader.ReadInt16();
+							var x = reader.ReadInt16();
+							var y = reader.ReadInt16();
+							var timer = reader.ReadUInt16();
+							var objectNumber = reader.ReadByte();       // Lookup object address in table at 0x2848
+							var end2 = reader.ReadByte();
 
-							Nodes.Add("00 - 3D Object");
+							Nodes.Add("00 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer);
 							break;
-
-						//case 0x01:
-						//	break;
 
 						case 0x02:
 							// End Level
 							Nodes.Add("End Level");
+							read = false;
 							break;
 
 						case 0x04:
@@ -58,14 +55,19 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("04 - Loop Segment");
 							break;
 
-						//case 0x06:
-						//	unknown = reader.ReadBytes(11);
-						//	Nodes.Add("06 - Unknown");
-						//	break;
+						case 0x06:
+							reader.ReadBytes(176);
+							Nodes.Add("06 - Unknown");
+							break;
 
 						case 0x0a:
 							reader.ReadBytes(15);
-							Nodes.Add("0a - Unknown");
+							Nodes.Add("0a - Random Object");
+							break;
+
+						case 0x0c:
+							reader.ReadBytes(4);
+							Nodes.Add("0c - Unknown");
 							break;
 
 						case 0x0e:
@@ -91,10 +93,14 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("14 - Change Music");
 							break;
 
+						case 0x26:
+							reader.ReadBytes(3);
+							Nodes.Add("26 - Data");
+							break;
+
 						case 0x28:
 							// Warp w/ Return
 							reader.ReadBytes(3);
-							//unknown = reader.ReadBytes(0x24);
 							Nodes.Add("28 - Warp and Return");
 							break;
 
@@ -103,20 +109,12 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("2a - Return From Warp");
 							break;
 
-						//case 0x2b:
-						//	unknown = reader.ReadBytes(0x24);
-						//	Nodes.Add("2b - Unknown");
-						//	break;
-
 						case 0x2c:
 							// Warp If Condition
 							reader.ReadBytes(5);
 							//unknown = reader.ReadBytes(10);
 							Nodes.Add("2c - Warp If True");
 							break;
-
-						//case 0x2d:
-						//	break;
 
 						case 0x2e:
 							// Warp
@@ -126,49 +124,68 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x36:
 							// Rotate Previous Object
-							reader.ReadBytes(3);
-							Nodes.Add("36 - Rotate Previous Object");
+							//reader.ReadBytes(3);
+							var mode = reader.ReadByte();
+							var angle = reader.ReadUInt16();
+							Nodes.Add("36 - Rotate Previous Object (Mode: " + mode + " Angle: " + angle + ")");
 							break;
 
-						//case 0x38:
-						//	unknown = reader.ReadBytes(11);
-						//	break;
+						case 0x38:
+							reader.ReadBytes(4);
+							Nodes.Add("38 - Define Active Area For Previous Object");
+							break;
 
-						//case 0x3a:
-						//	break;
+						case 0x3c:
+							reader.ReadBytes(3);
+							Nodes.Add("3c - Offset Z-Position");
+							break;
 
-						//case 0x3c:
-						//	unknown = reader.ReadBytes(2);
-						//	break;
+						case 0x3e:
+							reader.ReadBytes(4);
+							Nodes.Add("3e - Unknown");
+							break;
 
-						//case 0x3e:
-						//	break;
+						case 0x42:
+							Nodes.Add("42 - Unknown");
+							break;
 
 						case 0x44:
 							// Fade Out
 							Nodes.Add("44 - Fade Out");
 							break;
 
+						case 0x48:
+							reader.ReadBytes(5);
+							Nodes.Add("48 - Move Previous Object By Parent Coordinates");
+							break;
+
+						case 0x4a:
+							reader.ReadBytes(3);
+							Nodes.Add("4a - Attach Parent To Previous Object");
+							break;
+
+						case 0x4c:
+							Nodes.Add("4c - Unknown");
+							break;
+
 						case 0x4e:
 							Nodes.Add("4e - Unknown");
 							break;
 
-						//case 0x50:
-						//	unknown = reader.ReadBytes(7);
-						//	Nodes.Add("50 - Unknown");
-						//	break;
+						case 0x50:
+							Nodes.Add("50 - Unknown");
+							break;
 
 						case 0x5a:
 							Nodes.Add("5a - Palette Change Previous Object");
 							break;
 
 						case 0x5c:
-							//unknown = reader.ReadBytes(4);
-							//unknown = reader.ReadBytes(8);
-							//unknown = reader.ReadBytes(18);
-							//unknown = reader.ReadBytes(38);
-							reader.ReadBytes(18);
-							Nodes.Add("5c - Unknown");
+							//reader.ReadBytes(4);
+							var value = reader.ReadByte();
+							var address = reader.ReadBytes(3);
+
+							Nodes.Add("5c - Set SNES RAM (Value: " + value + " Address: " + string.Join(string.Empty, address.Select(v => v.ToString("X2"))) + ")");
 							break;
 
 						case 0x5e:
@@ -183,16 +200,22 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("64 - Reset Camera");
 							break;
 
+						case 0x6a:
+							// Unknown
+							reader.ReadBytes(5);
+							Nodes.Add("6a - Unknown");
+							break;
+
 						case 0x70:
 							// 3D Object (8-bit vector) (8-bit lookup table index)
-							reader.ReadBytes(6);
-							//	z = reader.ReadByte();
-							//	x = reader.ReadSByte();
-							//	y = reader.ReadSByte();
-							//	timer = reader.ReadUInt16();
-							//	objectNumber = reader.ReadByte();
+							//reader.ReadBytes(6);
+							z = reader.ReadByte();
+							x = reader.ReadSByte();
+							y = reader.ReadSByte();
+							timer = reader.ReadUInt16();
+							objectNumber = reader.ReadByte();
 							//	//var behavior = reader.ReadByte();
-							Nodes.Add("70 - 3D Object");
+							Nodes.Add("70 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer);
 							break;
 
 						case 0x74:
@@ -209,7 +232,6 @@ namespace StarFoxBrowser.Nodes
 						case 0x76:
 							// 3D Object (16-bit vector)
 							reader.ReadBytes(5);
-							//	//unknown = reader.ReadBytes(10);
 							//	//z = reader.ReadByte();
 							//	//x = reader.ReadSByte();
 							//	//y = reader.ReadSByte();
@@ -223,21 +245,39 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x78:
-							// SNES Code (Ends with RTL instruction)
-							while (reader.ReadByte() != 0x6b)
-								;
-							Nodes.Add("78 - Native Code");
+							// SNES Code
+							var start = stream.Position;
+							var end = stream.Position;
+							var branches = new List<long>();
+
+							while (true)
+							{
+								if (branches.Contains(stream.Position & 0x7fff))
+								{
+									end = stream.Position - 1;
+									break;
+								}
+
+								if (reader.ReadByte() == 0xa2)
+									branches.Add(reader.ReadUInt16());
+							}
+
+							var length = end - start;
+
+							Nodes.Add("78 - Native Code (" + length + " bytes)");
+
 							break;
 
 						case 0x7a:
-							Nodes.Add("7a - Unknown");
+							reader.ReadBytes(3);
+							Nodes.Add("7a - Transition");
 							break;
 
-						//case 0x82:
-						//	// Unknown
-						//	unknown = reader.ReadBytes(1);
-						//	Nodes.Add("82 - Unknown");
-						//	break;
+						case 0x82:
+							// Unknown
+							reader.ReadBytes(1);
+							Nodes.Add("82 - Unknown");
+							break;
 
 						case 0x84:
 							// Change Palette
@@ -261,45 +301,14 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x8a:
 							// Z Timer (8-bit)
-							reader.ReadByte();
-							Nodes.Add("8a - Z-Timer");
+							value = reader.ReadByte();
+							Nodes.Add("8a - Z-Timer:" + value);
 							break;
 
 						case 0x8c:
-							reader.ReadBytes(2);
-							//unknown = reader.ReadBytes(4);
-							Nodes.Add("8c - Attach Behavior To Previous Object");
+							var behavior = reader.ReadBytes(3);
+							Nodes.Add("8c - Attach Behavior To Previous Object:" + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
-
-						//case 0x9c:
-						//	unknown = reader.ReadBytes(6);
-						//	Nodes.Add("9c - Unknown");
-						//	break;
-
-						case 0xa2:
-							reader.ReadBytes(3);
-							Nodes.Add("a2 - Unknown");
-							break;
-
-						//case 0xb0:
-						//	unknown = reader.ReadBytes(7);
-						//	Nodes.Add("b0 - Unknown");
-						//	break;
-
-						//case 0xb9:
-						//	unknown = reader.ReadBytes(2);
-						//	Nodes.Add("b9 - Unknown");
-						//	break;
-
-						//case 0xba:
-						//	unknown = reader.ReadBytes(5);
-						//	Nodes.Add("ba - Unknown");
-						//	break;
-
-						//case 0xeb:
-						//	unknown = reader.ReadBytes(2);
-						//	Nodes.Add("eb - Unknown");
-						//	break;
 
 						default:
 							read = false;
@@ -307,8 +316,6 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add(entryType.ToString("x2") + " - Unknown Abort");
 							break;
 					}
-
-					//Nodes.Add(new Model { Text = "Model", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces });
 				}
 			}
 		}
