@@ -24,7 +24,7 @@ namespace StarFoxBrowser.Nodes
 
 				var read = true;
 
-				while (read)
+				while (read && stream.Position != stream.Length)
 				{
 					var entryType = reader.ReadByte();
 
@@ -51,23 +51,33 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x04:
 							// Loop Segment
-							reader.ReadBytes(4);
-							Nodes.Add("04 - Loop Segment");
+							//reader.ReadBytes(4);
+							var warp = reader.ReadUInt16();
+							var times = reader.ReadUInt16();
+
+							Nodes.Add("04 - Loop Segment: " + warp + " (Times " + times + ")");
 							break;
 
 						case 0x06:
 							reader.ReadBytes(176);
-							Nodes.Add("06 - Unknown");
+							Nodes.Add("06 - Unknown Data (176 bytes)");
 							break;
 
 						case 0x0a:
-							reader.ReadBytes(15);
-							Nodes.Add("0a - Random Object");
+							//reader.ReadBytes(15);
+							z = reader.ReadInt16();
+							x = reader.ReadInt16();
+							y = reader.ReadInt16();
+							timer = reader.ReadUInt16();
+							var objectAddress = reader.ReadUInt16();
+							var group = reader.ReadBytes(5);
+
+							Nodes.Add("0a - Random Object: " + objectAddress.ToString("X4") + " (" + x + ", " + y + ", " + z + ")");
 							break;
 
 						case 0x0c:
 							reader.ReadBytes(4);
-							Nodes.Add("0c - Unknown");
+							Nodes.Add("0c - Random Object Data (4 bytes)");
 							break;
 
 						case 0x0e:
@@ -77,8 +87,8 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x10:
 							// Initialize Level
-							reader.ReadBytes(2);
-							Nodes.Add("10 - Initialize Level");
+							var level = reader.ReadUInt16();
+							Nodes.Add("10 - Initialize Level: " + level.ToString("X4"));
 							break;
 
 						case 0x12:
@@ -89,8 +99,8 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x14:
 							// Change Music
-							reader.ReadBytes(1);
-							Nodes.Add("14 - Change Music");
+							var music = reader.ReadByte();
+							Nodes.Add("14 - Change Music: " + music.ToString("X2"));
 							break;
 
 						case 0x26:
@@ -185,19 +195,19 @@ namespace StarFoxBrowser.Nodes
 							var value = reader.ReadByte();
 							var address = reader.ReadBytes(3);
 
-							Nodes.Add("5c - Set SNES RAM (Value: " + value + " Address: " + string.Join(string.Empty, address.Select(v => v.ToString("X2"))) + ")");
+							Nodes.Add("5c - Set SNES RAM (Value: " + value + " Address: " + string.Join(string.Empty, address.Reverse().Select(v => v.ToString("X2"))) + ")");
 							break;
 
 						case 0x5e:
 							// Screen Transition
-							reader.ReadBytes(5);
-							Nodes.Add("5e - Screen Transition");
+							var data = reader.ReadBytes(5);
+							Nodes.Add("5e - Screen Transition: " + string.Join(" ", data.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x64:
 							// Reset Camera
-							reader.ReadBytes(1);
-							Nodes.Add("64 - Reset Camera");
+							value = reader.ReadByte();
+							Nodes.Add("64 - Reset Camera: " + value.ToString("X2"));
 							break;
 
 						case 0x6a:
@@ -209,39 +219,36 @@ namespace StarFoxBrowser.Nodes
 						case 0x70:
 							// 3D Object (8-bit vector) (8-bit lookup table index)
 							//reader.ReadBytes(6);
+							timer = reader.ReadByte();
 							z = reader.ReadByte();
 							x = reader.ReadSByte();
 							y = reader.ReadSByte();
-							timer = reader.ReadUInt16();
 							objectNumber = reader.ReadByte();
-							//	//var behavior = reader.ReadByte();
-							Nodes.Add("70 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer);
+							var behavior = reader.ReadBytes(1);
+							Nodes.Add("70 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x74:
 							// 3D Object Behavior (16-bit vector) (8-bit table lookup index)
-							reader.ReadBytes(9);
-							//	z = reader.ReadInt16();
-							//	x = reader.ReadInt16();
-							//	y = reader.ReadInt16();
-							//	timer = reader.ReadUInt16();
-							//	var behavior = reader.ReadByte();               // TODO: Find lookup table
-							Nodes.Add("74 - 3D Object");
+							//reader.ReadBytes(9);
+							timer = reader.ReadUInt16();
+							x = reader.ReadInt16();
+							y = reader.ReadInt16();
+							z = reader.ReadInt16();
+							behavior = reader.ReadBytes(1);               // TODO: Find lookup table
+							Nodes.Add("74 - 3D Object: ?? (" + x + ", " + y + ", " + z + ") Timer: " + timer);
 							break;
 
 						case 0x76:
 							// 3D Object (16-bit vector)
-							reader.ReadBytes(5);
-							//	//z = reader.ReadByte();
-							//	//x = reader.ReadSByte();
-							//	//y = reader.ReadSByte();
-							//	//timer = reader.ReadUInt16();
-							//	//var objectAddress = reader.ReadUInt16();
-							//	//var behavior2 = reader.ReadBytes(4);
+							//reader.ReadBytes(5);
+							z = reader.ReadByte();
+							x = reader.ReadSByte();
+							y = reader.ReadSByte();
+							timer = reader.ReadUInt16();
+							behavior = reader.ReadBytes(1);
 
-							//	//var color = reader.ReadByte();
-							//	//end = reader.ReadByte();
-							Nodes.Add("76 - 3D Object");
+							Nodes.Add("76 - 3D Object ?? (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + ")");
 							break;
 
 						case 0x78:
@@ -269,14 +276,14 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x7a:
-							reader.ReadBytes(3);
-							Nodes.Add("7a - Transition");
+							data = reader.ReadBytes(3);
+							Nodes.Add("7a - Transition: " + string.Join(" ", data.Select(d => d.ToString("X2"))));
 							break;
 
 						case 0x82:
 							// Unknown
-							reader.ReadBytes(1);
-							Nodes.Add("82 - Unknown");
+							data = reader.ReadBytes(1);
+							Nodes.Add("82 - Unknown: " + string.Join(" ", data.Select(d => d.ToString("X2"))));
 							break;
 
 						case 0x84:
@@ -286,17 +293,15 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x86:
 							// 3D Object (16-bit vector) (16-bit address)
-							reader.ReadBytes(13);
-							//	z = reader.ReadInt16();
-							//	x = reader.ReadInt16();
-							//	y = reader.ReadInt16();
-							//	timer = reader.ReadUInt16();
-							//	var objectAddress = reader.ReadUInt16();
-							//	var behavior2 = reader.ReadBytes(4);
+							//reader.ReadBytes(13);
+							z = reader.ReadInt16();
+							x = reader.ReadInt16();
+							y = reader.ReadInt16();
+							timer = reader.ReadUInt16();
+							objectAddress = reader.ReadUInt16();
+							behavior = reader.ReadBytes(3);
 
-							//	var color = reader.ReadByte();
-							//	end = reader.ReadByte();
-							Nodes.Add("86 - 3D Object");
+							Nodes.Add("86 - 3D Object: " + objectAddress.ToString("X4") + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Select(d => d.ToString("X2"))));
 							break;
 
 						case 0x8a:
@@ -306,8 +311,8 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x8c:
-							var behavior = reader.ReadUInt16();
-							Nodes.Add("8c - Attach Behavior To Previous Object:" + behavior.ToString("X4"));
+							behavior = reader.ReadBytes(2);
+							Nodes.Add("8c - Attach Behavior To Previous Object:" + string.Join(" ", behavior.Select(d => d.ToString("X2"))));
 							break;
 
 						default:
