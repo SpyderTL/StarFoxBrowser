@@ -306,8 +306,8 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x8c:
-							var behavior = reader.ReadBytes(3);
-							Nodes.Add("8c - Attach Behavior To Previous Object:" + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							var behavior = reader.ReadUInt16();
+							Nodes.Add("8c - Attach Behavior To Previous Object:" + behavior.ToString("X4"));
 							break;
 
 						default:
