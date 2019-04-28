@@ -1,0 +1,6 @@
+﻿Tables
+
+Name			File Address		Memory Address		Entry Length
+Levels			0x28000				0x050000			3
+Behaviors		0x2840				0x002840			4
+Models			0x264b				0x00264b			2

@@ -52,10 +52,10 @@ namespace StarFoxBrowser.Nodes
 						case 0x04:
 							// Loop Segment
 							//reader.ReadBytes(4);
-							var warp = reader.ReadUInt16();
+							var loop = reader.ReadUInt16();
 							var times = reader.ReadUInt16();
 
-							Nodes.Add("04 - Loop Segment: " + warp + " (Times " + times + ")");
+							Nodes.Add("04 - Loop Segment: " + loop + " (Times " + times + ")");
 							break;
 
 						case 0x06:
@@ -110,8 +110,8 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x28:
 							// Warp w/ Return
-							reader.ReadBytes(3);
-							Nodes.Add("28 - Warp and Return");
+							var warp = reader.ReadBytes(3);
+							Nodes.Add("28 - Warp and Return: " + string.Join(string.Empty, warp.Reverse().Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x2a:
@@ -128,8 +128,8 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x2e:
 							// Warp
-							reader.ReadBytes(3);
-							Nodes.Add("2e - Warp");
+							warp = reader.ReadBytes(3);
+							Nodes.Add("2e - Warp: " + string.Join(string.Empty, warp.Reverse().Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x36:
@@ -146,8 +146,11 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x3c:
-							reader.ReadBytes(3);
-							Nodes.Add("3c - Offset Z-Position");
+							x = reader.ReadByte();
+							y = reader.ReadByte();
+							z = reader.ReadByte();
+
+							Nodes.Add("3c - Offset Z-Position (" + x + ", " + y + ", " + z + ")");
 							break;
 
 						case 0x3e:
@@ -229,14 +232,14 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x74:
-							// 3D Object Behavior (16-bit vector) (8-bit table lookup index)
+							// 3D Object Behavior (16-bit vector) (8-bit behavior lookup index)
 							//reader.ReadBytes(9);
 							timer = reader.ReadUInt16();
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
 							z = reader.ReadInt16();
 							behavior = reader.ReadBytes(1);               // TODO: Find lookup table
-							Nodes.Add("74 - 3D Object: ?? (" + x + ", " + y + ", " + z + ") Timer: " + timer);
+							Nodes.Add("74 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x76:
@@ -248,7 +251,7 @@ namespace StarFoxBrowser.Nodes
 							timer = reader.ReadUInt16();
 							behavior = reader.ReadBytes(1);
 
-							Nodes.Add("76 - 3D Object ?? (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + ")");
+							Nodes.Add("76 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + ")");
 							break;
 
 						case 0x78:

@@ -1,553 +1,553 @@
-15AC 
-31AC 
-4DAC Andross Square
-69AC Black Hole Sprite
-85AC Andross Cube
-A1AC 
-BDAC 
-D9AC 
-F5AC 
-11AD 
-2DAD Explosion
-49AD 
-65AD 
-81AD 
-9DAD 
-B9AD 
-D5AD 
-F1AD 
-0DAE 
-29AE 
-45AE 
-61AE 
-7DAE 
-99AE 
-B5AE 
-D1AE 
-EDAE 
-09AF 
-25AF 
-41AF 
-5DAF 
-79AF 
-95AF 
-B1AF 
-CDAF Big Asteroid
-E9AF 
-05B0 
-21B0 
-3DB0 
-59B0 
-75B0 
-91B0 
-ADB0 
-C9B0 Nova bomb
-E5B0 Nova bomb 2
-01B1 Explo 2
-1DB1 Big Explo 3
-39B1 Big Explo 
-55B1 Big Explo 
-71B1 Big Explo 
-8DB1 Big Explo 
-A9B1 Big Explo 
-C5B1 Big Explo 
-E1B1 nothing?
-FDB1 nothing?
-19B2 nothing?
-35B2 ”GAME”
-51B2 ”OVER”
-6DB2 Alien pilot
-89B2 Sparks
-A5B2 Nothing?
-C1B2 Flashing antenna
-DDB2 Bigger Flashing antenna
-F9B2 Bigger Flashing antenna
-15B3 Flashing antenna
-31B3 White morphing fire
-4DB3 Flashing yellow morphing fire
-69B3 Flashing blue morphing fire
-85B3 Flashing flat blue morphing shot
-A1B3 Weird flat asteroid sprite (unused?)
-BDB3 Same but bigger
-D9B3 Same but even bigger
-F5B3 Walker with leg broken
-11B4 Walker with leg missing
-2DB4 Walker walking
-49B4 Growing column
-65B4 Bee!
-81B4 Weird antenna
-9DB4 Antenna top
-DAB4 Hexagonal multi-missile head
-DAB4 Hexagonal multi-missile head
-F6B4 
-F6B4 Slamming outdoor wall
-33B5 Slamming outdoor wall
-4FB5 Slamming outdoor wall
-6BB5 Flat four pronged enemy
-87B5 Pyramid
-A3B5 Flat far away ship
-DBB5 ??
-FCB5 ??
-01B6 Caterpillar head
-1DB6 Caterpillar part
-43B6 Cloaking Ship
-7BB6 ??
-80B6  Caterpillar part
-9CB6 Caterpillar head part
-B8B6 Shadow
-D4B6 blue red pill
-F0B6 mini ship
-28B7 mini ship 2
-28B7 mini ship 2
-44B7 turret
-B4B7 Tank track
-7CB7 Tank track Corner
-98B7 Tank track Corner
-B9B7 mine?
-D5B7 shaded cone spike
-F1B7 Launcher hovercraft
-0DB8 Exploding mine part
-29B8 Exploding mine part
-45B8 ??
-45B8 falling column orange
-82B8 falling column blue
-9EB8 column orange (A3 B8)
-BFB8 Mid level ring
-DBB8 Magic door! (unused in game)
-F7B8 Plasma Hydra Boss arms
-13B9 Plasma Hydra Boss arms bulging
-2FB9 Plasma Hydra Boss body
-4BB9 Plasma Hydra animated claws
-7FBA neck/tail for Monarch Dodora Boss
-83B9 Monarch Dodora Boss head
-9FB9 Monarch Dodora body animation
-BBB9 Monarch Dodora Boss tip of tail
-D7B9 mini bird
-F3B9 Egg
-0FBA Egg broken top
-2BBA Egg broken bottom
-47BA bird boss flapping wing
-63BA bird boss flapping wing
-84BA Motorist
-A0BA Large missile
-BCBA dart
-D8BA Big blue Bonus Archway
-F4BA Bonus vertical doorway
-10BB Horiz Arrow sliding door
-2CBB Random poly
-48BB scramble line part
-64BB scramble arches
-80BB scramble tunel
-9CBB Big walker
-B8BB Asteroid flat + enemy
-D4BB Weird vent?
-F0BB Dancing Insector head
-0CBC Dancing Insector Boss leg
-28BC Dancing Insector leg
-44BC Dancing Insector top
-60BC Parrot (Bonus OOTD bird)
-7CBC flashing flat blue hexagon
-98BC Shadow small high poly arwing
-B4BC Small high poly arwing
-D0BC Big high poly arwing
-ECBC Lava erruption
-08BD Slot Machine
-24BD Slot Machine Arm
-40BD Training Ring (Flashing blue)
-5CBD Andross Cube + pyramids
-78BD Tower top
-94BD Yellow-red flashing shot
-B0BD Rock formation (irregular gray shape)
-CCBD Four pronged space thing
-E8BD Diafragm Door
-04BE Rock reverse faces
-20BE Rock reverse faces and broken
-3CBE Rock Crusher Boss part
-58BE Rock Crusher Boss flashing dimple
-74BE Rock Crusher Boss rotating part
-90BE Spinning Core bumpers
-ACBE Electric thing under Spinning Core Boss
-C8BE Spinning Core Boss top
-E4BE Spinning Core flaps up
-00BF Spinning Core flaps down
-1CBF Spinning Core flaps parts closed
-38BF Spinning Core flaps parts closed
-54BF Black lines
-70BF lines
-8CBF lines
-A8BF lines
-C4BF lines
-E0BF lines
-FCBF mess
-18C0 Armada Battleship entry
-34C0 Atomic Base entry
-50C0 Atomic Base entry zoom
-6CC0 Weird black/orange button
-88C0 Weird portal
-A4C0 Weird portal 2
+AC15 
+AC31 
+AC4D Andross Square
+AC69 Black Hole Sprite
+AC85 Andross Cube
+ACA1 
+ACBD 
+ACD9 
+ACF5 
+AD11 
+AD2D Explosion
+AD49 
+AD65 
+AD81 
+AD9D 
+ADB9 
+ADD5 
+ADF1 
+AE0D 
+AE29 
+AE45 
+AE61 
+AE7D 
+AE99 
+AEB5 
+AED1 
+AEED 
+AF09 
+AF25 
+AF41 
+AF5D 
+AF79 
+AF95 
+AFB1 
+AFCD Big Asteroid
+AFE9 
+B005 
+B021 
+B03D 
+B059 
+B075 
+B091 
+B0AD 
+B0C9 Nova bomb
+B0E5 Nova bomb 2
+B101 Explo 2
+B11D Big Explo 3
+B139 Big Explo 
+B155 Big Explo 
+B171 Big Explo 
+B18D Big Explo 
+B1A9 Big Explo 
+B1C5 Big Explo 
+B1E1 nothing?
+B1FD nothing?
+B219 nothing?
+B235 ”GAME”
+B251 ”OVER”
+B26D Alien pilot
+B289 Sparks
+B2A5 Nothing?
+B2C1 Flashing antenna
+B2DD Bigger Flashing antenna
+B2F9 Bigger Flashing antenna
+B315 Flashing antenna
+B331 White morphing fire
+B34D Flashing yellow morphing fire
+B369 Flashing blue morphing fire
+B385 Flashing flat blue morphing shot
+B3A1 Weird flat asteroid sprite (unused?)
+B3BD Same but bigger
+B3D9 Same but even bigger
+B3F5 Walker with leg broken
+B411 Walker with leg missing
+B42D Walker walking
+B449 Growing column
+B465 Bee!
+B481 Weird antenna
+B49D Antenna top
+B4DA Hexagonal multi-missile head
+B4DA Hexagonal multi-missile head
+B4F6 
+B4F6 Slamming outdoor wall
+B533 Slamming outdoor wall
+B54F Slamming outdoor wall
+B56B Flat four pronged enemy
+B587 Pyramid
+B5A3 Flat far away ship
+B5DB ??
+B5FC ??
+B601 Caterpillar head
+B61D Caterpillar part
+B643 Cloaking Ship
+B67B ??
+B680  Caterpillar part
+B69C Caterpillar head part
+B6B8 Shadow
+B6D4 blue red pill
+B6F0 mini ship
+B728 mini ship 2
+B728 mini ship 2
+B744 turret
+B7B4 Tank track
+B77C Tank track Corner
+B798 Tank track Corner
+B7B9 mine?
+B7D5 shaded cone spike
+B7F1 Launcher hovercraft
+B80D Exploding mine part
+B829 Exploding mine part
+B845 ??
+B845 falling column orange
+B882 falling column blue
+B89E column orange (A3 B8)
+B8BF Mid level ring
+B8DB Magic door! (unused in game)
+B8F7 Plasma Hydra Boss arms
+B913 Plasma Hydra Boss arms bulging
+B92F Plasma Hydra Boss body
+B94B Plasma Hydra animated claws
+BA7F neck/tail for Monarch Dodora Boss
+B983 Monarch Dodora Boss head
+B99F Monarch Dodora body animation
+B9BB Monarch Dodora Boss tip of tail
+B9D7 mini bird
+B9F3 Egg
+BA0F Egg broken top
+BA2B Egg broken bottom
+BA47 bird boss flapping wing
+BA63 bird boss flapping wing
+BA84 Motorist
+BAA0 Large missile
+BABC dart
+BAD8 Big blue Bonus Archway
+BAF4 Bonus vertical doorway
+BB10 Horiz Arrow sliding door
+BB2C Random poly
+BB48 scramble line part
+BB64 scramble arches
+BB80 scramble tunel
+BB9C Big walker
+BBB8 Asteroid flat + enemy
+BBD4 Weird vent?
+BBF0 Dancing Insector head
+BC0C Dancing Insector Boss leg
+BC28 Dancing Insector leg
+BC44 Dancing Insector top
+BC60 Parrot (Bonus OOTD bird)
+BC7C flashing flat blue hexagon
+BC98 Shadow small high poly arwing
+BCB4 Small high poly arwing
+BCD0 Big high poly arwing
+BCEC Lava erruption
+BD08 Slot Machine
+BD24 Slot Machine Arm
+BD40 Training Ring (Flashing blue)
+BD5C Andross Cube + pyramids
+BD78 Tower top
+BD94 Yellow-red flashing shot
+BDB0 Rock formation (irregular gray shape)
+BDCC Four pronged space thing
+BDE8 Diafragm Door
+BE04 Rock reverse faces
+BE20 Rock reverse faces and broken
+BE3C Rock Crusher Boss part
+BE58 Rock Crusher Boss flashing dimple
+BE74 Rock Crusher Boss rotating part
+BE90 Spinning Core bumpers
+BEAC Electric thing under Spinning Core Boss
+BEC8 Spinning Core Boss top
+BEE4 Spinning Core flaps up
+BF00 Spinning Core flaps down
+BF1C Spinning Core flaps parts closed
+BF38 Spinning Core flaps parts closed
+BF54 Black lines
+BF70 lines
+BF8C lines
+BFA8 lines
+BFC4 lines
+BFE0 lines
+BFFC mess
+C018 Armada Battleship entry
+C034 Atomic Base entry
+C050 Atomic Base entry zoom
+C06C Weird black/orange button
+C088 Weird portal
+C0A4 Weird portal 2
 C0C0 Weird portal wire frame
-DCC0 Weird portal wire frame 2
-F8C0 Flashing yellow stripe
-14C1 Black rectangle
-30C1 Gray rectangle
-4CC1 Black large rectangle
-68C1 Gray rectangle
-84C1 Gray rectangle smaller
-A0C1 Gray rectangle large
-BCC1 Inside black tunnel
-D8C1 Inside gray tunnel
-F4C1 little tower top
-10C2 box with flashing top
-2CC2 Butterfly
-48C2 Attack carrier right launcher
-64C2 Attack carrier middle part
-80C2 Attack carrier low poly middle
-9CC2 Attack carrier left shield
-B8C2 A-carrier top left closing
-D4C2 A-carrier down left closing
-F0C2 A-carrier mini-ships
-0CC3 Yellow flying enemy
-28C3 Blue flying enemy
-44C3 Enemy wing
-60C3 wireframe shielded Arwing
-7CC3 wireframe Arwing no right wing
-98C3 wireframe Arwing no left wing
-B4C3 wireframe Arwing no wings
-D0C3 Interlocking doors opening
-ECC3 Antenna dish
-08C4 Antenna base
-24C4 Pylone
-40C4 Pylone 2
-5CC4 Twin flasher/repair enemy
-78C4 Twin flasher item
-94C4 Nova bomb item
-B0C4 Shield item
-CCC4 Wing Repair item
-E8C4 unused (filled cube shield)
-04C5 mine, blue/red
-20C5 Repairing Arwing
-3CC5 Hexagonal mini Hover tank
-58C5 Enemy with some wireframe
-74C5 Morphing boss part (round room)
-90C5 Atomic Base core opening
-ACC5 Atomic Base core opening 2
-C8C5 Half monolyte (white)
-E4C5 Atomic base targets
-00C6 Atomic base electric arcs
-1CC6 Atomic Base beaks
-38C6 Exploded polys
-54C6 Slot flashing button
-70C6 Slot disabled button
-8CC6 A-Carrier2 rotating heads
-A8C6 A-Carrier2 main head
-C4C6 A-Carrier2 tank base
-E0C6 Armada ship core stand
-FCC6 Armada ship core
-18C7 Unknown boss or portal part
-34C7 A-Carrier2 tank middle
-50C7 A-Carrier2 tank right
-6CC7 A-Carrier2 tank left
-88C7 Phantron transformation/jumping animation
-A4C7 Phantron closed
-C0C7 Mountain with antennas
-DCC7 Manned pod ship
-F8C7 Winged fat ship
-14C8 Phantron leg
-30C8 Phantron leg
-4CC8 Wingling tail enemy
-68C8 Small Bonus Archway
-84C8 Long cannon tank
-A0C8 Mothership part
-BCC8 Octogonal tunnel blue
-D8C8 Rectangle tunnel orange
-F4C8 Letter D orange
-10C9 Letter D blue
-2CC9 Scenery White box
-48C9 Scenery small White box
-64C9 Scenery White high rise box
-80C9 Scenery White high rise box
-9CC9 Galactic rider door
-B8C9 Base shooting red/blue rings
-D4C9 Metal Crusher right
-F0C9 Metal Crusher left
-0CCA Metal Crusher again
-28CA Space Truck
-44CA Boss three prong opening top
-60CA Boss three prong opening top
-7CCA Hexa orange with black top
-98CA Atomic base part
-B4CA Web
-D0CA Yellow flat octogon
-ECCA White prism
-08CB Vertical Orange white column
-24CB Big mountain with entry
-40CB Fake flat mountain entry
-5CCB Long orange tunnel
-78CB Orange/gray tunnel
-94CB Professor Hanger
-B0CB Vertical opening interlock doors
-CCCB Mountain part orange
-E8CB Mountain part blue
-04CC Mountain part white
-20CC Mountain part 2 orange
-3CCC Mountain part 2 blue
-58CC Mountain part 2 white
-74CC Mountain part 3 orange
-90CC 
-ACCC 
-C8CC Mountain part 4 orange
-E4CC 
-00CD 
-1CCD Mountain part 5 orange
-38CD 
-54CD 
-70CD Mountain part 6 orange
-8CCD 
-A8CD 
-C4CD Helicopter
-E0CD Metal Crusher mines
-FCCD Mountain part 7 orange
-18CE Little mountain blue
-34CE Little mountain white
-50CE Flying Fish
-6CCE Growing green leaf
-88CE Blossoming flower
-A4CE Water Dragon/Flower part
-C0CE Water Dragon head
-DCCE Flower/Dragon part?
-F8CE Flower part
-14CF Flower part
-30CF Two sides Blue square
-4CCF Small Flower
-68CF Big Flower
-84CF Flower part?
-A0CF Flower part
-BCCF Spider Boss head
-D8CF Spider Boss leg
-F4CF Spider Boss leg 2
-10D0 Big vertical Entryway
-2CD0 Long Octo Tunnel
-48D0 Diafragm Door Blue
-64D0 Interlocking Doors
-80D0 ?? part
-9CD0 Vertical Creature
-B8D0 Flashing White thing
-D4D0 Flashing White Monolyte
-F0D0 Pale Monolyte
-0CD1 Andross Face Squares
-28D1 Andross Face Squares big
-44D1 Andross Face morph
-60D1 Andross Face morph 2
-7CD1 Prof Hanger part
-98D1 Vertical Tunnel Door
-B4D1 Tunnel part
-D0D1 Tunnel part orange
-ECD1 Tunnel part orange
-08D2 Tunnel part orange
-24D2 Tunnel part
-40D2 Tunnel part orange
-5CD2 Tunnel twisting part
-78D2 Orange Electronic Cube
-94D2 Orange Electronic Column
-B0D2 Orange Electronic Column
-CCD2 nothing?
-E8D2 Shadow arwing
-04D3 Normal arwing
-20D3 Normal arwing
-3CD3 Normal arwing
-58D3 Shadow arwing no right wing
-74D3 Arwing no right wing
-90D3 Shadow arwing no left wing
-ACD3 Arwing no left wing
-C8D3 Shadow arwing no wings
-E4D3 Arwing no wings
-00D4 Simple White building
-1CD4 Buildings (4) one blue high
-38D4 Buildings (3) one orange high
-54D4 Buildings (4) all high rise
-70D4 Building with Fox logo
-8CD4 Great Commander Boss
-A8D4 Great Commander Head
-C4D4 Great Commander Head
-E0D4 Great Commander trunk with rotating arms
-FCD4 Great Commander base with opening vent
-18D5 Great Commander whole, not animated
-34D5 Great Commander part
-50D5 Great Commander left arm
-6CD5 Great Commander right arm
-88D5 Opening Great Commander vent
-A4D5 Opening Great Commander vent
-C0D5 Explosion crater
-DCD5 Explosion crater
-F8D5 Unused?
-14D6 Unused?
-30D6 Some horizontal beam
-4CD6 Some horizontal beam
-68D6 Beveled White box
-84D6 Beveled White square
-A0D6 Beveled White beam
-BCD6 Beveled White beam
-D8D6 Beveled White square
-F4D6 Beveled White beam
-10D7 Rising Gray beam
-2CD7 Rising arch
-48D7 Arwing Cockpit
-64D7 Big low poly arwing
-80D7 Big arwing (no wings)
-9CD7 Big arwing (no R wings)
-B8D7 Big arwing (no L wings)
-D4D7 PHANTRON Kicking
-F0D7 PHANTRON part
-0CD8 Dropped by some boss
-28D8 Rotating Artsy thing
-44D8 Rotating Artsy thing
-60D8 Box thing
-7CD8 Square thing
-98D8 Box thing
-B4D8 Box thing
-D0D8 Box thing high
-ECD8 Blue beam white ends
-08D9 Hexagonal blue beam
-24D9 Enemy ship
-40D9 Enemy ship half
-5CD9 Enemy Cargo ship
-78D9 Enemy Cargo ship
-94D9 Enemy Cargo ship	
-B0D9 Enemy Cargo ship	Low poly
-CCD9 Enemy Cargo ship	Low poly
-E8D9 Enemy Cargo ship	Low poly
-04DA Far away ships (flat)
-20DA Interlocking doors
-3CDA Interlocking corner doors
-58DA Interlocking diagonal doors
-74DA Interlocking diagonal doors (s)
-90DA Enemy flapping wings and tail
-ACDA Boss poly part?
-C8DA Boss poly part triangle
-E4DA Boss poly part triangle
-00DB Boss poly part triangle
-1CDB Rising orange beam in tunnel
-38DB Enemy ship
-54DB Growing missile
-70DB Main enemy ship (orange)
-8CDB Mini walker
-A8DB Ringo enemy
-C4DB Enemy with rotating wings
-E0DB Growing beam with flashing top
-FCDB Sliding door in tunnel
-18DC Coins
-34DC Flashing Slot Maching knob
-50DC Slot Machine Fruit texture
-6CDC Hexa tower with flashing top
-88DC Origami 1
-A4DC Paper plane
-C0DC Warning beam (yellow/black)
+C0DC Weird portal wire frame 2
+C0F8 Flashing yellow stripe
+C114 Black rectangle
+C130 Gray rectangle
+C14C Black large rectangle
+C168 Gray rectangle
+C184 Gray rectangle smaller
+C1A0 Gray rectangle large
+C1BC Inside black tunnel
+C1D8 Inside gray tunnel
+C1F4 little tower top
+C210 box with flashing top
+C22C Butterfly
+C248 Attack carrier right launcher
+C264 Attack carrier middle part
+C280 Attack carrier low poly middle
+C29C Attack carrier left shield
+C2B8 A-carrier top left closing
+C2D4 A-carrier down left closing
+C2F0 A-carrier mini-ships
+C30C Yellow flying enemy
+C328 Blue flying enemy
+C344 Enemy wing
+C360 wireframe shielded Arwing
+C37C wireframe Arwing no right wing
+C398 wireframe Arwing no left wing
+C3B4 wireframe Arwing no wings
+C3D0 Interlocking doors opening
+C3EC Antenna dish
+C408 Antenna base
+C424 Pylone
+C440 Pylone 2
+C45C Twin flasher/repair enemy
+C478 Twin flasher item
+C494 Nova bomb item
+C4B0 Shield item
+C4CC Wing Repair item
+C4E8 unused (filled cube shield)
+C504 mine, blue/red
+C520 Repairing Arwing
+C53C Hexagonal mini Hover tank
+C558 Enemy with some wireframe
+C574 Morphing boss part (round room)
+C590 Atomic Base core opening
+C5AC Atomic Base core opening 2
+C5C8 Half monolyte (white)
+C5E4 Atomic base targets
+C600 Atomic base electric arcs
+C61C Atomic Base beaks
+C638 Exploded polys
+C654 Slot flashing button
+C670 Slot disabled button
+C68C A-Carrier2 rotating heads
+C6A8 A-Carrier2 main head
+C6C4 A-Carrier2 tank base
+C6E0 Armada ship core stand
+C6FC Armada ship core
+C718 Unknown boss or portal part
+C734 A-Carrier2 tank middle
+C750 A-Carrier2 tank right
+C76C A-Carrier2 tank left
+C788 Phantron transformation/jumping animation
+C7A4 Phantron closed
+C7C0 Mountain with antennas
+C7DC Manned pod ship
+C7F8 Winged fat ship
+C814 Phantron leg
+C830 Phantron leg
+C84C Wingling tail enemy
+C868 Small Bonus Archway
+C884 Long cannon tank
+C8A0 Mothership part
+C8BC Octogonal tunnel blue
+C8D8 Rectangle tunnel orange
+C8F4 Letter D orange
+C910 Letter D blue
+C92C Scenery White box
+C948 Scenery small White box
+C964 Scenery White high rise box
+C980 Scenery White high rise box
+C99C Galactic rider door
+C9B8 Base shooting red/blue rings
+C9D4 Metal Crusher right
+C9F0 Metal Crusher left
+CA0C Metal Crusher again
+CA28 Space Truck
+CA44 Boss three prong opening top
+CA60 Boss three prong opening top
+CA7C Hexa orange with black top
+CA98 Atomic base part
+CAB4 Web
+CAD0 Yellow flat octogon
+CAEC White prism
+CB08 Vertical Orange white column
+CB24 Big mountain with entry
+CB40 Fake flat mountain entry
+CB5C Long orange tunnel
+CB78 Orange/gray tunnel
+CB94 Professor Hanger
+CBB0 Vertical opening interlock doors
+CBCC Mountain part orange
+CBE8 Mountain part blue
+CC04 Mountain part white
+CC20 Mountain part 2 orange
+CC3C Mountain part 2 blue
+CC58 Mountain part 2 white
+CC74 Mountain part 3 orange
+CC90 
+CCAC 
+CCC8 Mountain part 4 orange
+CCE4 
+CD00 
+CD1C Mountain part 5 orange
+CD38 
+CD54 
+CD70 Mountain part 6 orange
+CD8C 
+CDA8 
+CDC4 Helicopter
+CDE0 Metal Crusher mines
+CDFC Mountain part 7 orange
+CE18 Little mountain blue
+CE34 Little mountain white
+CE50 Flying Fish
+CE6C Growing green leaf
+CE88 Blossoming flower
+CEA4 Water Dragon/Flower part
+CEC0 Water Dragon head
+CEDC Flower/Dragon part?
+CEF8 Flower part
+CF14 Flower part
+CF30 Two sides Blue square
+CF4C Small Flower
+CF68 Big Flower
+CF84 Flower part?
+CFA0 Flower part
+CFBC Spider Boss head
+CFD8 Spider Boss leg
+CFF4 Spider Boss leg 2
+D010 Big vertical Entryway
+D02C Long Octo Tunnel
+D048 Diafragm Door Blue
+D064 Interlocking Doors
+D080 ?? part
+D09C Vertical Creature
+D0B8 Flashing White thing
+D0D4 Flashing White Monolyte
+D0F0 Pale Monolyte
+D10C Andross Face Squares
+D128 Andross Face Squares big
+D144 Andross Face morph
+D160 Andross Face morph 2
+D17C Prof Hanger part
+D198 Vertical Tunnel Door
+D1B4 Tunnel part
+D1D0 Tunnel part orange
+D1EC Tunnel part orange
+D208 Tunnel part orange
+D224 Tunnel part
+D240 Tunnel part orange
+D25C Tunnel twisting part
+D278 Orange Electronic Cube
+D294 Orange Electronic Column
+D2B0 Orange Electronic Column
+D2CC nothing?
+D2E8 Shadow arwing
+D304 Normal arwing
+D320 Normal arwing
+D33C Normal arwing
+D358 Shadow arwing no right wing
+D374 Arwing no right wing
+D390 Shadow arwing no left wing
+D3AC Arwing no left wing
+D3C8 Shadow arwing no wings
+D3E4 Arwing no wings
+D400 Simple White building
+D41C Buildings (4) one blue high
+D438 Buildings (3) one orange high
+D454 Buildings (4) all high rise
+D470 Building with Fox logo
+D48C Great Commander Boss
+D4A8 Great Commander Head
+D4C4 Great Commander Head
+D4E0 Great Commander trunk with rotating arms
+D4FC Great Commander base with opening vent
+D518 Great Commander whole, not animated
+D534 Great Commander part
+D550 Great Commander left arm
+D56C Great Commander right arm
+D588 Opening Great Commander vent
+D5A4 Opening Great Commander vent
+D5C0 Explosion crater
+D5DC Explosion crater
+D5F8 Unused?
+D614 Unused?
+D630 Some horizontal beam
+D64C Some horizontal beam
+D668 Beveled White box
+D684 Beveled White square
+D6A0 Beveled White beam
+D6BC Beveled White beam
+D6D8 Beveled White square
+D6F4 Beveled White beam
+D710 Rising Gray beam
+D72C Rising arch
+D748 Arwing Cockpit
+D764 Big low poly arwing
+D780 Big arwing (no wings)
+D79C Big arwing (no R wings)
+D7B8 Big arwing (no L wings)
+D7D4 PHANTRON Kicking
+D7F0 PHANTRON part
+D80C Dropped by some boss
+D828 Rotating Artsy thing
+D844 Rotating Artsy thing
+D860 Box thing
+D87C Square thing
+D898 Box thing
+D8B4 Box thing
+D8D0 Box thing high
+D8EC Blue beam white ends
+D908 Hexagonal blue beam
+D924 Enemy ship
+D940 Enemy ship half
+D95C Enemy Cargo ship
+D978 Enemy Cargo ship
+D994 Enemy Cargo ship	
+D9B0 Enemy Cargo ship	Low poly
+D9CC Enemy Cargo ship	Low poly
+D9E8 Enemy Cargo ship	Low poly
+DA04 Far away ships (flat)
+DA20 Interlocking doors
+DA3C Interlocking corner doors
+DA58 Interlocking diagonal doors
+DA74 Interlocking diagonal doors (s)
+DA90 Enemy flapping wings and tail
+DAAC Boss poly part?
+DAC8 Boss poly part triangle
+DAE4 Boss poly part triangle
+DB00 Boss poly part triangle
+DB1C Rising orange beam in tunnel
+DB38 Enemy ship
+DB54 Growing missile
+DB70 Main enemy ship (orange)
+DB8C Mini walker
+DBA8 Ringo enemy
+DBC4 Enemy with rotating wings
+DBE0 Growing beam with flashing top
+DBFC Sliding door in tunnel
+DC18 Coins
+DC34 Flashing Slot Maching knob
+DC50 Slot Machine Fruit texture
+DC6C Hexa tower with flashing top
+DC88 Origami 1
+DCA4 Paper plane
+DCC0 Warning beam (yellow/black)
 DCDC Tunnel side Textured Blocks
-F8DC Road side Textured Blocks
-14DD nothing?
-30DD Shootable cone
-4CDD High rise with flashing corner
-68DD Big low poly Arwing (2)
-84DD Corneria Base
-A0DD Flat long rectangle
-BCDD Random polys
-F4DD Part some ship (DD08)
-F4DD Part some ship (DD08)
-10DE Micro Walker
-2CDE Nano Walker
-48DE Machine Gun ship
-64DE Machine Gun ship Part (gun)
-80DE Machine Gun ship Part body
-9CDE Space missile mines
-B8DE Shieldable enemy
-D4DE Shielded enemy
-F0DE Shielded enemy 2
-0CDF Shielded enemy cloaking
-28DF Big launcher tank
-44DF Libellule
-60DF Other smaller Libellule
-7CDF Flashing wireframe beam
-98DF Flashing beam
-B4DF Flashing beam
-D0DF Flashing beam
-ECDF Flashing beam
-08E0 Flashing beam
-24E0 Flashing beam
-40E0 Flashing beam
-5CE0 Flashing beam
-78E0 Flashing beam
-94E0 Flashing beam
-B0E0 Flashing beam
-CCE0 Flashing beam
-E8E0 Flashing beam
-04E1 Flashing beam (wireframe)
-20E1 Flashing beam
-3CE1 Flashing beam (wireframe)
-58E1 Flashing beam
-74E1 Flashing beam (wireframe)
-90E1 Flashing beam
-ACE1 Ship Entryway (with antennas)
-C8E1 Ship Entryway part?
-E4E1 Space half arch
-00E2 Space half arch big
-1CE2 Space other half arch big
-38E2 Rotating pod enemy orange
-54E2 Rotating pod enemy white
-70E2 Rotating pod enemy white
-8CE2 Rotating pod enemy blue
-A8E2 Rotating pod enemy blue
-C4E2 Medium Walker
-E0E2 Mini Volcano
-FCE2 Big Volcano
-18E3 Portable hole
-34E3 Cool missile
-50E3 Mini Vertical Enemy
-6CE3 Main enemy 2 (orange)
-88E3 Main enemy 3 big wings
-A4E3 Small yellow stingray
-C0E3 Small blue stingray
-DCE3 Big blue stingray
-F8E3 Big red stingray
-14E4 Crystal in ground
-30E4 Crystal in ground (vertical)
-4CE4 Flying crystal
-68E4 Hovercar (road level)
-84E4 Skii Truck  (road level)
-A0E4 ??
-BCE4 Some Enemy part
-D8E4 Energy yellow ring
-F4E4 Mini Fish
-10E5 Other Machine gun enemy
-2CE5 Swimming creature
-48E5 White flat stripe
-64E5 Flat thing
-80E5 White arrow
-9CE5 Tunnel with blue doors
-B8E5 Orange tunnel
-D4E5 Tunnel with blue doors 2
-F0E5 Federation friend ship
-0CE6 Federation friend ship (half)
-28E6 Mothership part 2
-44E6 Mothership center part
-60E6 Bonus bird
-7CE6 Whale
-98E6 Rotating solid beam with direction arrows
-B4E6 Andross 2 Evil Face
-D0E6 UFO
-ECE6 Small yellow tank
-08E7 Small blue tank
-24E7 Weird asteroid
-40E7 Tunnel with yellow door
-5CE7 Tunnel with yellow door
-78E7 Morphing ground thing
-94E7 Bonus doors (yellow)
-B0E7 Letter ”E” orange
-CCE7 Letter ”E” blue
-E8E7 Letter ”E” gray
-04E8 Letter ”T” orange
-20E8 Letter ”T” blue
-3CE8 Letter ”T” gray
-58E8 Letter ”N” orange
-74E8 Letter ”H” blue
-90E8 Letter ”H” gray
+DCF8 Road side Textured Blocks
+DD14 nothing?
+DD30 Shootable cone
+DD4C High rise with flashing corner
+DD68 Big low poly Arwing (2)
+DD84 Corneria Base
+DDA0 Flat long rectangle
+DDBC Random polys
+DDF4 Part some ship (DD08)
+DDF4 Part some ship (DD08)
+DE10 Micro Walker
+DE2C Nano Walker
+DE48 Machine Gun ship
+DE64 Machine Gun ship Part (gun)
+DE80 Machine Gun ship Part body
+DE9C Space missile mines
+DEB8 Shieldable enemy
+DED4 Shielded enemy
+DEF0 Shielded enemy 2
+DF0C Shielded enemy cloaking
+DF28 Big launcher tank
+DF44 Libellule
+DF60 Other smaller Libellule
+DF7C Flashing wireframe beam
+DF98 Flashing beam
+DFB4 Flashing beam
+DFD0 Flashing beam
+DFEC Flashing beam
+E008 Flashing beam
+E024 Flashing beam
+E040 Flashing beam
+E05C Flashing beam
+E078 Flashing beam
+E094 Flashing beam
+E0B0 Flashing beam
+E0CC Flashing beam
+E0E8 Flashing beam
+E104 Flashing beam (wireframe)
+E120 Flashing beam
+E13C Flashing beam (wireframe)
+E158 Flashing beam
+E174 Flashing beam (wireframe)
+E190 Flashing beam
+E1AC Ship Entryway (with antennas)
+E1C8 Ship Entryway part?
+E1E4 Space half arch
+E200 Space half arch big
+E21C Space other half arch big
+E238 Rotating pod enemy orange
+E254 Rotating pod enemy white
+E270 Rotating pod enemy white
+E28C Rotating pod enemy blue
+E2A8 Rotating pod enemy blue
+E2C4 Medium Walker
+E2E0 Mini Volcano
+E2FC Big Volcano
+E318 Portable hole
+E334 Cool missile
+E350 Mini Vertical Enemy
+E36C Main enemy 2 (orange)
+E388 Main enemy 3 big wings
+E3A4 Small yellow stingray
+E3C0 Small blue stingray
+E3DC Big blue stingray
+E3F8 Big red stingray
+E414 Crystal in ground
+E430 Crystal in ground (vertical)
+E44C Flying crystal
+E468 Hovercar (road level)
+E484 Skii Truck  (road level)
+E4A0 ??
+E4BC Some Enemy part
+E4D8 Energy yellow ring
+E4F4 Mini Fish
+E510 Other Machine gun enemy
+E52C Swimming creature
+E548 White flat stripe
+E564 Flat thing
+E580 White arrow
+E59C Tunnel with blue doors
+E5B8 Orange tunnel
+E5D4 Tunnel with blue doors 2
+E5F0 Federation friend ship
+E60C Federation friend ship (half)
+E628 Mothership part 2
+E644 Mothership center part
+E660 Bonus bird
+E67C Whale
+E698 Rotating solid beam with direction arrows
+E6B4 Andross 2 Evil Face
+E6D0 UFO
+E6EC Small yellow tank
+E708 Small blue tank
+E724 Weird asteroid
+E740 Tunnel with yellow door
+E75C Tunnel with yellow door
+E778 Morphing ground thing
+E794 Bonus doors (yellow)
+E7B0 Letter ”E” orange
+E7CC Letter ”E” blue
+E7E8 Letter ”E” gray
+E804 Letter ”T” orange
+E820 Letter ”T” blue
+E83C Letter ”T” gray
+E858 Letter ”N” orange
+E874 Letter ”H” blue
+E890 Letter ”H” gray
  

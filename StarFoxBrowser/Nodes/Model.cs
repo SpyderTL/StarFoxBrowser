@@ -17,6 +17,9 @@ namespace StarFoxBrowser.Nodes
 		{
 			Nodes.Clear();
 
+			if (Offset <= 0)
+				return;
+
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
