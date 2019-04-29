@@ -39,11 +39,11 @@ namespace StarFoxBrowser
 				if (propertyGrid.SelectedObject is Bitmap)
 				{
 					pictureBox.Image = (Bitmap)propertyGrid.SelectedObject;
-					pictureBox.Show();
+					//pictureBox.Show();
 				}
 				else
 				{
-					pictureBox.Hide();
+					//pictureBox.Hide();
 					pictureBox.Image = null;
 				}
 			}

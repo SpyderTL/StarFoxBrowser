@@ -37,10 +37,12 @@ namespace StarFoxBrowser.Nodes
 							var x = reader.ReadInt16();
 							var y = reader.ReadInt16();
 							var timer = reader.ReadUInt16();
-							var objectNumber = reader.ReadByte();       // Lookup object address in table at 0x2848
-							var end2 = reader.ReadByte();
+							var objectIndex = reader.ReadByte();
+							var behaviorIndex = reader.ReadByte();
+							var behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
+							var behaviorName = Usa10.BehaviorNames[behaviorID];
 
-							Nodes.Add("00 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer);
+							Nodes.Add("00 - 3D Object: " + objectIndex + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x02:
@@ -69,10 +71,10 @@ namespace StarFoxBrowser.Nodes
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
 							timer = reader.ReadUInt16();
-							var objectAddress = reader.ReadUInt16();
+							var objectID = reader.ReadUInt16();
 							var group = reader.ReadBytes(5);
 
-							Nodes.Add("0a - Random Object: " + objectAddress.ToString("X4") + " (" + x + ", " + y + ", " + z + ")");
+							Nodes.Add("0a - Random Object: " + objectID.ToString("X4") + " (" + x + ", " + y + ", " + z + ")");
 							break;
 
 						case 0x0c:
@@ -226,9 +228,9 @@ namespace StarFoxBrowser.Nodes
 							z = reader.ReadByte();
 							x = reader.ReadSByte();
 							y = reader.ReadSByte();
-							objectNumber = reader.ReadByte();
+							objectIndex = reader.ReadByte();
 							var behavior = reader.ReadBytes(1);
-							Nodes.Add("70 - 3D Object: " + objectNumber + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							Nodes.Add("70 - 3D Object: " + objectIndex + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x74:
@@ -250,8 +252,10 @@ namespace StarFoxBrowser.Nodes
 							y = reader.ReadSByte();
 							timer = reader.ReadUInt16();
 							behavior = reader.ReadBytes(1);
+							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorName = Usa10.BehaviorNames[behaviorID];
 
-							Nodes.Add("76 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + ")");
+							Nodes.Add("76 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + " (" + behaviorName + ")");
 							break;
 
 						case 0x78:
@@ -301,10 +305,18 @@ namespace StarFoxBrowser.Nodes
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
 							timer = reader.ReadUInt16();
-							objectAddress = reader.ReadUInt16();
+							objectID = reader.ReadUInt16();
 							behavior = reader.ReadBytes(3);
 
-							Nodes.Add("86 - 3D Object: " + objectAddress.ToString("X4") + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Select(d => d.ToString("X2"))));
+							var objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(objectID, out objectName);
+
+							behaviorID = behavior[0] | (behavior[1] << 8) | (behavior[2] << 16);
+							behaviorName = "Unknown";
+
+							Usa10.BehaviorNames.TryGetValue(behaviorID, out behaviorName);
+
+							Nodes.Add("86 - 3D Object: " + objectID.ToString("X4") + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(d => d.ToString("X2"))) + " (" + behaviorName + ")");
 							break;
 
 						case 0x8a:
