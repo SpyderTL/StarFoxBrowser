@@ -45,7 +45,7 @@ namespace StarFoxBrowser.Nodes
 									Z = reader.ReadSByte()
 								}).ToArray();
 
-							Nodes.Add(new VertexList { Text = "Vertex List", Verteces = verteces });
+							Nodes.Add(new VertexList { Text = "04 - Vertex List", Verteces = verteces });
 							break;
 
 						case 0x38:
@@ -60,11 +60,13 @@ namespace StarFoxBrowser.Nodes
 									Z = reader.ReadSByte()
 								}).ToArray();
 
-							Nodes.Add(new VertexList { Text = "Mirrored Vertex List", Verteces = verteces });
+							Nodes.Add(new VertexList { Text = "38 - Mirrored Vertex List", Verteces = verteces });
 							break;
 
 						case 0x1c:
 							// Animation
+							Nodes.Add("1C - Animation");
+
 							read = false;
 							break;
 
@@ -80,23 +82,13 @@ namespace StarFoxBrowser.Nodes
 									Z = reader.ReadInt16()
 								}).ToArray();
 
-							Nodes.Add(new VertexList { Text = "Vertex List (16-bit)", Verteces = verteces });
+							Nodes.Add(new VertexList { Text = "34 - Vertex List (16-bit)", Verteces = verteces });
 							break;
 
 						case 0x0c:
-							read = false;
+							Nodes.Add("0C - End Vertex List");
 							break;
-					}
-				}
 
-				read = true;
-
-				while (read)
-				{
-					var listType = reader.ReadByte();
-
-					switch (listType)
-					{
 						case 0x30:
 							// Triangle List
 							var triangleCount = reader.ReadByte();
@@ -105,17 +97,17 @@ namespace StarFoxBrowser.Nodes
 								.Select(n => (int)reader.ReadByte())
 								.ToArray();
 
-							Nodes.Add(new IndexList { Text = "Index List", Indeces = indeces });
+							Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
 
 							break;
 
 						case 0x14:
-							// Face Group
+							// Face
 							while (true)
 							{
-								var sideCount = reader.ReadByte();
+								vertexCount = reader.ReadByte();
 
-								if (sideCount == 0xff)
+								if (vertexCount == 0xff || vertexCount == 0xfe)
 									break;
 
 								var faceNumber = reader.ReadByte();
@@ -123,17 +115,45 @@ namespace StarFoxBrowser.Nodes
 								var normalX = reader.ReadSByte();
 								var normalY = reader.ReadSByte();
 								var normalZ = reader.ReadSByte();
-								var vertex1 = reader.ReadByte();
-								var vertex2 = reader.ReadByte();
-								var vertex3 = reader.ReadByte();
+
+								var vertices = Enumerable.Range(0, vertexCount)
+									.Select(n => (int)reader.ReadByte())
+									.ToArray();
 							}
+
+							Nodes.Add("14 - Face");
 							break;
 
-						default:
-							// BSP Tree
+						case 0x3c:
+							// Start BSP Tree
+							Nodes.Add("3C - Start BSP Tree");
+							break;
+
+						case 0x28:
+							// BSP Tree Node
+							var triangle = reader.ReadByte();
+							var faceGroupOffset = reader.ReadUInt16();
+							var branchOffset = reader.ReadByte();
+
+							Nodes.Add("28 - BSP Tree Node");
+							break;
+
+						case 0x44:
+							// BSP Tree Leaf
+							faceGroupOffset = reader.ReadUInt16();
+
+							Nodes.Add("28 - BSP Tree Leaf");
+							break;
+
+						case 0x00:
+							// End Face Data
+							Nodes.Add("00 - End Face Data");
 							read = false;
 							break;
 
+						default:
+							read = false;
+							break;
 					}
 				}
 			}

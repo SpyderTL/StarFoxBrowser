@@ -146,6 +146,13 @@ namespace StarFoxBrowser.Nodes
 				var checksumCompliment = reader.ReadUInt16();
 				var checksum = reader.ReadUInt16();
 
+				var coprocessorEnable = reader.ReadUInt16();
+				var breakHandler = reader.ReadUInt16();
+				var abortHandler = reader.ReadUInt16();
+				var nonMaskableInterruptHandler = reader.ReadUInt16();
+				var resetHandler = reader.ReadUInt16();
+				var irqHandler = reader.ReadUInt16();
+
 				return new
 				{
 					Title = title,
@@ -156,7 +163,14 @@ namespace StarFoxBrowser.Nodes
 					LicenseID = licenseID,
 					Version = version,
 					ChecksumCompliment = checksumCompliment,
-					Checksum = checksum
+					Checksum = checksum,
+
+					CoprocessorEnable = coprocessorEnable,
+					BreakHandler = breakHandler,
+					AbortHandler = abortHandler,
+					NonmaskableInterruptHandler = nonMaskableInterruptHandler,
+					ResetHandler = resetHandler,
+					IrqHandler = irqHandler
 				};
 			}
 		}
