@@ -65,9 +65,21 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x1c:
 							// Animation
-							Nodes.Add("1C - Animation");
 
-							read = false;
+							var frameCount = reader.ReadByte();
+							var frameOffsets = Enumerable.Range(0, frameCount)
+								.Select(n => reader.ReadInt16())
+								.ToArray();
+
+							Nodes.Add("1C - Animation");
+							break;
+
+						case 0x20:
+							// Jump
+
+							var offset = reader.ReadInt16();
+
+							Nodes.Add("20 - Jump");
 							break;
 
 						case 0x34:
