@@ -1,6 +1,45 @@
 ﻿Tables
 
 Name			File Address		Memory Address		Entry Length
-Levels			0x28000				0x050000			3
-Behaviors		0x2840				0x002840			4
-Models			0x264b				0x00264b			2
+Levels			0x28000			0x050000					3
+Behaviors		0x2840				0x002840					4
+Models			0x264b				0x00264b					2
+Palettes			0x18000											2
+Lighting			0x19000											1
+Animated		0x18000											
+
+Palettes
+	Entry[256]			2
+		Type					1
+		Value				1
+
+LightingEntry
+	Type					1		(0x00 - 0x09)
+	Color				1
+
+DynamicEntry
+	Type					1		(0x3E)
+	Palette				1		(0-19)
+
+StippleEntry
+	Type					1		(0x3F)
+	Colors				1
+		Color1				4 bits
+		Color2				4 bits
+
+TextureEntry
+	Type					1		(0x40 - 32x32 Texture Flipped, 0x41 - 64x64 Texture Flipped, 0x42 - 8x8 Texture Flipped, 0x43 - 64x16 Texture Flipped, 0x44 - 32x8 Texture Flipped, 0x45 - 32x8 Texture, 0x46 - 64x64 Texture, 0x47 - 16x8 Texture, 0x48 - 32x32 Texture, 0x49 - 64x64 Texture Polar Flipped, 0x4a - 64x64 Texture Polar)
+	Texture				1
+		Page					1 bit
+		Texture				7 bits
+
+AnimatedEntry
+	Animated			1 bit
+	Reserved			3 bits
+	DataOffset			12 bits			(Starts on Page 3 / 0x18000)
+
+AnimatedData
+	FrameCount				1
+	Entry[FrameCount]		2
+		Type							1
+		Value						1

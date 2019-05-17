@@ -18,6 +18,10 @@ namespace StarFoxBrowser.Nodes
 		{
 			Nodes.Clear();
 
+			var surfaces = new TreeNode("Surfaces");
+
+			surfaces.Nodes.Add(new StarFoxSurface { Text = "Day", Resource = Resource, Offset = 0x18213 });
+
 			var palettes = new TreeNode("Palettes");
 
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a6a });
@@ -122,6 +126,7 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "Venom 3 Surface", Resource = Resource, Offset = 0x6e929 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Training", Resource = Resource, Offset = 0x6ee9a });
 
+			Nodes.Add(surfaces);
 			Nodes.Add(palettes);
 			Nodes.Add(models);
 			Nodes.Add(behaviors);

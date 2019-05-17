@@ -54,6 +54,8 @@
     </Compile>
     <Compile Include="Nodes\IndexList.cs" />
     <Compile Include="Nodes\StarFoxLevel.cs" />
+    <Compile Include="Nodes\StarFoxAnimatedSurface.cs" />
+    <Compile Include="Nodes\StarFoxSurface.cs" />
     <Compile Include="Nodes\StarFoxPalette2.cs" />
     <Compile Include="Nodes\StarFoxTexture.cs" />
     <Compile Include="Nodes\StarFoxPalette.cs" />
