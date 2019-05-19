@@ -23,7 +23,9 @@ namespace StarFoxBrowser.Nodes
 			{
 				stream.Position = Offset;
 
-				for(var entry = 0; entry < 128; entry++)
+				var frameCount = reader.ReadByte();
+
+				for (var entry = 0; entry < frameCount; entry++)
 				{
 					var value = reader.ReadByte();
 					var type = reader.ReadByte();
@@ -37,7 +39,8 @@ namespace StarFoxBrowser.Nodes
 					{
 						// Animated
 						var offset = (type & 0x0f) << 8 | value;
-						Nodes.Add("8x - Animated Surface (0x" + offset.ToString("X2") + ")");
+
+						Nodes.Add(new StarFoxAnimatedSurface { Text = "8x - Animated Surface (0x" + offset.ToString("X2") + ")", Resource = Resource, Offset = 0x18000 + offset });
 					}
 					else
 					{

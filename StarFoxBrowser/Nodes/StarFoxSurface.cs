@@ -37,6 +37,7 @@ namespace StarFoxBrowser.Nodes
 					{
 						// Animated
 						var offset = (type & 0x0f) << 8 | value;
+
 						Nodes.Add(new StarFoxAnimatedSurface { Text = "8x - Animated Surface (0x" + offset.ToString("X2") + ")", Resource = Resource, Offset = 0x18000 + offset });
 					}
 					else

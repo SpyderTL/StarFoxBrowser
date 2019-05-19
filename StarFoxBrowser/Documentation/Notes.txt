@@ -11,7 +11,7 @@ Animated		0x18000
 Palettes
 	Entry[256]			2
 		Type					1
-		Value				1
+		Value					1
 
 LightingEntry
 	Type					1		(0x00 - 0x09)
@@ -36,10 +36,10 @@ TextureEntry
 AnimatedEntry
 	Animated			1 bit
 	Reserved			3 bits
-	DataOffset			12 bits			(Starts on Page 3 / 0x18000)
+	DataOffset			12 bits			(Starts on Page 4 / 0x18000)
 
 AnimatedData
 	FrameCount				1
 	Entry[FrameCount]		2
 		Type							1
-		Value						1
+		Value							1
