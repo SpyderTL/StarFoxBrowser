@@ -105,14 +105,13 @@ namespace StarFoxBrowser.Nodes
 
 							var indeces = Enumerable.Range(0, triangleCount)
 								.Select(n => new int[] {
-									(int)reader.ReadByte(),
-									(int)reader.ReadByte(),
-									(int)reader.ReadByte()
+									reader.ReadByte(),
+									reader.ReadByte(),
+									reader.ReadByte()
 								})
 								.ToArray();
 
 							Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
-
 							break;
 
 						case 0x3c:
@@ -137,7 +136,9 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x14:
-							// Face
+							// Face Group
+							var faceGroup = new System.Windows.Forms.TreeNode("14 - Face Group");
+
 							while (true)
 							{
 								vertexCount = reader.ReadByte();
@@ -155,10 +156,10 @@ namespace StarFoxBrowser.Nodes
 									.Select(n => (int)reader.ReadByte())
 									.ToArray();
 
-								Nodes.Add(new Face { Text = "14 - Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+								faceGroup.Nodes.Add(new Face { Text = "Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
 							}
 
-							//Nodes.Add("14 - Face");
+							Nodes.Add(faceGroup);
 							break;
 
 						case 0x00:
