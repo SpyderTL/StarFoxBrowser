@@ -26,7 +26,7 @@ namespace StarFoxBrowser.Nodes
 				var bank = reader.ReadByte();
 				var faces = reader.ReadUInt16();
 
-				Nodes.Add(new Model { Text = "Model", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces });
+				Nodes.Add(new StarFoxModel { Text = "Model", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces });
 			}
 		}
 

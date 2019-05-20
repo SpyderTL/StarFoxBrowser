@@ -32,9 +32,10 @@
 			this.treeView = new System.Windows.Forms.TreeView();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.propertiesTab = new System.Windows.Forms.TabPage();
-			this.previewTab = new System.Windows.Forms.TabPage();
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.previewTab = new System.Windows.Forms.TabPage();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
+			this.panel = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -95,8 +96,17 @@
 			this.propertiesTab.Text = "Properties";
 			this.propertiesTab.UseVisualStyleBackColor = true;
 			// 
+			// propertyGrid
+			// 
+			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGrid.Location = new System.Drawing.Point(3, 3);
+			this.propertyGrid.Name = "propertyGrid";
+			this.propertyGrid.Size = new System.Drawing.Size(505, 529);
+			this.propertyGrid.TabIndex = 3;
+			// 
 			// previewTab
 			// 
+			this.previewTab.Controls.Add(this.panel);
 			this.previewTab.Controls.Add(this.pictureBox);
 			this.previewTab.Location = new System.Drawing.Point(4, 4);
 			this.previewTab.Name = "previewTab";
@@ -105,14 +115,6 @@
 			this.previewTab.TabIndex = 1;
 			this.previewTab.Text = "Preview";
 			this.previewTab.UseVisualStyleBackColor = true;
-			// 
-			// propertyGrid
-			// 
-			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGrid.Location = new System.Drawing.Point(3, 3);
-			this.propertyGrid.Name = "propertyGrid";
-			this.propertyGrid.Size = new System.Drawing.Size(505, 529);
-			this.propertyGrid.TabIndex = 3;
 			// 
 			// pictureBox
 			// 
@@ -123,6 +125,14 @@
 			this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox.TabIndex = 3;
 			this.pictureBox.TabStop = false;
+			// 
+			// panel
+			// 
+			this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel.Location = new System.Drawing.Point(3, 3);
+			this.panel.Name = "panel";
+			this.panel.Size = new System.Drawing.Size(505, 529);
+			this.panel.TabIndex = 4;
 			// 
 			// BrowserForm
 			// 
@@ -154,6 +164,7 @@
 		private System.Windows.Forms.TabPage previewTab;
 		private System.Windows.Forms.PropertyGrid propertyGrid;
 		private System.Windows.Forms.PictureBox pictureBox;
+		private System.Windows.Forms.Panel panel;
 	}
 }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class Model : DataNode
+	public class StarFoxModel : DataNode
 	{
 		public string Resource;
 		public int Offset;
@@ -65,21 +65,19 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x1c:
 							// Animation
-
 							var frameCount = reader.ReadByte();
 							var frameOffsets = Enumerable.Range(0, frameCount)
 								.Select(n => reader.ReadInt16())
 								.ToArray();
 
-							Nodes.Add("1C - Animation");
+							Nodes.Add(new Animation { Text = "1C - Animation", Offsets = frameOffsets  });
 							break;
 
 						case 0x20:
 							// Jump
-
 							var offset = reader.ReadInt16();
 
-							Nodes.Add("20 - Jump");
+							Nodes.Add("20 - Jump (" + offset.ToString() + ")");
 							break;
 
 						case 0x34:
@@ -105,12 +103,37 @@ namespace StarFoxBrowser.Nodes
 							// Triangle List
 							var triangleCount = reader.ReadByte();
 
-							var indeces = Enumerable.Range(0, triangleCount * 3)
-								.Select(n => (int)reader.ReadByte())
+							var indeces = Enumerable.Range(0, triangleCount)
+								.Select(n => new int[] {
+									(int)reader.ReadByte(),
+									(int)reader.ReadByte(),
+									(int)reader.ReadByte()
+								})
 								.ToArray();
 
 							Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
 
+							break;
+
+						case 0x3c:
+							// Start BSP Tree
+							Nodes.Add("3C - Start BSP Tree");
+							break;
+
+						case 0x28:
+							// BSP Tree Node
+							var triangle = reader.ReadByte();
+							var faceGroupOffset = reader.ReadUInt16();
+							var branchOffset = reader.ReadByte();
+
+							Nodes.Add(new BspTreeNode { Text = "28 - BSP Tree Node", Triangle = triangle, FaceGroupOffset = faceGroupOffset, BranchOffset = branchOffset });
+							break;
+
+						case 0x44:
+							// BSP Tree Leaf
+							faceGroupOffset = reader.ReadUInt16();
+
+							Nodes.Add("28 - BSP Tree Leaf (" + faceGroupOffset +")");
 							break;
 
 						case 0x14:
@@ -131,30 +154,11 @@ namespace StarFoxBrowser.Nodes
 								var vertices = Enumerable.Range(0, vertexCount)
 									.Select(n => (int)reader.ReadByte())
 									.ToArray();
+
+								Nodes.Add(new Face { Text = "14 - Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
 							}
 
-							Nodes.Add("14 - Face");
-							break;
-
-						case 0x3c:
-							// Start BSP Tree
-							Nodes.Add("3C - Start BSP Tree");
-							break;
-
-						case 0x28:
-							// BSP Tree Node
-							var triangle = reader.ReadByte();
-							var faceGroupOffset = reader.ReadUInt16();
-							var branchOffset = reader.ReadByte();
-
-							Nodes.Add("28 - BSP Tree Node");
-							break;
-
-						case 0x44:
-							// BSP Tree Leaf
-							faceGroupOffset = reader.ReadUInt16();
-
-							Nodes.Add("28 - BSP Tree Leaf");
+							//Nodes.Add("14 - Face");
 							break;
 
 						case 0x00:
@@ -173,7 +177,7 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			return null;
+			return new Models.Model();
 		}
 	}
 }

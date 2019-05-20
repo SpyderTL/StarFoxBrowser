@@ -8,9 +8,14 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class IndexList : DataNode
+	public class Face : DataNode
 	{
-		public int[][] Indeces;
+		public byte FaceNumber;
+		public byte ColorNumber;
+		public sbyte NormalX;
+		public sbyte NormalY;
+		public sbyte NormalZ;
+		public int[] Vertices;
 
 		public override void Reload()
 		{
@@ -19,7 +24,7 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			return Indeces;
+			return new { FaceNumber, ColorNumber, NormalX, NormalY, NormalZ, Vertices };
 		}
 	}
 }

@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class IndexList : DataNode
+	public class BspTreeNode : DataNode
 	{
-		public int[][] Indeces;
+		public byte Triangle;
+		public ushort FaceGroupOffset;
+		public byte BranchOffset;
 
 		public override void Reload()
 		{
@@ -19,7 +21,7 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			return Indeces;
+			return new { Triangle, FaceGroupOffset, BranchOffset };
 		}
 	}
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class IndexList : DataNode
+	public class Animation : DataNode
 	{
-		public int[][] Indeces;
+		public short[] Offsets;
 
 		public override void Reload()
 		{
@@ -19,7 +19,7 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			return Indeces;
+			return Offsets;
 		}
 	}
 }

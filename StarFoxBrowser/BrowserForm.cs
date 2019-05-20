@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SharpDX.Direct3D9;
+using SharpDX.Mathematics.Interop;
+using StarFoxBrowser.Models;
 using StarFoxBrowser.Nodes;
 
 namespace StarFoxBrowser
 {
 	public partial class BrowserForm : Form
 	{
+		Model SelectedModel = null;
+
 		public BrowserForm()
 		{
 			InitializeComponent();
@@ -39,14 +44,46 @@ namespace StarFoxBrowser
 				if (propertyGrid.SelectedObject is Bitmap)
 				{
 					pictureBox.Image = (Bitmap)propertyGrid.SelectedObject;
-					//pictureBox.Show();
+					panel.Hide();
+					SelectedModel = null;
+				}
+				else if (propertyGrid.SelectedObject is Model)
+				{
+					pictureBox.Image = null;
+					SelectedModel = (Model)propertyGrid.SelectedObject;
+					DrawModel();
+					panel.Show();
 				}
 				else
 				{
-					//pictureBox.Hide();
 					pictureBox.Image = null;
+					panel.Hide();
+					SelectedModel = null;
 				}
 			}
+			else
+				propertyGrid.SelectedObject = null;
+		}
+
+		private void DrawModel()
+		{
+			var d3d = new Direct3D();
+
+			var device = new Device(d3d, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(panel.ClientSize.Width, panel.ClientSize.Height));
+
+			device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.Black, 1.0f, 0);
+			device.BeginScene();
+
+			//device.VertexDeclaration = SelectedModel.VertexDeclaration;
+			//device.SetStreamSource(0, SelectedModel.VertexBuffer, 0, 12);
+
+			//device.DrawIndexedUserPrimitives(
+
+			device.EndScene();
+			device.Present();
+
+			device.Dispose();
+			d3d.Dispose();
 		}
 	}
 }
