@@ -141,7 +141,7 @@ technique Main {
 
 		private void DrawModel()
 		{
-			Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.DarkGray, 1.0f, 0);
+			Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.Black, 1.0f, 0);
 			Device.BeginScene();
 
 			//effect.Technique = effect.GetTechnique(0);

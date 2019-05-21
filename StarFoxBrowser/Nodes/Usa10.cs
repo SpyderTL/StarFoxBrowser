@@ -25,7 +25,7 @@ namespace StarFoxBrowser.Nodes
 			surfaces.Nodes.Add(new StarFoxSurface { Text = "Day", Resource = Resource, Offset = 0x182ed });
 			surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x183c1 });
 			surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x18481 });
-			surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x18af1 });
+			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x18af1 });
 
 			var palettes = new TreeNode("Palettes");
 

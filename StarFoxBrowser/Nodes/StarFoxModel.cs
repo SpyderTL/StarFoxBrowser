@@ -188,6 +188,171 @@ namespace StarFoxBrowser.Nodes
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
+				// Load Colors
+				stream.Position = 0x18aca;
+				//stream.Position = 0x18b0a;
+				//stream.Position = 0x18b0a;
+
+				var palette = Enumerable.Range(0, 16)
+					.Select(n => reader.ReadUInt16())
+					//.Select(n => new Vector4((n & 0x1f) / (float)0x1f, (n >> 5 & 0x1f) / (float)0x1f, (n >> 10) / (float)0x1f, 1.0f ))
+					.Select(n => new Vector4((n >> 10) / (float)0x1f, ((n >> 5) & 0x1f) / (float)0x1f, (n & 0x1f) / (float)0x1f, 1.0f))
+					.ToArray();
+
+				// Load Lighting
+				stream.Position = 0x18e0a;
+
+				var lighting = Enumerable.Range(0, 400)
+					.Select(n => reader.ReadByte())
+					.Select(n => (palette[n & 0x0f] + palette[n >> 4]) * 0.5f)
+					.ToArray();
+
+				// Load Dynamic
+				stream.Position = 0x18b8a;
+
+				var dynamic = Enumerable.Range(0, 32)
+					.Select(n => reader.ReadByte())
+					.Select(n => (palette[n & 0x0f] + palette[n >> 4]) * 0.5f)
+					.ToArray();
+
+				stream.Position = 0x182ed;
+
+				var colors = new Vector4[109];
+
+				for (var entry = 0; entry < 109; entry++)
+				{
+					var value = reader.ReadByte();
+					var type = reader.ReadByte();
+
+					if ((type & 0xf0) == 0x00)
+					{
+						// Lighting
+						//Nodes.Add(type.ToString("X2") + " - Lighting Surface (" + value + ")");
+
+						colors[entry] = lighting[value];
+					}
+					else if ((type & 0x80) != 0x00)
+					{
+						// Animated
+						var offset = (type & 0x0f) << 8 | value;
+
+						var position = reader.BaseStream.Position;
+
+						reader.BaseStream.Position = 0x18000 + offset;
+
+						var frameCount = reader.ReadByte();
+
+						reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
+
+						var value2 = reader.ReadByte();
+						var type2 = reader.ReadByte();
+
+						switch (type2)
+						{
+							case 0x3e:
+								// Dynamic Color
+								//Nodes.Add("3E - Dynamic Color (" + value2 + ")");
+								colors[entry] = dynamic[value2];
+								break;
+
+							case 0x3f:
+								// Stipple Color
+								//Nodes.Add("3F - Stipple Color (" + (value2 & 0xf) + ", " + ((value2 & 0xf0) >> 4) + ")");
+								colors[entry] = (palette[value2 & 0xf] + palette[value2 >> 4]) * 0.5f;
+								break;
+
+							default:
+								colors[entry] = palette[14];
+								break;
+						}
+
+						reader.BaseStream.Position = position;
+					}
+					else
+					{
+						switch (type)
+						{
+							case 0x3e:
+								// Dynamic Color
+								//Nodes.Add("3E - Dynamic Color (" + value + ")");
+								colors[entry] = dynamic[value];
+								break;
+
+							case 0x3f:
+								// Stipple Color
+								//Nodes.Add("3F - Stipple Color (" + (value & 0xf) + ", " + ((value & 0xf0) >> 4) + ")");
+								colors[entry] = (palette[value & 0xf] + palette[value >> 4]) * 0.5f;
+								break;
+
+							case 0x40:
+								// 32x32 Texture Flipped
+								//Nodes.Add("40 - 32x32 Texture Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x41:
+								// 64x64 Texture Flipped
+								//Nodes.Add("41 - 64x64 Texture Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x42:
+								// 8x8 Texture Flipped
+								//Nodes.Add("42 - 8x8 Texture Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x43:
+								// 64x16 Texture Flipped
+								//Nodes.Add("43 - 64x16 Texture Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x44:
+								// 32x8 Texture Flipped
+								//Nodes.Add("44 - 32x8 Texture Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x45:
+								// 32x8 Texture
+								//Nodes.Add("45 - 32x8 Texture (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x46:
+								// 64x64 Texture
+								//Nodes.Add("46 - 64x64 Texture (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x47:
+								// 16x8 Texture
+								//Nodes.Add("47 - 16x8 Texture (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x48:
+								// 32x32 Texture
+								//Nodes.Add("48 - 32x32 Texture (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x49:
+								// 64x64 Texture Polar Flipped
+								//Nodes.Add("49 - 64x64 Texture Polar Flipped (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+
+							case 0x4a:
+								// 64x64 Texture Polar
+								//Nodes.Add("4a - 64x64 Texture Polar (" + value + ")");
+								colors[entry] = palette[14];
+								break;
+						}
+					}
+				}
+
 				stream.Position = Offset;
 
 				var read = true;
@@ -230,30 +395,17 @@ namespace StarFoxBrowser.Nodes
 								vectors.Add(new Vector4(vertex.X, -vertex.Y, -vertex.Z, 1));
 								vectors.Add(new Vector4(-vertex.X, -vertex.Y, -vertex.Z, 1));
 							}
-
-							//vectors.AddRange(vertices.Select(x => new Vector4(-x.X, -x.Y, -x.Z, 1)));
-							//vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
 							break;
 
 						case 0x1c:
 							// Animation
 							var frameCount = reader.ReadByte();
 
-							reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 5) % frameCount) * 2, SeekOrigin.Current);
+							reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
 
 							var offset = reader.ReadInt16();
 
 							reader.BaseStream.Seek(offset - 1, SeekOrigin.Current);
-
-							//var position = reader.BaseStream.Position;
-
-							//var frameOffsets = Enumerable.Range(0, frameCount)
-							//	.Select(n => reader.ReadInt16())
-							//	.ToArray();
-
-							//reader.BaseStream.Position = position + frameOffsets[1] + 1;
-							//reader.BaseStream.Seek(frameOffsets[0], SeekOrigin.Current);
-							//reader.BaseStream.Seek(frameOffsets[(int)DateTime.Now.TimeOfDay.TotalSeconds % frameCount] - 1, SeekOrigin.Current);
 							break;
 
 						case 0x20:
@@ -339,7 +491,7 @@ namespace StarFoxBrowser.Nodes
 											Vertices = vectors.Select(x => new Models.Vertex
 											{
 												Position = x,
-												Color = Vector4.One
+												Color = colors[colorNumber]
 											}).ToArray()
 										});
 										break;
@@ -353,7 +505,7 @@ namespace StarFoxBrowser.Nodes
 											Vertices = vectors.Select(x => new Models.Vertex
 											{
 												Position = x,
-												Color = Vector4.One
+												Color = colors[colorNumber]
 											}).ToArray()
 										});
 										break;
@@ -367,7 +519,7 @@ namespace StarFoxBrowser.Nodes
 											Vertices = vectors.Select(x => new Models.Vertex
 											{
 												Position = x,
-												Color = new Vector4(Math.Abs(normalX) / 255.0f, Math.Abs(normalY) / 255.0f, Math.Abs(normalZ) / 255.0f, 1.0f)
+												Color = colors[colorNumber]
 											}).ToArray()
 										});
 										break;
@@ -381,7 +533,7 @@ namespace StarFoxBrowser.Nodes
 											Vertices = vectors.Select(x => new Models.Vertex
 											{
 												Position = x,
-												Color = new Vector4(Math.Abs(normalX) / 255.0f, Math.Abs(normalY) / 255.0f, Math.Abs(normalZ) / 255.0f, 1.0f)
+												Color = colors[colorNumber]
 											}).ToArray()
 										});
 										break;
