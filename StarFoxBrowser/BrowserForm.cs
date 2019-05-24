@@ -153,7 +153,7 @@ technique Main {
 			var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
 
 			var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 1000);
-			var view = Matrix.LookAtLH(new Vector3(0, 20, -100), Vector3.Zero, Vector3.UnitY);
+			var view = Matrix.LookAtLH(new Vector3(0, 40, -150), Vector3.Zero, Vector3.UnitY);
 
 			// Draw Model
 			Device.VertexDeclaration = VertexDeclaration;

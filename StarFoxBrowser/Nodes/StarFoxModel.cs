@@ -13,6 +13,8 @@ namespace StarFoxBrowser.Nodes
 	{
 		public string Resource;
 		public int Offset;
+		public int PaletteOffset;
+		public int SurfaceOffset;
 
 		public override void Reload()
 		{
@@ -189,14 +191,14 @@ namespace StarFoxBrowser.Nodes
 			using (var reader = new BinaryReader(stream))
 			{
 				// Load Colors
-				stream.Position = 0x18aca;
-				//stream.Position = 0x18b0a;
+				stream.Position = PaletteOffset;
+				//stream.Position = 0x18aca;
 				//stream.Position = 0x18b0a;
 
 				var palette = Enumerable.Range(0, 16)
 					.Select(n => reader.ReadUInt16())
-					//.Select(n => new Vector4((n & 0x1f) / (float)0x1f, (n >> 5 & 0x1f) / (float)0x1f, (n >> 10) / (float)0x1f, 1.0f ))
-					.Select(n => new Vector4((n >> 10) / (float)0x1f, ((n >> 5) & 0x1f) / (float)0x1f, (n & 0x1f) / (float)0x1f, 1.0f))
+					.Select(n => new Vector4((n & 0x1f) / (float)0x1f, (n >> 5 & 0x1f) / (float)0x1f, (n >> 10) / (float)0x1f, 1.0f))
+					//.Select(n => new Vector4((n >> 10) / (float)0x1f, ((n >> 5) & 0x1f) / (float)0x1f, (n & 0x1f) / (float)0x1f, 1.0f))
 					.ToArray();
 
 				// Load Lighting
@@ -215,7 +217,9 @@ namespace StarFoxBrowser.Nodes
 					.Select(n => (palette[n & 0x0f] + palette[n >> 4]) * 0.5f)
 					.ToArray();
 
-				stream.Position = 0x182ed;
+				//stream.Position = 0x182ed;
+				//stream.Position = 0x18213;
+				stream.Position = SurfaceOffset;
 
 				var colors = new Vector4[109];
 
@@ -242,7 +246,8 @@ namespace StarFoxBrowser.Nodes
 
 						var frameCount = reader.ReadByte();
 
-						reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
+						if(frameCount != 0)
+							reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
 
 						var value2 = reader.ReadByte();
 						var type2 = reader.ReadByte();
@@ -544,6 +549,28 @@ namespace StarFoxBrowser.Nodes
 						case 0x00:
 							// End Face Data
 							read = false;
+							break;
+
+						//case 0x01:
+						//	break;
+
+						case 0x05:
+							var unknown = reader.ReadBytes(8);
+							break;
+
+						case 0x08:
+							break;
+
+						case 0x0a:
+							break;
+
+						case 0x0b:
+							break;
+
+						case 0x40:
+							break;
+
+						case 0x78:
 							break;
 
 						default:

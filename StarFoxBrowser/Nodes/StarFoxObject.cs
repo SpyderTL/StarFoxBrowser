@@ -25,8 +25,22 @@ namespace StarFoxBrowser.Nodes
 				var verteces = reader.ReadUInt16();
 				var bank = reader.ReadByte();
 				var faces = reader.ReadUInt16();
+				var zPosition = reader.ReadInt16();
+				var scale = reader.ReadSByte();
+				var collisionInformation = reader.ReadUInt16();
+				var sizeX = reader.ReadInt16();
+				var sizeY = reader.ReadInt16();
+				var sizeZ = reader.ReadInt16();
+				var alignment = reader.ReadInt16();
+				var surface = reader.ReadUInt16();
+				var id1 = reader.ReadUInt16();
+				var id2 = reader.ReadUInt16();
+				var id3 = reader.ReadUInt16();
+				var id4 = reader.ReadUInt16();
 
-				Nodes.Add(new StarFoxModel { Text = "Model", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces });
+				Nodes.Add(new StarFoxModel { Text = "Space", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18aca, SurfaceOffset = 0x10000 + surface });
+				Nodes.Add(new StarFoxModel { Text = "Night", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18aea, SurfaceOffset = 0x10000 + surface });
+				Nodes.Add(new StarFoxModel { Text = "Day", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18b0a, SurfaceOffset = 0x10000 + surface });
 			}
 		}
 

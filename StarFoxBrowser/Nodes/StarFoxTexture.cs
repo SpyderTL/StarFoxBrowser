@@ -25,6 +25,14 @@ namespace StarFoxBrowser.Nodes
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
+				// Load Palette
+				stream.Position = 0x18b0a;
+
+				var palette = Enumerable.Range(0, 16)
+					.Select(n => reader.ReadUInt16())
+					.Select(n => Color.FromArgb((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3))
+					.ToArray();
+
 				stream.Position = Offset;
 
 				var bitmap = new Bitmap(256, 256);
@@ -40,7 +48,8 @@ namespace StarFoxBrowser.Nodes
 						else
 							value &= 0x0f;
 
-						bitmap.SetPixel(x, y, Color.FromArgb(value * 16, value * 16, value * 16));
+						//bitmap.SetPixel(x, y, Color.FromArgb(value * 16, value * 16, value * 16));
+						bitmap.SetPixel(x, y, palette[value]);
 					}
 				}
 
