@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +21,13 @@ namespace StarFoxBrowser
 	{
 		Direct3D Direct3D;
 		Device Device;
-		Effect Effect;
-		VertexDeclaration VertexDeclaration;
+		Effect ColorEffect;
+		Effect TextureEffect;
+		VertexDeclaration ColorVertexDeclaration;
+		VertexDeclaration TextureVertexDeclaration;
+		Texture Texture1;
+		Texture Texture2;
+
 		Model SelectedModel = null;
 		Timer Timer;
 
@@ -32,7 +39,7 @@ namespace StarFoxBrowser
 
 			Device = new Device(Direct3D, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(panel.ClientSize.Width, panel.ClientSize.Height));
 
-			Effect = Effect.FromString(Device, @"
+			ColorEffect = Effect.FromString(Device, @"
 float4x4 worldViewProjection;
 
 struct VS_IN
@@ -75,7 +82,106 @@ technique Main {
 				VertexElement.VertexDeclarationEnd
 			};
 
-			VertexDeclaration = new VertexDeclaration(Device, vertexElements);
+			ColorVertexDeclaration = new VertexDeclaration(Device, vertexElements);
+
+			TextureEffect = Effect.FromString(Device, @"
+float4x4 worldViewProjection;
+texture currentTexture;
+sampler textureSampler = sampler_state
+{
+    Texture = currentTexture;
+    MipFilter = POINT;
+    MinFilter = POINT;
+    MagFilter = POINT;
+};
+
+struct VS_IN
+{
+	float4 position : POSITION;
+	float2 texturePosition : TEXCOORD;
+};
+
+struct PS_IN
+{
+	float4 position : POSITION;
+	float2 texturePosition : TEXCOORD;
+};
+
+PS_IN VS( VS_IN input)
+{
+	PS_IN output = (PS_IN)0;
+
+	output.position = mul(input.position,worldViewProjection);
+	output.texturePosition=input.texturePosition;
+
+	return output;
+}
+
+float4 PS( PS_IN input ) : SV_Target
+{
+	return tex2D(textureSampler, input.texturePosition);
+}
+
+technique Main { 
+ 	pass P0 { 
+ 		VertexShader = compile vs_2_0 VS(); 
+         PixelShader  = compile ps_2_0 PS();
+	}
+}", ShaderFlags.None);
+
+			vertexElements = new[] {
+				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+				VertexElement.VertexDeclarationEnd
+			};
+
+			TextureVertexDeclaration = new VertexDeclaration(Device, vertexElements);
+
+			Texture1 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			Texture2 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+
+			var rectangle1 = Texture1.LockRectangle(0, LockFlags.None, out DataStream stream1);
+			var rectangle2 = Texture2.LockRectangle(0, LockFlags.None, out DataStream stream2);
+
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StarFoxBrowser.Resources.StarFoxUsa10.bin"))
+			using (var reader = new BinaryReader(stream))
+			{
+				// Load Palette
+				stream.Position = 0x18b0a;
+
+				var palette = Enumerable.Range(0, 16)
+					.Select(n => reader.ReadUInt16())
+					.Select(n => new SharpDX.Color((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3, 255))
+					.ToArray();
+
+				palette[0] = SharpDX.Color.Transparent;
+
+				stream.Position = 0x90000;
+
+				for (var y = 0; y < 256; y++)
+				{
+					for (var x = 0; x < 256; x++)
+					{
+						var value = reader.ReadByte();
+
+						var texture1Value = value & 0x0f;
+						var texture2Value = value >> 4;
+
+						stream1.Write(palette[texture1Value].B);
+						stream1.Write(palette[texture1Value].G);
+						stream1.Write(palette[texture1Value].R);
+						stream1.Write(palette[texture1Value].A);
+
+						stream2.Write(palette[texture2Value].B);
+						stream2.Write(palette[texture2Value].G);
+						stream2.Write(palette[texture2Value].R);
+						stream2.Write(palette[texture2Value].A);
+					}
+				}
+			}
+
+			Texture1.UnlockRectangle(0);
+			Texture2.UnlockRectangle(0);
 
 			treeView.Nodes.Add(new Usa10
 			{
@@ -141,36 +247,69 @@ technique Main {
 
 		private void DrawModel()
 		{
-			Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.Black, 1.0f, 0);
-			Device.BeginScene();
+			Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, new SharpDX.Color(64, 32, 128, 255), 1.0f, 0);
 
-			//effect.Technique = effect.GetTechnique(0);
-			Effect.Begin(FX.DoNotSaveState);
+			if (SelectedModel != null)
+			{
+				Device.BeginScene();
 
-			Effect.BeginPass(0);
+				ColorEffect.Technique = ColorEffect.GetTechnique(0);
+				ColorEffect.Begin(FX.DoNotSaveState);
+				ColorEffect.BeginPass(0);
 
-			// Update Camera
-			var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
+				Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 
-			var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 1000);
-			var view = Matrix.LookAtLH(new Vector3(0, 40, -150), Vector3.Zero, Vector3.UnitY);
+				// Update Camera
+				var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
 
-			// Draw Model
-			Device.VertexDeclaration = VertexDeclaration;
+				var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 1000);
+				//var view = Matrix.LookAtLH(new Vector3(0, 80, -150), new Vector3(0, 50, 0), Vector3.UnitY);
+				var view = Matrix.LookAtLH(new Vector3(0, 0, -150), new Vector3(0, 50, 0), Vector3.UnitY);
 
-			//var world = Matrix.Identity;
-			var world = Matrix.RotationY((float)DateTime.Now.TimeOfDay.TotalSeconds);
+				// Draw Model
+				Device.VertexDeclaration = ColorVertexDeclaration;
 
-			var worldViewProjection = world * view * projection;
+				//var world = Matrix.Identity;
+				//var world = Matrix.RotationY(MathUtil.Pi);
+				var world = Matrix.RotationY((float)DateTime.Now.TimeOfDay.TotalSeconds);
 
-			Effect.SetValue("worldViewProjection", worldViewProjection);
+				var worldViewProjection = world * view * projection;
 
-			SelectedModel.Draw(Device);
+				ColorEffect.SetValue("worldViewProjection", worldViewProjection);
+				ColorEffect.CommitChanges();
 
-			Effect.EndPass();
-			Effect.End();
+				SelectedModel.DrawColor(Device);
 
-			Device.EndScene();
+				ColorEffect.EndPass();
+				ColorEffect.End();
+
+				TextureEffect.Technique = TextureEffect.GetTechnique(0);
+				TextureEffect.Begin(FX.DoNotSaveState);
+				TextureEffect.BeginPass(0);
+
+				Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+
+				Device.VertexDeclaration = TextureVertexDeclaration;
+
+				TextureEffect.SetValue("worldViewProjection", worldViewProjection);
+				TextureEffect.SetTexture("currentTexture", Texture1);
+				TextureEffect.CommitChanges();
+
+				SelectedModel.DrawTexture1(Device);
+
+				TextureEffect.SetTexture("currentTexture", Texture2);
+				TextureEffect.CommitChanges();
+
+				SelectedModel.DrawTexture2(Device);
+
+				TextureEffect.EndPass();
+				TextureEffect.End();
+
+				Device.EndScene();
+			}
+
 			Device.Present();
 		}
 	}

@@ -12,21 +12,22 @@ namespace StarFoxBrowser.Nodes
 	public class StarFoxModel : DataNode
 	{
 		public string Resource;
-		public int Offset;
+		public int VertexOffset;
+		public int FaceOffset;
 		public int PaletteOffset;
-		public int SurfaceOffset;
+		public int MaterialOffset;
 
 		public override void Reload()
 		{
 			Nodes.Clear();
 
-			if (Offset <= 0)
+			if (VertexOffset <= 0)
 				return;
 
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
-				stream.Position = Offset;
+				stream.Position = VertexOffset;
 
 				var read = true;
 
@@ -171,8 +172,38 @@ namespace StarFoxBrowser.Nodes
 							read = false;
 							break;
 
+						//case 0x01:
+						//Nodes.Add("00 - End Face Data");
+						//	break;
+
+						case 0x05:
+							var unknown = reader.ReadBytes(8);
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
+						case 0x08:
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
+						case 0x0a:
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
+						case 0x0b:
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
+						case 0x40:
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
+						case 0x78:
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+							break;
+
 						default:
 							read = false;
+							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
 							break;
 					}
 				}
@@ -181,24 +212,23 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			if (Offset <= 0)
+			if (VertexOffset <= 0)
 				return null;
 
 			var vectors = new List<Vector4>();
-			var faces = new List<Models.Face>();
+			var colorFaces = new List<Models.ColorFace>();
+			var texture1Faces = new List<Models.TextureFace>();
+			var texture2Faces = new List<Models.TextureFace>();
 
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
 				// Load Colors
 				stream.Position = PaletteOffset;
-				//stream.Position = 0x18aca;
-				//stream.Position = 0x18b0a;
 
 				var palette = Enumerable.Range(0, 16)
 					.Select(n => reader.ReadUInt16())
 					.Select(n => new Vector4((n & 0x1f) / (float)0x1f, (n >> 5 & 0x1f) / (float)0x1f, (n >> 10) / (float)0x1f, 1.0f))
-					//.Select(n => new Vector4((n >> 10) / (float)0x1f, ((n >> 5) & 0x1f) / (float)0x1f, (n & 0x1f) / (float)0x1f, 1.0f))
 					.ToArray();
 
 				// Load Lighting
@@ -217,11 +247,12 @@ namespace StarFoxBrowser.Nodes
 					.Select(n => (palette[n & 0x0f] + palette[n >> 4]) * 0.5f)
 					.ToArray();
 
-				//stream.Position = 0x182ed;
-				//stream.Position = 0x18213;
-				stream.Position = SurfaceOffset;
+				stream.Position = MaterialOffset;
 
 				var colors = new Vector4[109];
+				var textures = new Vector2[109][];
+				var texturePages = new byte?[109];
+				var frame = (int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d);
 
 				for (var entry = 0; entry < 109; entry++)
 				{
@@ -231,8 +262,6 @@ namespace StarFoxBrowser.Nodes
 					if ((type & 0xf0) == 0x00)
 					{
 						// Lighting
-						//Nodes.Add(type.ToString("X2") + " - Lighting Surface (" + value + ")");
-
 						colors[entry] = lighting[value];
 					}
 					else if ((type & 0x80) != 0x00)
@@ -246,8 +275,8 @@ namespace StarFoxBrowser.Nodes
 
 						var frameCount = reader.ReadByte();
 
-						if(frameCount != 0)
-							reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
+						if (frameCount != 0)
+							reader.BaseStream.Seek((frame % frameCount) * 2, SeekOrigin.Current);
 
 						var value2 = reader.ReadByte();
 						var type2 = reader.ReadByte();
@@ -256,14 +285,273 @@ namespace StarFoxBrowser.Nodes
 						{
 							case 0x3e:
 								// Dynamic Color
-								//Nodes.Add("3E - Dynamic Color (" + value2 + ")");
 								colors[entry] = dynamic[value2];
 								break;
 
 							case 0x3f:
 								// Stipple Color
-								//Nodes.Add("3F - Stipple Color (" + (value2 & 0xf) + ", " + ((value2 & 0xf0) >> 4) + ")");
 								colors[entry] = (palette[value2 & 0xf] + palette[value2 >> 4]) * 0.5f;
+								break;
+
+							case 0x40:
+								// 32x32 Texture Flipped
+								var width = 32;
+								var height = 32;
+								var page = value2 >> 7;
+								var columns = 256 / width;
+								var rows = 256 / height;
+								var column = (value2 & 0x7f) % columns;
+								var row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+								//textures[entry] = new Vector2[]
+								//{
+								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+								//};
+								//texturePages[entry] = (byte)page;
+								//break;
+
+							case 0x41:
+								// 64x64 Texture Flipped
+								width = 64;
+								height = 64;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+								//textures[entry] = new Vector2[]
+								//{
+								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+								//};
+								//texturePages[entry] = (byte)page;
+								//break;
+
+							case 0x42:
+								// 8x8 Texture Flipped
+								width = 8;
+								height = 8;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x43:
+								// 64x16 Texture Flipped
+								width = 64;
+								height = 16;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x44:
+								// 32x8 Texture Flipped
+								width = 64;
+								height = 16;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x45:
+								// 32x8 Texture
+								width = 32;
+								height = 8;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x46:
+								// 64x64 Texture
+								width = 64;
+								height = 64;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							//textures[entry] = new Vector2[]
+							//{
+							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+							//};
+							//texturePages[entry] = (byte)page;
+							//break;
+
+							case 0x47:
+								// 16x8 Texture
+								width = 16;
+								height = 8;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x48:
+								// 32x32 Texture
+								width = 32;
+								height = 32;
+								page = value2 >> 7;
+
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+								//textures[entry] = new Vector2[]
+							//{
+							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
+							//};
+							//texturePages[entry] = (byte)page;
+							//break;
+
+							case 0x49:
+								// 64x64 Texture Polar Flipped
+								width = 64;
+								height = 64;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x4a:
+								// 64x64 Texture Polar
+								width = 64;
+								height = 64;
+								page = value2 >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value2 & 0x7f) % columns;
+								row = (value2 & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							default:
@@ -279,86 +567,278 @@ namespace StarFoxBrowser.Nodes
 						{
 							case 0x3e:
 								// Dynamic Color
-								//Nodes.Add("3E - Dynamic Color (" + value + ")");
 								colors[entry] = dynamic[value];
 								break;
 
 							case 0x3f:
 								// Stipple Color
-								//Nodes.Add("3F - Stipple Color (" + (value & 0xf) + ", " + ((value & 0xf0) >> 4) + ")");
 								colors[entry] = (palette[value & 0xf] + palette[value >> 4]) * 0.5f;
 								break;
 
 							case 0x40:
 								// 32x32 Texture Flipped
-								//Nodes.Add("40 - 32x32 Texture Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								var width = 32;
+								var height = 32;
+								var page = value >> 7;
+								var columns = 256 / width;
+								var rows = 256 / height;
+								var column = (value & 0x7f) % columns;
+								var row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
+
+							//textures[entry] = new Vector2[]
+							//{
+							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+							//};
+							//texturePages[entry] = (byte)page;
+							//break;
 
 							case 0x41:
 								// 64x64 Texture Flipped
-								//Nodes.Add("41 - 64x64 Texture Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 64;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
+
+								//textures[entry] = new Vector2[]
+								//{
+								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+								//};
+								//texturePages[entry] = (byte)page;
+								//break;
 
 							case 0x42:
 								// 8x8 Texture Flipped
-								//Nodes.Add("42 - 8x8 Texture Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								width = 8;
+								height = 8;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x43:
 								// 64x16 Texture Flipped
-								//Nodes.Add("43 - 64x16 Texture Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 16;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x44:
 								// 32x8 Texture Flipped
-								//Nodes.Add("44 - 32x8 Texture Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 16;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x45:
 								// 32x8 Texture
-								//Nodes.Add("45 - 32x8 Texture (" + value + ")");
-								colors[entry] = palette[14];
+								width = 32;
+								height = 8;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x46:
 								// 64x64 Texture
-								//Nodes.Add("46 - 64x64 Texture (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 64;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
+
+							//textures[entry] = new Vector2[]
+							//{
+							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+							//};
+							//texturePages[entry] = (byte)page;
+							//break;
 
 							case 0x47:
 								// 16x8 Texture
-								//Nodes.Add("47 - 16x8 Texture (" + value + ")");
-								colors[entry] = palette[14];
+								width = 16;
+								height = 8;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x48:
 								// 32x32 Texture
-								//Nodes.Add("48 - 32x32 Texture (" + value + ")");
-								colors[entry] = palette[14];
+								width = 32;
+								height = 32;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
+
+								//textures[entry] = new Vector2[]
+								//{
+								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
+								//};
+								//texturePages[entry] = (byte)page;
+								//break;
 
 							case 0x49:
 								// 64x64 Texture Polar Flipped
-								//Nodes.Add("49 - 64x64 Texture Polar Flipped (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 64;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 
 							case 0x4a:
 								// 64x64 Texture Polar
-								//Nodes.Add("4a - 64x64 Texture Polar (" + value + ")");
-								colors[entry] = palette[14];
+								width = 64;
+								height = 64;
+								page = value >> 7;
+								columns = 256 / width;
+								rows = 256 / height;
+								column = (value & 0x7f) % columns;
+								row = (value & 0x7f) / columns;
+
+								textures[entry] = new Vector2[]
+								{
+									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
+									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+								};
+								texturePages[entry] = (byte)page;
 								break;
 						}
 					}
 				}
 
-				stream.Position = Offset;
+				stream.Position = VertexOffset;
 
 				var read = true;
 
@@ -406,7 +886,7 @@ namespace StarFoxBrowser.Nodes
 							// Animation
 							var frameCount = reader.ReadByte();
 
-							reader.BaseStream.Seek(((int)(DateTime.Now.TimeOfDay.TotalSeconds * 15.0d) % frameCount) * 2, SeekOrigin.Current);
+							reader.BaseStream.Seek((frame % frameCount) * 2, SeekOrigin.Current);
 
 							var offset = reader.ReadInt16();
 
@@ -435,8 +915,25 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x0c:
+							read = false;
 							break;
 
+						default:
+							read = false;
+							break;
+					}
+				}
+
+				stream.Position = FaceOffset;
+
+				read = true;
+
+				while (read)
+				{
+					var listType = reader.ReadByte();
+
+					switch (listType)
+					{
 						case 0x30:
 							// Triangle List
 							var triangleCount = reader.ReadByte();
@@ -470,7 +967,7 @@ namespace StarFoxBrowser.Nodes
 							// Face Group
 							while (true)
 							{
-								vertexCount = reader.ReadByte();
+								var vertexCount = reader.ReadByte();
 
 								if (vertexCount == 0xff || vertexCount == 0xfe)
 									break;
@@ -488,9 +985,9 @@ namespace StarFoxBrowser.Nodes
 								switch (vertexCount)
 								{
 									case 1:
-										faces.Add(new Models.Face
+										colorFaces.Add(new Models.ColorFace
 										{
-											Indices = indices.ToArray(),
+											Indices = indices,
 											PrimitiveCount = 1,
 											PrimitiveType = SharpDX.Direct3D9.PrimitiveType.PointList,
 											Vertices = vectors.Select(x => new Models.Vertex
@@ -502,9 +999,9 @@ namespace StarFoxBrowser.Nodes
 										break;
 
 									case 2:
-										faces.Add(new Models.Face
+										colorFaces.Add(new Models.ColorFace
 										{
-											Indices = indices.ToArray(),
+											Indices = indices,
 											PrimitiveCount = 1,
 											PrimitiveType = SharpDX.Direct3D9.PrimitiveType.LineList,
 											Vertices = vectors.Select(x => new Models.Vertex
@@ -515,32 +1012,61 @@ namespace StarFoxBrowser.Nodes
 										});
 										break;
 
-									case 3:
-										faces.Add(new Models.Face
-										{
-											Indices = indices.ToArray(),
-											PrimitiveCount = 1,
-											PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleStrip,
-											Vertices = vectors.Select(x => new Models.Vertex
-											{
-												Position = x,
-												Color = colors[colorNumber]
-											}).ToArray()
-										});
-										break;
-
 									default:
-										faces.Add(new Models.Face
+										if (texturePages[colorNumber] == null)
 										{
-											Indices = indices.ToArray(),
-											PrimitiveCount = vertexCount - 2,
-											PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
-											Vertices = vectors.Select(x => new Models.Vertex
+											colorFaces.Add(new Models.ColorFace
 											{
-												Position = x,
-												Color = colors[colorNumber]
-											}).ToArray()
-										});
+												Indices = indices,
+												PrimitiveCount = vertexCount - 2,
+												PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+												Vertices = vectors.Select(x => new Models.Vertex
+												{
+													Position = x,
+													Color = colors[colorNumber]
+												}).ToArray()
+											});
+										}
+										else if (texturePages[colorNumber] == 0)
+										{
+											texture1Faces.Add(new Models.TextureFace
+											{
+												Indices = Enumerable.Range(0, indices.Length).ToArray(),
+												//Indices = indices,
+												PrimitiveCount = vertexCount - 2,
+												PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+												Vertices = indices.Select((x, i) => new Models.TextureVertex
+												{
+													Position = vectors[x % vectors.Count],
+													TexturePosition = textures[colorNumber][i]
+												}).ToArray()
+												//Vertices = vectors.Select((vector, index) => new Models.TextureVertex
+												//{
+												//	Position = vector,
+												//	TexturePosition = textures[colorNumber][index % 4]
+												//}).ToArray()
+											});
+										}
+										else
+										{
+											texture2Faces.Add(new Models.TextureFace
+											{
+												Indices = Enumerable.Range(0, indices.Length).ToArray(),
+												//Indices = indices,
+												PrimitiveCount = vertexCount - 2,
+												PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+												Vertices = indices.Select((x, i) => new Models.TextureVertex
+												{
+													Position = vectors[x % vectors.Count],
+													TexturePosition = textures[colorNumber][i]
+												}).ToArray()
+												//Vertices = vectors.Select((vector, index) => new Models.TextureVertex
+												//{
+												//	Position = vector,
+												//	TexturePosition = textures[colorNumber][index % 4]
+												//}).ToArray()
+											});
+										}
 										break;
 								}
 							}
@@ -581,9 +1107,277 @@ namespace StarFoxBrowser.Nodes
 
 				return new Models.Model
 				{
-					Faces = faces.ToArray()
+					ColorFaces = colorFaces.ToArray(),
+					Texture1Faces = texture1Faces.ToArray(),
+					Texture2Faces = texture2Faces.ToArray()
 				};
 			}
 		}
+
+		private readonly Vector2[] TexturePositions = new Vector2[]
+		{
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			// Fox Logo
+			new Vector2(6 * (32.0f / 256), 0 * (32.0f / 256)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			// Nova Bomb 1
+			new Vector2(1 * (32.0f / 256), 3 * (32.0f / 256)),
+			// Nova Bomb 2
+			new Vector2(2 * (32.0f / 256), 3 * (32.0f / 256)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			// Nova Bomb 3
+			new Vector2(4 * (32.0f / 256), 3 * (32.0f / 256)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			// Andross
+			new Vector2(3 * (64.0f / 256), 0 * (64.0f / 256)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			// Black Hole
+			new Vector2(2 * (32.0f / 256), 5 * (32.0f / 256)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		};
 	}
 }

@@ -32,15 +32,15 @@ namespace StarFoxBrowser.Nodes
 				var sizeY = reader.ReadInt16();
 				var sizeZ = reader.ReadInt16();
 				var alignment = reader.ReadInt16();
-				var surface = reader.ReadUInt16();
+				var material = reader.ReadUInt16();
 				var id1 = reader.ReadUInt16();
 				var id2 = reader.ReadUInt16();
 				var id3 = reader.ReadUInt16();
 				var id4 = reader.ReadUInt16();
 
-				Nodes.Add(new StarFoxModel { Text = "Space", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18aca, SurfaceOffset = 0x10000 + surface });
-				Nodes.Add(new StarFoxModel { Text = "Night", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18aea, SurfaceOffset = 0x10000 + surface });
-				Nodes.Add(new StarFoxModel { Text = "Day", Resource = Resource, Offset = ((bank - 1) * 0x8000) + verteces, PaletteOffset = 0x18b0a, SurfaceOffset = 0x10000 + surface });
+				Nodes.Add(new StarFoxModel { Text = "Space", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aca, MaterialOffset = 0x10000 + material });
+				Nodes.Add(new StarFoxModel { Text = "Night", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aea, MaterialOffset = 0x10000 + material });
+				Nodes.Add(new StarFoxModel { Text = "Day", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18b0a, MaterialOffset = 0x10000 + material });
 			}
 		}
 
@@ -61,7 +61,7 @@ namespace StarFoxBrowser.Nodes
 				var sizeY = reader.ReadInt16();
 				var sizeZ = reader.ReadInt16();
 				var alignment = reader.ReadInt16();
-				var palette = reader.ReadUInt16();
+				var material = reader.ReadUInt16();
 				var id1 = reader.ReadUInt16();
 				var id2 = reader.ReadUInt16();
 				var id3 = reader.ReadUInt16();
@@ -79,7 +79,7 @@ namespace StarFoxBrowser.Nodes
 					SizeY = sizeY,
 					SizeZ = sizeZ,
 					Alignment = alignment,
-					Palette = palette,
+					Material = material,
 					ID1 = id1,
 					ID2 = id2,
 					ID3 = id3,

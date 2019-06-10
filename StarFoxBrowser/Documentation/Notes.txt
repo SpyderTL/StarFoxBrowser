@@ -43,3 +43,32 @@ AnimatedData
 	Entry[FrameCount]		2
 		Type							1
 		Value							1
+
+
+Audio Clips
+
+SPC Transfer Block
+	Length			2
+	Destination		2
+	Data[Length]
+
+104 Title Demonstration
+	Directory	0xc28c6
+
+105 Title Screen
+	Directory	0xdb5c2
+
+106 Controls
+	Directory	0xc28c6
+
+107 Course Map Select
+	Directory	0xc28c6
+
+108 Emergency Call
+	Directory	0xd1282
+
+109 Corneria
+	Directory	0xc28c6
+
+
+
