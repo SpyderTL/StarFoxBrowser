@@ -193,12 +193,49 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "Venom 3 Surface", Resource = Resource, Offset = 0x6e929 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Training", Resource = Resource, Offset = 0x6ee9a });
 
+			var audioClips = new TreeNode("Audio Clips");
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3a64", Resource = Resource, Offset = 0xc3a64 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3fc5", Resource = Resource, Offset = 0xc3fc5 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c4589", Resource = Resource, Offset = 0xc4589 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c512c", Resource = Resource, Offset = 0xc512c });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c5ebe", Resource = Resource, Offset = 0xc5ebe });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c6d31", Resource = Resource, Offset = 0xc6d31 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7547", Resource = Resource, Offset = 0xc7547 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c775a", Resource = Resource, Offset = 0xc775a });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7f0d", Resource = Resource, Offset = 0xc7f0d });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c877d", Resource = Resource, Offset = 0xc877d });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c8fc9", Resource = Resource, Offset = 0xc8fc9 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9ad3", Resource = Resource, Offset = 0xc9ad3 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9d42", Resource = Resource, Offset = 0xc9d42 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cd4aa", Resource = Resource, Offset = 0xcd4aa });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cebe7", Resource = Resource, Offset = 0xcebe7 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cffca", Resource = Resource, Offset = 0xcffca });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d1282", Resource = Resource, Offset = 0xd1282 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d12b6", Resource = Resource, Offset = 0xd12b6 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d2add", Resource = Resource, Offset = 0xd2add });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d4f1c", Resource = Resource, Offset = 0xd4f1c });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d6995", Resource = Resource, Offset = 0xd6995 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d7727", Resource = Resource, Offset = 0xd7727 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d791f", Resource = Resource, Offset = 0xd791f });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "da6ba", Resource = Resource, Offset = 0xda6ba });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dc3fb", Resource = Resource, Offset = 0xdc3fb });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dcef3", Resource = Resource, Offset = 0xdcef3 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e1bec", Resource = Resource, Offset = 0xe1bec });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e2b76", Resource = Resource, Offset = 0xe2b76 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e3974", Resource = Resource, Offset = 0xe3974 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e5c8a", Resource = Resource, Offset = 0xe5c8a });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e6f35", Resource = Resource, Offset = 0xe6f35 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e7b25", Resource = Resource, Offset = 0xe7b25 });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e958d", Resource = Resource, Offset = 0xe958d });
+			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "ea73b", Resource = Resource, Offset = 0xea73b });
+
 			Nodes.Add(materials);
 			Nodes.Add(palettes);
 			Nodes.Add(models);
 			Nodes.Add(behaviors);
 			Nodes.Add(textures);
 			Nodes.Add(levels);
+			Nodes.Add(audioClips);
 		}
 
 		public override object GetProperties()

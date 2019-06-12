@@ -35,11 +35,13 @@ namespace StarFoxBrowser
 		{
 			InitializeComponent();
 
-			Direct3D = new Direct3D();
+			try
+			{
+				Direct3D = new Direct3D();
 
-			Device = new Device(Direct3D, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(panel.ClientSize.Width, panel.ClientSize.Height));
+				Device = new Device(Direct3D, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(panel.ClientSize.Width, panel.ClientSize.Height));
 
-			ColorEffect = Effect.FromString(Device, @"
+				ColorEffect = Effect.FromString(Device, @"
 float4x4 worldViewProjection;
 
 struct VS_IN
@@ -76,15 +78,15 @@ technique Main {
 	}
 }", ShaderFlags.None);
 
-			var vertexElements = new[] {
+				var vertexElements = new[] {
 				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 16, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 				VertexElement.VertexDeclarationEnd
 			};
 
-			ColorVertexDeclaration = new VertexDeclaration(Device, vertexElements);
+				ColorVertexDeclaration = new VertexDeclaration(Device, vertexElements);
 
-			TextureEffect = Effect.FromString(Device, @"
+				TextureEffect = Effect.FromString(Device, @"
 float4x4 worldViewProjection;
 texture currentTexture;
 sampler textureSampler = sampler_state
@@ -129,74 +131,78 @@ technique Main {
 	}
 }", ShaderFlags.None);
 
-			vertexElements = new[] {
+				vertexElements = new[] {
 				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
 				VertexElement.VertexDeclarationEnd
 			};
 
-			TextureVertexDeclaration = new VertexDeclaration(Device, vertexElements);
+				TextureVertexDeclaration = new VertexDeclaration(Device, vertexElements);
 
-			Texture1 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-			Texture2 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+				Texture1 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+				Texture2 = new Texture(Device, 256, 256, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 
-			var rectangle1 = Texture1.LockRectangle(0, LockFlags.None, out DataStream stream1);
-			var rectangle2 = Texture2.LockRectangle(0, LockFlags.None, out DataStream stream2);
+				var rectangle1 = Texture1.LockRectangle(0, LockFlags.None, out DataStream stream1);
+				var rectangle2 = Texture2.LockRectangle(0, LockFlags.None, out DataStream stream2);
 
-			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StarFoxBrowser.Resources.StarFoxUsa10.bin"))
-			using (var reader = new BinaryReader(stream))
-			{
-				// Load Palette
-				stream.Position = 0x18b0a;
-
-				var palette = Enumerable.Range(0, 16)
-					.Select(n => reader.ReadUInt16())
-					.Select(n => new SharpDX.Color((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3, 255))
-					.ToArray();
-
-				palette[0] = SharpDX.Color.Transparent;
-
-				stream.Position = 0x90000;
-
-				for (var y = 0; y < 256; y++)
+				using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StarFoxBrowser.Resources.StarFoxUsa10.bin"))
+				using (var reader = new BinaryReader(stream))
 				{
-					for (var x = 0; x < 256; x++)
+					// Load Palette
+					stream.Position = 0x18b0a;
+
+					var palette = Enumerable.Range(0, 16)
+						.Select(n => reader.ReadUInt16())
+						.Select(n => new SharpDX.Color((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3, 255))
+						.ToArray();
+
+					palette[0] = SharpDX.Color.Transparent;
+
+					stream.Position = 0x90000;
+
+					for (var y = 0; y < 256; y++)
 					{
-						var value = reader.ReadByte();
+						for (var x = 0; x < 256; x++)
+						{
+							var value = reader.ReadByte();
 
-						var texture1Value = value & 0x0f;
-						var texture2Value = value >> 4;
+							var texture1Value = value & 0x0f;
+							var texture2Value = value >> 4;
 
-						stream1.Write(palette[texture1Value].B);
-						stream1.Write(palette[texture1Value].G);
-						stream1.Write(palette[texture1Value].R);
-						stream1.Write(palette[texture1Value].A);
+							stream1.Write(palette[texture1Value].B);
+							stream1.Write(palette[texture1Value].G);
+							stream1.Write(palette[texture1Value].R);
+							stream1.Write(palette[texture1Value].A);
 
-						stream2.Write(palette[texture2Value].B);
-						stream2.Write(palette[texture2Value].G);
-						stream2.Write(palette[texture2Value].R);
-						stream2.Write(palette[texture2Value].A);
+							stream2.Write(palette[texture2Value].B);
+							stream2.Write(palette[texture2Value].G);
+							stream2.Write(palette[texture2Value].R);
+							stream2.Write(palette[texture2Value].A);
+						}
 					}
 				}
-			}
 
-			Texture1.UnlockRectangle(0);
-			Texture2.UnlockRectangle(0);
+				Texture1.UnlockRectangle(0);
+				Texture2.UnlockRectangle(0);
+
+				Timer = new Timer
+				{
+					Interval = 10
+				};
+
+				Timer.Tick += Timer_Tick;
+
+				Timer.Start();
+			}
+			catch (Exception)
+			{
+			}
 
 			treeView.Nodes.Add(new Usa10
 			{
 				Text = "Star Fox 1.0 (USA)",
 				Resource = "StarFoxBrowser.Resources.StarFoxUsa10.bin"
 			});
-
-			Timer = new Timer
-			{
-				Interval = 10
-			};
-
-			Timer.Tick += Timer_Tick;
-
-			Timer.Start();
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)

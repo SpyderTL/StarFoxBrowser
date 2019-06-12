@@ -66,6 +66,48 @@ SPC Transfer Block
 
 108 Emergency Call
 	Directory	0xd1282
+	00	Emergency	0xd12b6
+	01	Prepare For Launch			0xd2add
+	03	??							0xd4f1c
+	06	??							0xc512c, 0xd6995
+	08	??							0xd7727
+	09	Incoming Enemy Fighters		0xd791f
+
+	c3a64
+	c3fc5
+	c4589
+	c512c
+	c5ebe
+	c6d31
+	c7547
+	c775a
+	c7f0d
+	c877d
+	c8fc9
+	c9ad3
+	c9d42
+	cd4aa
+	cebe7
+	cffca
+	d1282
+	d12b6
+	d2add
+	d4f1c
+	d6995
+	d7727
+	d791f
+	da6ba
+	dc3fb
+	dcef3
+	e1bec
+	e2b76
+	e3974
+	e5c8a
+	e6f35
+	e7b25
+	e958d
+	ea73b
+
 
 109 Corneria
 	Directory	0xc28c6
