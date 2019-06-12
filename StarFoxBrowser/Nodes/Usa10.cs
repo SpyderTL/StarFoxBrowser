@@ -236,6 +236,117 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(textures);
 			Nodes.Add(levels);
 			Nodes.Add(audioClips);
+
+			//ExportAudioClips();
+		}
+
+		private void ExportAudioClips()
+		{
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				foreach (var clip in AudioClipNames)
+				{
+					stream.Position = clip.Key;
+
+					var stream2 = File.Create(clip.Key.ToString("X2") + ".wav");
+					var writer = new BinaryWriter(stream2);
+
+					writer.Write(Encoding.ASCII.GetBytes("RIFF"));
+					var fileLengthPosition = stream2.Position;
+					writer.Write(0);
+					writer.Write(Encoding.ASCII.GetBytes("WAVE"));
+
+					writer.Write(Encoding.ASCII.GetBytes("fmt "));
+					writer.Write(16);
+					writer.Write((ushort)1);
+					writer.Write((ushort)1);
+					//writer.Write(32000);
+					//writer.Write(64000);
+					writer.Write(8000);
+					writer.Write(16000);
+					writer.Write((ushort)2);
+					writer.Write((ushort)16);
+
+					writer.Write(Encoding.ASCII.GetBytes("data"));
+					var dataLengthPosition = stream2.Position;
+					writer.Write(0);
+
+					var data2 = new List<short>();
+					//var index = 0;
+
+					while (true)
+					{
+						var header = reader.ReadByte();
+
+						var range = header >> 4;
+						var filter = (header >> 2) & 0x3;
+						var loop = (header & 0x2) != 0;
+						var end = (header & 0x1) != 0;
+
+						var data = reader.ReadBytes(8);
+						var samples = data.SelectMany(x => new int[] { SignedNibbleToInt(x >> 4), SignedNibbleToInt(x & 0xf) }).ToArray();
+						//var samples = data.SelectMany(x => new int[] { SignedNibbleToInt(x & 0xf), SignedNibbleToInt(x >> 4) }).ToArray();
+
+						foreach (var sample in samples)
+						{
+							var value = sample << range;
+
+							switch (filter)
+							{
+								case 1:
+									if (data2.Count > 0)
+										value += (int)(data2[data2.Count - 1] * (15.0f / 16.0f));
+									break;
+
+								case 2:
+									if (data2.Count > 1)
+										value += (int)((data2[data2.Count - 1] * (61.0f / 32.0f)) - (data2[data2.Count - 2] * (15.0f / 16.0f)));
+									break;
+
+								case 3:
+									if (data2.Count > 1)
+										value += (int)((data2[data2.Count - 1] * (115.0f / 64.0f)) - (data2[data2.Count - 2] * (13.0f / 16.0f)));
+									break;
+							}
+
+							data2.Add((short)value);
+						}
+
+						if (end)
+							break;
+					}
+
+					foreach (var value in data2)
+						writer.Write(value);
+
+					writer.Flush();
+
+					var fileLength = (int)stream2.Position;
+
+					stream2.Position = dataLengthPosition;
+
+					writer.Write(fileLength - 36);
+
+					writer.Flush();
+
+					stream2.Position = fileLengthPosition;
+
+					writer.Write(fileLength - 8);
+
+					writer.Flush();
+					writer.Close();
+					writer.Dispose();
+				}
+			}
+		}
+
+		private int SignedNibbleToInt(int value)
+		{
+			if (value < 8)
+				return value;
+
+			return value - 16;
 		}
 
 		public override object GetProperties()
@@ -1100,6 +1211,44 @@ namespace StarFoxBrowser.Nodes
 			{ 0x15AC15, "Unknown" },
 			{ 0x1FF600, "Unknown" },
 			{ 0xD80045, "Unknown" }
+		};
+
+		public static readonly Dictionary<int, string> AudioClipNames = new Dictionary<int, string>
+		{
+			{ 0xc3a64, "Unknown" },
+			{ 0xc3fc5, "Unknown" },
+			{ 0xc4589, "Unknown" },
+			{ 0xc512c, "Unknown" },
+			{ 0xc5ebe, "Unknown" },
+			{ 0xc6d31, "Unknown" },
+			{ 0xc7547, "Unknown" },
+			{ 0xc775a, "Unknown" },
+			{ 0xc7f0d, "Unknown" },
+			{ 0xc877d, "Unknown" },
+			{ 0xc8fc9, "Unknown" },
+			{ 0xc9ad3, "Unknown" },
+			{ 0xc9d42, "Unknown" },
+			{ 0xcd4aa, "Unknown" },
+			{ 0xcebe7, "Unknown" },
+			{ 0xcffca, "Unknown" },
+			{ 0xd1282, "Unknown" },
+			{ 0xd12b6, "Unknown" },
+			{ 0xd2add, "Unknown" },
+			{ 0xd4f1c, "Unknown" },
+			{ 0xd6995, "Unknown" },
+			{ 0xd7727, "Unknown" },
+			{ 0xd791f, "Unknown" },
+			{ 0xda6ba, "Unknown" },
+			{ 0xdc3fb, "Unknown" },
+			{ 0xdcef3, "Unknown" },
+			{ 0xe1bec, "Unknown" },
+			{ 0xe2b76, "Unknown" },
+			{ 0xe3974, "Unknown" },
+			{ 0xe5c8a, "Unknown" },
+			{ 0xe6f35, "Unknown" },
+			{ 0xe7b25, "Unknown" },
+			{ 0xe958d, "Unknown" },
+			{ 0xea73b, "Unknown" }
 		};
 	}
 }
