@@ -34,8 +34,8 @@
 			this.propertiesTab = new System.Windows.Forms.TabPage();
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.previewTab = new System.Windows.Forms.TabPage();
-			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.panel = new System.Windows.Forms.Panel();
+			this.pictureBox = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -116,6 +116,14 @@
 			this.previewTab.Text = "Preview";
 			this.previewTab.UseVisualStyleBackColor = true;
 			// 
+			// panel
+			// 
+			this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel.Location = new System.Drawing.Point(3, 3);
+			this.panel.Name = "panel";
+			this.panel.Size = new System.Drawing.Size(505, 529);
+			this.panel.TabIndex = 4;
+			// 
 			// pictureBox
 			// 
 			this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -125,14 +133,6 @@
 			this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox.TabIndex = 3;
 			this.pictureBox.TabStop = false;
-			// 
-			// panel
-			// 
-			this.panel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel.Location = new System.Drawing.Point(3, 3);
-			this.panel.Name = "panel";
-			this.panel.Size = new System.Drawing.Size(505, 529);
-			this.panel.TabIndex = 4;
 			// 
 			// BrowserForm
 			// 
