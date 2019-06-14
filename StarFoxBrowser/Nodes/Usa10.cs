@@ -323,7 +323,7 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(audioClips);
 
 			//ExportAudioClips();
-			//ExportImages();
+			ExportImages();
 		}
 
 		private void ExportImages()
@@ -331,11 +331,21 @@ namespace StarFoxBrowser.Nodes
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
-				stream.Position = 0xb0004;
+				// Load Palette
+				stream.Position = 0x18b0a;
+
+				var palette = Enumerable.Range(0, 16)
+					.Select(n => reader.ReadUInt16())
+					.Select(n => Color.FromArgb((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3))
+					.ToArray();
+
+				stream.Position = 0xb0000;
 
 				while (stream.Position < 0xc0000)
 				{
-					var fileName = stream.Position.ToString("D8") + ".bmp";
+					//var fileName = stream.Position.ToString("D8") + ".bmp";
+					//var fileName = stream.Position.ToString("X6") + ".bmp";
+					var fileName = stream.Position.ToString("D8") + " - " + stream.Position.ToString("X6") + ".bmp";
 					var data = new int[64];
 
 					// Plane Row 0
@@ -384,8 +394,8 @@ namespace StarFoxBrowser.Nodes
 						{
 							var value = data[(y * 8) + x];
 
-							bitmap.SetPixel(x, y, Color.FromArgb(value * 16, value * 16, value * 16));
-							//bitmap.SetPixel(x, y, palette[value]);
+							//bitmap.SetPixel(x, y, Color.FromArgb(value * 16, value * 16, value * 16));
+							bitmap.SetPixel(x, y, palette[value]);
 						}
 					}
 

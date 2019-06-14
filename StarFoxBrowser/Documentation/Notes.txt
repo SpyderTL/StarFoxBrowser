@@ -113,4 +113,30 @@ SPC Transfer Block
 	Directory	0xc28c6
 
 
+Images
+
+Tiles
+	8x8 Pixels
+
+Pictures
+	4x5 Tiles (Columns First)
+
+0xbb9c0 Communication
+0xbbc40 Communication 2
+0xbbec0 Communication 3
+0xbc140 Communication 4
+0xbc3c0 Communication 5
+0xbc640 Fox
+0xbc8c0 Fox 2
+0xbcb40 Peppy
+0xbcdc0 Peppy 2
+0xbd040 Falco
+0xbd2c0 Falco 2
+0xbd540 Slippy
+0xbd7c0 Slippy 2
+0xbda40 Pepper
+0xbdcc0	Pepper 2
+0xbdf40 Andross
+0xbe1c0 Andross 2
+0xbe440 Communication 6
 
