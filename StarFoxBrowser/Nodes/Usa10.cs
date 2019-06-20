@@ -19,88 +19,9 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Clear();
 
 			var images = new TreeNode("Images");
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xb0000 });
 
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb5c4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb5e4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb604 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb624 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb644 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb664 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb684 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb6a4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb6c4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb6e4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb704 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb724 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb744 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb764 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb784 });
-
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb7a4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb7c4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb7e4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb804 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb824 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb844 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb864 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb884 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb8a4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb8c4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb8e4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb904 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb924 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb944 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb964 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb984 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb9a4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb9c4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbb9e4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbba04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbba24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbba44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbba64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbba84 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbaa4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbac4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbae4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbb04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbb24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbb44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbb64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbb84 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbba4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbbc4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbbe4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbc04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbc24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbc44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbc64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbc84 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbca4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbcc4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbce4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbd04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbd24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbd44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbd64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbd84 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbda4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbdc4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbde4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbe04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbe24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbe44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbe64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbe84 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbea4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbec4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbee4 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbf04 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbf24 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbf44 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbf64 });
-			images.Nodes.Add(new StarFoxImage { Text = "Unknown", Resource = Resource, Offset = 0xbbf84 });
+			foreach (var image in ImageNames)
+				images.Nodes.Add(new StarFoxImage { Text = image.Value, Resource = Resource, Offset = image.Key });
 
 			var materials = new TreeNode("Materials");
 
@@ -324,9 +245,94 @@ namespace StarFoxBrowser.Nodes
 
 			//ExportAudioClips();
 			ExportImages();
+			//ExportAllImages();
 		}
 
 		private void ExportImages()
+		{
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				// Load Palette
+				stream.Position = 0x18b0a;
+
+				var palette = Enumerable.Range(0, 16)
+					.Select(n => reader.ReadUInt16())
+					.Select(n => Color.FromArgb((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3))
+					.ToArray();
+
+				foreach (var image in ImageNames)
+				{
+					stream.Position = image.Key;
+
+					var fileName = image.Value + ".bmp";
+
+					var bitmap = new Bitmap(32, 40);
+
+					for (var tileX = 0; tileX < 4; tileX++)
+					{
+						for (var tileY = 0; tileY < 5; tileY++)
+						{
+							var data = new int[64];
+
+							// Plane Row 0
+							for (var row = 0; row < 8; row++)
+							{
+								// Plane 0
+								var plane0 = reader.ReadByte();
+
+								// Plane 1
+								var plane1 = reader.ReadByte();
+
+								data[(row * 8) + 0] |= ((plane0 >> 7) & 0x01) | ((plane1 >> 6) & 0x02);
+								data[(row * 8) + 1] |= ((plane0 >> 6) & 0x01) | ((plane1 >> 5) & 0x02);
+								data[(row * 8) + 2] |= ((plane0 >> 5) & 0x01) | ((plane1 >> 4) & 0x02);
+								data[(row * 8) + 3] |= ((plane0 >> 4) & 0x01) | ((plane1 >> 3) & 0x02);
+								data[(row * 8) + 4] |= ((plane0 >> 3) & 0x01) | ((plane1 >> 2) & 0x02);
+								data[(row * 8) + 5] |= ((plane0 >> 2) & 0x01) | ((plane1 >> 1) & 0x02);
+								data[(row * 8) + 6] |= ((plane0 >> 1) & 0x01) | ((plane1 >> 0) & 0x02);
+								data[(row * 8) + 7] |= ((plane0 >> 0) & 0x01) | ((plane1 << 1) & 0x02);
+							}
+
+							// Plane Row 1
+							for (var row = 0; row < 8; row++)
+							{
+								// Plane 2
+								var plane2 = reader.ReadByte();
+
+								// Plane 3
+								var plane3 = reader.ReadByte();
+
+								data[(row * 8) + 0] |= ((plane2 >> 5) & 0x04) | ((plane3 >> 4) & 0x08);
+								data[(row * 8) + 1] |= ((plane2 >> 4) & 0x04) | ((plane3 >> 3) & 0x08);
+								data[(row * 8) + 2] |= ((plane2 >> 3) & 0x04) | ((plane3 >> 2) & 0x08);
+								data[(row * 8) + 3] |= ((plane2 >> 2) & 0x04) | ((plane3 >> 1) & 0x08);
+								data[(row * 8) + 4] |= ((plane2 >> 1) & 0x04) | ((plane3 >> 0) & 0x08);
+								data[(row * 8) + 5] |= ((plane2 >> 0) & 0x04) | ((plane3 << 1) & 0x08);
+								data[(row * 8) + 6] |= ((plane2 << 1) & 0x04) | ((plane3 << 2) & 0x08);
+								data[(row * 8) + 7] |= ((plane2 << 2) & 0x04) | ((plane3 << 3) & 0x08);
+							}
+
+							for (var y = 0; y < 8; y++)
+							{
+								for (var x = 0; x < 8; x++)
+								{
+									var value = data[(y * 8) + x];
+
+									//bitmap.SetPixel(x, y, Color.FromArgb(value * 16, value * 16, value * 16));
+									bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, palette[value]);
+								}
+							}
+						}
+
+						bitmap.Save(fileName);
+
+					}
+				}
+			}
+		}
+
+		private void ExportAllImages()
 		{
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
@@ -1458,7 +1464,24 @@ namespace StarFoxBrowser.Nodes
 
 		public static readonly Dictionary<int, string> ImageNames = new Dictionary<int, string>
 		{
-			{ 0xb0000, "Unknown" },
+			{ 0xbb9c0, "Communication" },
+			{ 0xbbc40, "Communication 2" },
+			{ 0xbbec0, "Communication 3" },
+			{ 0xbc140, "Communication 4" },
+			{ 0xbc3c0, "Communication 5" },
+			{ 0xbc640, "Fox" },
+			{ 0xbc8c0, "Fox 2" },
+			{ 0xbcb40, "Peppy" },
+			{ 0xbcdc0, "Peppy 2" },
+			{ 0xbd040, "Falco" },
+			{ 0xbd2c0, "Falco 2" },
+			{ 0xbd540, "Slippy" },
+			{ 0xbd7c0, "Slippy 2" },
+			{ 0xbda40, "Pepper" },
+			{ 0xbdcc0, "Pepper 2" },
+			{ 0xbdf40, "Andross" },
+			{ 0xbe1c0, "Andross 2" },
+			{ 0xbe440, "Communication 6" },
 		};
 	}
 }
