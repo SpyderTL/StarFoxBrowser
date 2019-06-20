@@ -207,7 +207,8 @@ technique Main {
 
 		private void Timer_Tick(object sender, EventArgs e)
 		{
-			if (treeView.SelectedNode is StarFoxModel)
+			if (treeView.SelectedNode is StarFoxModel &&
+				tabControl.SelectedIndex == 1)
 			{
 				SelectedModel = (Model)((StarFoxModel)treeView.SelectedNode).GetProperties();
 
@@ -237,7 +238,7 @@ technique Main {
 				{
 					pictureBox.Image = null;
 					SelectedModel = (Model)propertyGrid.SelectedObject;
-					DrawModel();
+					//DrawModel();
 					panel.Show();
 				}
 				else

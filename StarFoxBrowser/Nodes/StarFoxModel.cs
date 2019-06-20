@@ -52,6 +52,21 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add(new VertexList { Text = "04 - Vertex List", Verteces = verteces });
 							break;
 
+						case 0x08:
+							// Vertex List (short)
+							vertexCount = reader.ReadByte();
+
+							verteces = Enumerable.Range(0, vertexCount)
+								.Select(n => new Vertex
+								{
+									X = reader.ReadInt16(),
+									Y = reader.ReadInt16(),
+									Z = reader.ReadInt16()
+								}).ToArray();
+
+							Nodes.Add(new VertexList { Text = "08 - Vertex List (16-bit)", Verteces = verteces });
+							break;
+
 						case 0x38:
 							// Mirrored Vertex List (sbyte)
 							vertexCount = reader.ReadByte();
@@ -85,7 +100,7 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x34:
-							// Vertex List (short)
+							// Mirrored Vertex List (short)
 							vertexCount = reader.ReadByte();
 
 							verteces = Enumerable.Range(0, vertexCount)
@@ -96,7 +111,7 @@ namespace StarFoxBrowser.Nodes
 									Z = reader.ReadInt16()
 								}).ToArray();
 
-							Nodes.Add(new VertexList { Text = "34 - Vertex List (16-bit)", Verteces = verteces });
+							Nodes.Add(new VertexList { Text = "34 - Mirrored Vertex List (16-bit)", Verteces = verteces });
 							break;
 
 						case 0x0c:
@@ -176,15 +191,6 @@ namespace StarFoxBrowser.Nodes
 						//Nodes.Add("00 - End Face Data");
 						//	break;
 
-						case 0x05:
-							var unknown = reader.ReadBytes(8);
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
-
-						case 0x08:
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
-
 						case 0x0a:
 							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
 							break;
@@ -202,7 +208,7 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						default:
-							read = false;
+							//read = false;
 							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
 							break;
 					}
@@ -863,6 +869,22 @@ namespace StarFoxBrowser.Nodes
 							vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
 							break;
 
+						case 0x08:
+							// Vertex List (short)
+							vertexCount = reader.ReadByte();
+
+							vertices = Enumerable.Range(0, vertexCount)
+								.Select(n => new Vertex
+								{
+									X = reader.ReadInt16(),
+									Y = reader.ReadInt16(),
+									Z = reader.ReadInt16()
+								}).ToArray();
+
+							vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
+							break;
+
+
 						case 0x38:
 							// Mirrored Vertex List (sbyte)
 							vertexCount = reader.ReadByte();
@@ -896,11 +918,11 @@ namespace StarFoxBrowser.Nodes
 						case 0x20:
 							// Jump
 							offset = reader.ReadInt16();
-							reader.BaseStream.Seek(offset, SeekOrigin.Current);
+							reader.BaseStream.Seek(offset - 1, SeekOrigin.Current);
 							break;
 
 						case 0x34:
-							// Vertex List (short)
+							// Mirrored Vertex List (short)
 							vertexCount = reader.ReadByte();
 
 							vertices = Enumerable.Range(0, vertexCount)
@@ -911,7 +933,11 @@ namespace StarFoxBrowser.Nodes
 									Z = reader.ReadInt16()
 								}).ToArray();
 
-							vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
+							foreach (var vertex in vertices)
+							{
+								vectors.Add(new Vector4(vertex.X, -vertex.Y, -vertex.Z, 1));
+								vectors.Add(new Vector4(-vertex.X, -vertex.Y, -vertex.Z, 1));
+							}
 							break;
 
 						case 0x0c:
@@ -1072,31 +1098,12 @@ namespace StarFoxBrowser.Nodes
 							}
 							break;
 
-						case 0x00:
-							// End Face Data
-							read = false;
-							break;
-
-						//case 0x01:
-						//	break;
-
-						case 0x05:
-							var unknown = reader.ReadBytes(8);
-							break;
-
-						case 0x08:
-							break;
-
-						case 0x0a:
-							break;
-
-						case 0x0b:
-							break;
-
 						case 0x40:
 							break;
 
-						case 0x78:
+						case 0x00:
+							// End Face Data
+							read = false;
 							break;
 
 						default:

@@ -244,7 +244,7 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(audioClips);
 
 			//ExportAudioClips();
-			ExportImages();
+			//ExportImages();
 			//ExportAllImages();
 		}
 
@@ -841,8 +841,8 @@ namespace StarFoxBrowser.Nodes
 			{ 0xC92C, "Scenery White box" },
 			{ 0xC948, "Scenery small White box" },
 			{ 0xC964, "Scenery White high rise box" },
-			{ 0xC980, "Scenery White high rise box" },
-			{ 0xC99C, "Galactic rider door" },
+			{ 0xC980, "Galactic rider door" },
+			{ 0xC99C, "Galactic rider" },
 			{ 0xC9B8, "Base shooting red/blue rings" },
 			{ 0xC9D4, "Metal Crusher right" },
 			{ 0xC9F0, "Metal Crusher left" },
