@@ -7,6 +7,7 @@ Models			0x264b				0x00264b					2
 Palettes			0x18000											2
 Lighting			0x19000											1
 Animated		0x18000											
+Strings			0x00e796			0x00e796					*
 
 Palettes
 	Entry[256]			2
