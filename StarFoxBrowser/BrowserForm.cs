@@ -219,7 +219,11 @@ technique Main {
 		private void treeView_AfterExpand(object sender, TreeViewEventArgs e)
 		{
 			if (e.Node is DataNode)
+			{
+				treeView.BeginUpdate();
 				((DataNode)e.Node).Reload();
+				treeView.EndUpdate();
+			}
 		}
 
 		private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
