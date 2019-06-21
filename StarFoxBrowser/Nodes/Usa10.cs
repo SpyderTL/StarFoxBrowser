@@ -119,6 +119,8 @@ namespace StarFoxBrowser.Nodes
 				{
 					var objectID = reader.ReadUInt16();
 
+					ObjectIndexes[x] = objectID;
+
 					indexedModels.Nodes.Add(x.ToString("X2") + ": " + objectID.ToString("X4"));
 				}
 			}
@@ -156,6 +158,7 @@ namespace StarFoxBrowser.Nodes
 					indexedBehaviors.Nodes.Add(x.ToString("X2") + ": " + string.Join(string.Empty, behavior.Reverse().Select(y => y.ToString("X2"))) + " Object: " + objectIndex.ToString("X2"));
 
 					BehaviorIndexes[x] = behaviorID;
+					BehaviorObjects[x] = objectIndex;
 				}
 			}
 
@@ -169,13 +172,22 @@ namespace StarFoxBrowser.Nodes
 			textures.Nodes.Add(new StarFoxTexture { Text = "Texture", Resource = Resource, Offset = 0x90000, Page = 1 });
 
 			var levels = new TreeNode("Levels");
-			levels.Nodes.Add(new StarFoxLevel { Text = "Level", Resource = Resource, Offset = 0x28042 });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Inside Tunnel", Resource = Resource, Offset = 0x2b280 });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Level", Resource = Resource, Offset = 0x2b47c });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Level", Resource = Resource, Offset = 0x2da0e });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Level", Resource = Resource, Offset = 0x2da3f });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Level", Resource = Resource, Offset = 0x68000 });
-			levels.Nodes.Add(new StarFoxLevel { Text = "Inside Tunnel", Resource = Resource, Offset = 0x6b2b3 });
+
+			levels.Nodes.Add(new StarFoxLevel { Text = "050042", Resource = Resource, Offset = 0x28042 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0503b2", Resource = Resource, Offset = 0x283b2 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "053280", Resource = Resource, Offset = 0x2b280 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "053b7c", Resource = Resource, Offset = 0x2b47c });
+			levels.Nodes.Add(new StarFoxLevel { Text = "055a03", Resource = Resource, Offset = 0x2da0e });
+			levels.Nodes.Add(new StarFoxLevel { Text = "055a3f", Resource = Resource, Offset = 0x2da3f });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d0000", Resource = Resource, Offset = 0x68000 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d0920", Resource = Resource, Offset = 0x68920 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d10ad", Resource = Resource, Offset = 0x690ad });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d32b3", Resource = Resource, Offset = 0x6b2b3 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d492e", Resource = Resource, Offset = 0x6c92e });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d4c27", Resource = Resource, Offset = 0x6cc27 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d4f1d", Resource = Resource, Offset = 0x6cf1d });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d6d21", Resource = Resource, Offset = 0x6ed21 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0d752d", Resource = Resource, Offset = 0x6f52d });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Black Hole", Resource = Resource, Offset = 0x6c8a9 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Out Of This World", Resource = Resource, Offset = 0x6c8e5 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Scramble", Resource = Resource, Offset = 0x6d068 });
@@ -198,7 +210,9 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "Venom 3 Surface", Resource = Resource, Offset = 0x6e929 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "Training", Resource = Resource, Offset = 0x6ee9a });
 
+
 			var audioClips = new TreeNode("Audio Clips");
+			
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3a64", Resource = Resource, Offset = 0xc3a64 });
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3fc5", Resource = Resource, Offset = 0xc3fc5 });
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c4589", Resource = Resource, Offset = 0xc4589 });
@@ -571,6 +585,7 @@ namespace StarFoxBrowser.Nodes
 
 		public static readonly int[] ObjectIndexes = new int[255];
 		public static readonly int[] BehaviorIndexes = new int[255];
+		public static readonly int[] BehaviorObjects = new int[255];
 
 		public static readonly Dictionary<int, string> ModelNames = new Dictionary<int, string>
 		{

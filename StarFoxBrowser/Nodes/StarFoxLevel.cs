@@ -41,8 +41,11 @@ namespace StarFoxBrowser.Nodes
 							var behaviorIndex = reader.ReadByte();
 							var behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							var behaviorName = Usa10.BehaviorNames[behaviorID];
+							var behaviorObject = Usa10.BehaviorObjects[behaviorIndex];
+							var objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add("00 - 3D Object: " + objectIndex + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
+							Nodes.Add("00 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x02:
@@ -119,6 +122,7 @@ namespace StarFoxBrowser.Nodes
 						case 0x2a:
 							// Return From Warp
 							Nodes.Add("2a - Return From Warp");
+							read = false;
 							break;
 
 						case 0x2c:
@@ -230,7 +234,13 @@ namespace StarFoxBrowser.Nodes
 							y = reader.ReadSByte();
 							objectIndex = reader.ReadByte();
 							var behavior = reader.ReadBytes(1);
-							Nodes.Add("70 - 3D Object: " + objectIndex + " (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorName = Usa10.BehaviorNames[behaviorID];
+							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
+
+							Nodes.Add("70 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x74:
@@ -241,21 +251,31 @@ namespace StarFoxBrowser.Nodes
 							y = reader.ReadInt16();
 							z = reader.ReadInt16();
 							behavior = reader.ReadBytes(1);               // TODO: Find lookup table
-							Nodes.Add("74 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorName = Usa10.BehaviorNames[behaviorID];
+							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
+
+							Nodes.Add("74 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
 							break;
 
 						case 0x76:
-							// 3D Object (16-bit vector)
+							// 3D Object (8-bit vector)
 							//reader.ReadBytes(5);
 							z = reader.ReadByte();
 							x = reader.ReadSByte();
 							y = reader.ReadSByte();
-							timer = reader.ReadUInt16();
+							//timer = reader.ReadUInt16();
+							timer = reader.ReadByte();
 							behavior = reader.ReadBytes(1);
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
+							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add("76 - 3D Object: Behavior Default (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + " (" + behaviorName + ")");
+							Nodes.Add("76 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + " (" + behaviorName + ")");
 							break;
 
 						case 0x78:
@@ -308,7 +328,7 @@ namespace StarFoxBrowser.Nodes
 							objectID = reader.ReadUInt16();
 							behavior = reader.ReadBytes(3);
 
-							var objectName = "Unknown";
+							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(objectID, out objectName);
 
 							behaviorID = behavior[0] | (behavior[1] << 8) | (behavior[2] << 16);
