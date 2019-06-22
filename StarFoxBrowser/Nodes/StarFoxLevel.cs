@@ -63,11 +63,6 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("04 - Loop Segment: " + loop + " (Times " + times + ")");
 							break;
 
-						case 0x06:
-							reader.ReadBytes(176);
-							Nodes.Add("06 - Unknown Data (176 bytes)");
-							break;
-
 						case 0x0a:
 							//reader.ReadBytes(15);
 							z = reader.ReadInt16();
@@ -109,7 +104,7 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x26:
-							reader.ReadBytes(3);
+							reader.ReadBytes(11);
 							Nodes.Add("26 - Data");
 							break;
 
@@ -223,6 +218,16 @@ namespace StarFoxBrowser.Nodes
 							// Unknown
 							reader.ReadBytes(5);
 							Nodes.Add("6a - Unknown");
+							break;
+
+						case 0x6c:
+							// Unknown
+							Nodes.Add("6c - Unknown");
+							break;
+
+						case 0x6e:
+							// Unknown
+							Nodes.Add("6e - Unknown");
 							break;
 
 						case 0x70:
