@@ -41,7 +41,8 @@ namespace StarFoxBrowser.Nodes
 							var behaviorIndex = reader.ReadByte();
 							var behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							var behaviorName = Usa10.BehaviorNames[behaviorID];
-							var behaviorObject = Usa10.BehaviorObjects[behaviorIndex];
+							objectIndex = Usa10.BehaviorObjects[behaviorIndex];
+							var behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							var objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
@@ -241,7 +242,8 @@ namespace StarFoxBrowser.Nodes
 							var behavior = reader.ReadBytes(1);
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
-							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectIndex = Usa10.BehaviorObjects[behavior[0]];
+							behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
@@ -258,7 +260,8 @@ namespace StarFoxBrowser.Nodes
 							behavior = reader.ReadBytes(1);               // TODO: Find lookup table
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
-							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectIndex = Usa10.BehaviorObjects[behavior[0]];
+							behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
@@ -276,7 +279,8 @@ namespace StarFoxBrowser.Nodes
 							behavior = reader.ReadBytes(1);
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
-							behaviorObject = Usa10.BehaviorObjects[behavior[0]];
+							objectIndex = Usa10.BehaviorObjects[behavior[0]];
+							behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
