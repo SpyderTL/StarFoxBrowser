@@ -114,18 +114,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Documentation\Arwing_Deconstruction.html" />
-    <None Include="Documentation\SFXedit 0.93 Documentation..html" />
-    <None Include="Documentation\Starfox Level Format Overview.txt" />
-    <None Include="Documentation\Starfox levels offsets.txt" />
-    <None Include="Documentation\Starfox Post acmlm 2005.txt" />
-    <None Include="Documentation\StarfoxEarlyHackingDiscoveries.txt" />
-    <None Include="Documentation\StarfoxObjectHeaders.txt" />
-    <None Include="Documentation\StarfoxObjectNames.txt" />
+    <None Include="Documentation\Community\Arwing_Deconstruction.html" />
+    <None Include="Documentation\Community\SFXedit 0.93 Documentation..html" />
+    <None Include="Documentation\Community\Starfox Level Format Overview.txt" />
+    <None Include="Documentation\Community\Starfox levels offsets.txt" />
+    <None Include="Documentation\Community\Starfox Post acmlm 2005.txt" />
+    <None Include="Documentation\Community\StarfoxEarlyHackingDiscoveries.txt" />
+    <None Include="Documentation\Community\StarfoxObjectHeaders.txt" />
+    <None Include="Documentation\Community\StarfoxObjectNames.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Documentation\LevelScriptsDump1.0.txt" />
+    <Content Include="Documentation\Community\LevelScriptsDump1.0.txt" />
     <Content Include="Documentation\Notes.txt" />
+    <Content Include="Documentation\Star Fox Audio Clips.txt" />
+    <Content Include="Documentation\Star Fox Materials.txt" />
+    <Content Include="Documentation\Star Fox Routines.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

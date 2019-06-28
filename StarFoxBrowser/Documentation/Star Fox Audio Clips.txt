@@ -1,0 +1,86 @@
+104 Title Demonstration.spc
+	01	0.066	Mechanical
+	0B	0.125	Mechanical Low
+	1A	0.33	Tom
+	1C	0.16	Horns
+	21	0.2	Strings
+	26	0.1	Instrument?
+	27	0.1	Instrument?
+	
+105 Title Screen.spc
+	00	0.2	Haunting Music
+	07	1.0	Orchestra Hit?
+	0E	2.0	Orchestra Hit
+
+106 Controls.spc
+	14	0.33	Bell
+	26	0.08	Bass?
+
+107 Cource Map Select.spc
+	1A	0.33	Tom
+	1C	0.16	Horns
+	21	0.2	Strings (Use 0.9 for effect?)
+	28	0.3125	Good Luck
+	03	0.03	Rumble Effect?
+
+108 Emergency Call.spc
+	00	0.33	Emergency
+	01	0.33	Prepare For Launch
+	02	0.33	Prepare For Launch
+	03	0.066	Background Chatter
+	04	0.066	Background Chatter
+	05	0.066	Background Chatter
+	06	0.275	Crash
+	07	0.275	Crash
+	08	0.33	Instrument?
+	09	0.33	Incoming Enemy Fighters
+	0A	--	Invalid
+	0B	--	Invalid
+	0C	0.066	Background Chatter
+	0D	0.066	Background Chatter
+	0E	0.066	Background Chatter
+	0F	0.066	Background Chatter
+	10	0.33	Hit
+	11	0.10	Hit2
+	12	0.33	Incoming Enemy Fighters
+	13	0.33	Incoming Enemy Fighters
+	14	0.33	Incoming Enemy Fighters
+	15	0.33	Incoming Enemy Fighters
+	16	0.33	Incoming Enemy Fighters
+	17	0.33	Incoming Enemy Fighters
+	18	0.08	Click
+	19	--	Empty
+	1A	--	Empty
+	1B	--	Empty
+	
+	20	0.04	Mechanical?
+	28	0.33	Good Luck (cut off)
+	2C	0.33	Strings
+	2D	0.33	Strings
+
+109 Corneria
+	13	0.44	Instrument?
+	14	0.666	Bells
+	1B	0.425	Snare
+	1C	0.44	Whistle Electronic
+	1D	0.38	Whistle Electronic 2
+	1F	0.166	Bass Guitar
+	22	1.0	Synth Lead
+	24	0.13	Whistle Electronic 3
+	26	0.4825	Tom Electric
+	27	0.2	Whistle Electronic 4
+	28	0.4	Whistle Electronic 5
+	29	0.1825	Orchestra Hit
+	2C	0.1625	Boss Choir
+	2D	0.33	Flute
+	2E	0.1625	Horns?
+
+134 Game Clear Demonstration
+	01	0.2	Come In Corneria
+	02	0.2	This Is Corneria
+	03	0.2	Pepper Speaking
+	04	0.2	Congratulations
+	05	0.2	I'm Heading Back
+
+	1C	0.2	Roger
+	

@@ -1,0 +1,18 @@
+Andross		64x64	4x4	166	38	0x26
+Pilot		32x32r	8x8	172	44	0x2c
+Black Hole	64x64	4x4	208	80	0x50
+Slot Fruit	8x8	32x32	210	82	0x52
+GAME		32x8	8x32	212	84	0x54
+OVER		32x8	8x32	213	85	0x55
+Motorist	32x32	8x8	219	91	0x5b
+Alien		32x32	8x8	223	95	0x5f
+
+Fox Logo	32x32	8x8	6	6	0x06
+Explosion	64x64	4x4	57	57	0x39
+Explosion	64x64	4x4	58	58	0x3a
+Explosion	64x64	4x4	59	59	0x3b
+Explosion	64x64	4x4	60	60	0x3c
+Explosion	64x64	4x4	61	61	0x3d
+Explosion	64x64	4x4	62	62	0x3e
+Explosion	64x64	4x4	63	63	0x3f
+Explosion	64x64	4x4	64	64	0x40
