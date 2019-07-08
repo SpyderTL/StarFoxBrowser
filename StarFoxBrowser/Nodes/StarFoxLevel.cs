@@ -222,13 +222,13 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x6c:
-							// Unknown
-							Nodes.Add("6c - Unknown");
+							// Invalid
+							Nodes.Add("6c - Invalid");
 							break;
 
 						case 0x6e:
-							// Unknown
-							Nodes.Add("6e - Unknown");
+							// Invalid
+							Nodes.Add("6e - Invalid");
 							break;
 
 						case 0x70:
