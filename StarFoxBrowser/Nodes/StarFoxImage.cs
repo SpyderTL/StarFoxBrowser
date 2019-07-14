@@ -13,6 +13,7 @@ namespace StarFoxBrowser.Nodes
 	{
 		public string Resource;
 		public int Offset;
+		public Size Size;
 
 		public override void Reload()
 		{
@@ -34,11 +35,11 @@ namespace StarFoxBrowser.Nodes
 
 				stream.Position = Offset;
 
-				var bitmap = new Bitmap(32, 40);
+				var bitmap = new Bitmap(Size.Width * 8, Size.Height * 8);
 
-				for (var tileX = 0; tileX < 4; tileX++)
+				for (var tileX = 0; tileX < Size.Width; tileX++)
 				{
-					for (var tileY = 0; tileY < 5; tileY++)
+					for (var tileY = 0; tileY < Size.Height; tileY++)
 					{
 						var data = new int[64];
 

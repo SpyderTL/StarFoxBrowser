@@ -10,6 +10,7 @@ Lighting		0x19000											1
 Animated		0x18000											
 Strings			0x00e796			0x01e796					*
 Functions		0x01ad5d			0x03ad5d					*
+Map Sprites		0x00208b			0x00a08b					960
 ??				0x01aede			0x03aede					14
 ??				0x01b000			0x03b000					*
 ??				0x0300d5			0x0680d5					8

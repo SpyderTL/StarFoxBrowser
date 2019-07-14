@@ -21,7 +21,7 @@ namespace StarFoxBrowser.Nodes
 			var images = new TreeNode("Images");
 
 			foreach (var image in ImageNames)
-				images.Nodes.Add(new StarFoxImage { Text = image.Value, Resource = Resource, Offset = image.Key });
+				images.Nodes.Add(new StarFoxImage { Text = image.Value, Resource = Resource, Offset = image.Key, Size = ImageSizes[image.Key] });
 
 			var materials = new TreeNode("Materials");
 
@@ -126,16 +126,6 @@ namespace StarFoxBrowser.Nodes
 			}
 
 			models.Nodes.Add(indexedModels);
-
-			//models.Nodes.Add(new StarFoxObject { Text = "Arwing (Low Poly)", Resource = Resource, Offset = 0x5320 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Main Enemy", Resource = Resource, Offset = 0x6388 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Gray Archway", Resource = Resource, Offset = 0x4868 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Blue Archway", Resource = Resource, Offset = 0x3ad8 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Yellow Ring", Resource = Resource, Offset = 0x64d8 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Blue Ring", Resource = Resource, Offset = 0x3d40 });
-			//models.Nodes.Add(new StarFoxObject { Text = "Silver Ring", Resource = Resource, Offset = 0x38bf });
-			//models.Nodes.Add(new StarFoxObject { Text = "Wing Repair", Resource = Resource, Offset = 0x44cc });
-			//models.Nodes.Add(new StarFoxObject { Text = "Weapon Upgrade", Resource = Resource, Offset = 0x4478 });
 
 			foreach (var model in ModelNames)
 				models.Nodes.Add(new StarFoxObject { Text = model.Key.ToString("X4") + " " + model.Value, Resource = Resource, Offset = model.Key - 0x8000 });
@@ -316,11 +306,13 @@ namespace StarFoxBrowser.Nodes
 
 					var fileName = image.Value + ".bmp";
 
-					var bitmap = new Bitmap(32, 40);
+					var imageSize = ImageSizes[image.Key];
 
-					for (var tileX = 0; tileX < 4; tileX++)
+					var bitmap = new Bitmap(imageSize.Width * 8, imageSize.Height * 8);
+
+					for (var tileX = 0; tileX < imageSize.Width; tileX++)
 					{
-						for (var tileY = 0; tileY < 5; tileY++)
+						for (var tileY = 0; tileY < imageSize.Height; tileY++)
 						{
 							var data = new int[64];
 
@@ -1531,6 +1523,30 @@ namespace StarFoxBrowser.Nodes
 			{ 0xbdf40, "Andross" },
 			{ 0xbe1c0, "Andross 2" },
 			{ 0xbe440, "Communication 6" },
+			{ 0x0208b, "Map Sprites" }
+		};
+
+		public static readonly Dictionary<int, Size> ImageSizes = new Dictionary<int, Size>
+		{
+			{ 0xbb9c0, new Size(4, 5) },
+			{ 0xbbc40, new Size(4, 5) },
+			{ 0xbbec0, new Size(4, 5) },
+			{ 0xbc140, new Size(4, 5) },
+			{ 0xbc3c0, new Size(4, 5) },
+			{ 0xbc640, new Size(4, 5) },
+			{ 0xbc8c0, new Size(4, 5) },
+			{ 0xbcb40, new Size(4, 5) },
+			{ 0xbcdc0, new Size(4, 5) },
+			{ 0xbd040, new Size(4, 5) },
+			{ 0xbd2c0, new Size(4, 5) },
+			{ 0xbd540, new Size(4, 5) },
+			{ 0xbd7c0, new Size(4, 5) },
+			{ 0xbda40, new Size(4, 5) },
+			{ 0xbdcc0, new Size(4, 5) },
+			{ 0xbdf40, new Size(4, 5) },
+			{ 0xbe1c0, new Size(4, 5) },
+			{ 0xbe440, new Size(4, 5) },
+			{ 0x0208b, new Size(30, 1) }
 		};
 	}
 }
