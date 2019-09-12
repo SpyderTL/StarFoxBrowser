@@ -104,6 +104,8 @@ namespace StarFoxBrowser.Nodes
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Night", Resource = Resource, Offset = 0x18aea });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x18b0a });
 
+			palettes.Nodes.Add(new StarFoxPalette3 { Text = "Color Data", Resource = Resource, Offset = 0x1d440 });
+
 			//palettes.Nodes.Add(new StarFoxPalette2 { Text = "3D", Resource = Resource, Offset = 0x90000 });
 
 			var models = new TreeNode("Models");
@@ -577,12 +579,22 @@ namespace StarFoxBrowser.Nodes
 				var checksumCompliment = reader.ReadUInt16();
 				var checksum = reader.ReadUInt16();
 
+				stream.Position = 0x7fe4;
+
 				var coprocessorEnable = reader.ReadUInt16();
 				var breakHandler = reader.ReadUInt16();
 				var abortHandler = reader.ReadUInt16();
 				var nonMaskableInterruptHandler = reader.ReadUInt16();
 				var resetHandler = reader.ReadUInt16();
 				var irqHandler = reader.ReadUInt16();
+
+				stream.Position = 0x7ff4;
+
+				var coprocessorEnable2 = reader.ReadUInt16();
+				var abortHandler2 = reader.ReadUInt16();
+				var nonMaskableInterruptHandler2 = reader.ReadUInt16();
+				var resetHandler2 = reader.ReadUInt16();
+				var irqHandler2 = reader.ReadUInt16();
 
 				return new
 				{
@@ -601,7 +613,13 @@ namespace StarFoxBrowser.Nodes
 					AbortHandler = abortHandler,
 					NonmaskableInterruptHandler = nonMaskableInterruptHandler,
 					ResetHandler = resetHandler,
-					IrqHandler = irqHandler
+					IrqHandler = irqHandler,
+
+					EmulationCoprocessorEnable = coprocessorEnable2,
+					EmulationAbortHandler = abortHandler2,
+					EmulationNonmaskableInterruptHandler = nonMaskableInterruptHandler2,
+					EmulationResetHandler = resetHandler2,
+					EmulationIrqHandler = irqHandler2
 				};
 			}
 		}

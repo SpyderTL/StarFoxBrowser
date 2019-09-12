@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class StarFoxPalette : DataNode
+	public class StarFoxPalette3 : DataNode
 	{
 		public string Resource;
 		public int Offset;
@@ -26,7 +26,7 @@ namespace StarFoxBrowser.Nodes
 			{
 				stream.Position = Offset;
 
-				var palette = Enumerable.Range(0, 16)
+				var palette = Enumerable.Range(0, 256)
 					.Select(x => reader.ReadUInt16())
 					.Select(x => Color.FromArgb((x & 0x1f) << 3, (x >> 5 & 0x1f) << 3, (x >> 10) << 3))
 					.ToArray();
