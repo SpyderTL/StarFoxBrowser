@@ -253,6 +253,19 @@ namespace StarFoxBrowser.Nodes
 					.Select(n => (palette[n & 0x0f] + palette[n >> 4]) * 0.5f)
 					.ToArray();
 
+				// Load Texture Addresses
+				stream.Position = 0x18918;
+
+				var textureAddresses = Enumerable.Range(0, 0x60)
+					.Select(n => reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16)
+					.Select(x => ((x >> 16) * 0x8000) | (x & 0x7fff))
+					.ToArray();
+
+				var texturePositions = textureAddresses
+					.Select(x => new Vector2(((x - 0x90000) % 256) / 256.0f, ((x - 0x90000) / 256) / 256.0f))
+					.ToArray();
+
+				// Materials
 				stream.Position = MaterialOffset;
 
 				var colors = new Vector4[109];
@@ -304,6 +317,22 @@ namespace StarFoxBrowser.Nodes
 								var width = 32;
 								var height = 32;
 								var page = value2 >> 7;
+								var index = value2 & 0x7f;
+								textures[entry] = new Vector2[]
+								{
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x41:
+								// 64x64 Texture Flipped
+								width = 64;
+								height = 64;
+								page = value2 >> 7;
 								var columns = 256 / width;
 								var rows = 256 / height;
 								var column = (value2 & 0x7f) % columns;
@@ -318,46 +347,6 @@ namespace StarFoxBrowser.Nodes
 								};
 								texturePages[entry] = (byte)page;
 								break;
-
-								//textures[entry] = new Vector2[]
-								//{
-								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-								//};
-								//texturePages[entry] = (byte)page;
-								//break;
-
-							case 0x41:
-								// 64x64 Texture Flipped
-								width = 64;
-								height = 64;
-								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
-								textures[entry] = new Vector2[]
-								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
-								};
-								texturePages[entry] = (byte)page;
-								break;
-
-								//textures[entry] = new Vector2[]
-								//{
-								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-								//};
-								//texturePages[entry] = (byte)page;
-								//break;
 
 							case 0x42:
 								// 8x8 Texture Flipped
@@ -459,16 +448,6 @@ namespace StarFoxBrowser.Nodes
 								texturePages[entry] = (byte)page;
 								break;
 
-							//textures[entry] = new Vector2[]
-							//{
-							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-							//};
-							//texturePages[entry] = (byte)page;
-							//break;
-
 							case 0x47:
 								// 16x8 Texture
 								width = 16;
@@ -494,31 +473,16 @@ namespace StarFoxBrowser.Nodes
 								width = 32;
 								height = 32;
 								page = value2 >> 7;
-
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
-
-								//textures[entry] = new Vector2[]
-							//{
-							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (0 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value2].X + (1 * (width / 256.0f)), TexturePositions[value2].Y + (1 * (height / 256.0f))),
-							//};
-							//texturePages[entry] = (byte)page;
-							//break;
 
 							case 0x49:
 								// 64x64 Texture Polar Flipped
@@ -586,6 +550,22 @@ namespace StarFoxBrowser.Nodes
 								var width = 32;
 								var height = 32;
 								var page = value >> 7;
+								var index = value & 0x7f;
+								textures[entry] = new Vector2[]
+								{
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+								};
+								texturePages[entry] = (byte)page;
+								break;
+
+							case 0x41:
+								// 64x64 Texture Flipped
+								width = 64;
+								height = 64;
+								page = value >> 7;
 								var columns = 256 / width;
 								var rows = 256 / height;
 								var column = (value & 0x7f) % columns;
@@ -600,46 +580,6 @@ namespace StarFoxBrowser.Nodes
 								};
 								texturePages[entry] = (byte)page;
 								break;
-
-							//textures[entry] = new Vector2[]
-							//{
-							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-							//};
-							//texturePages[entry] = (byte)page;
-							//break;
-
-							case 0x41:
-								// 64x64 Texture Flipped
-								width = 64;
-								height = 64;
-								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
-								textures[entry] = new Vector2[]
-								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
-								};
-								texturePages[entry] = (byte)page;
-								break;
-
-								//textures[entry] = new Vector2[]
-								//{
-								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-								//};
-								//texturePages[entry] = (byte)page;
-								//break;
 
 							case 0x42:
 								// 8x8 Texture Flipped
@@ -741,16 +681,6 @@ namespace StarFoxBrowser.Nodes
 								texturePages[entry] = (byte)page;
 								break;
 
-							//textures[entry] = new Vector2[]
-							//{
-							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-							//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-							//};
-							//texturePages[entry] = (byte)page;
-							//break;
-
 							case 0x47:
 								// 16x8 Texture
 								width = 16;
@@ -776,30 +706,16 @@ namespace StarFoxBrowser.Nodes
 								width = 32;
 								height = 32;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
-
-								//textures[entry] = new Vector2[]
-								//{
-								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (0 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (0 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-								//	new Vector2(TexturePositions[value].X + (1 * (width / 256.0f)), TexturePositions[value].Y + (1 * (height / 256.0f))),
-								//};
-								//texturePages[entry] = (byte)page;
-								//break;
 
 							case 0x49:
 								// 64x64 Texture Polar Flipped
@@ -1121,270 +1037,270 @@ namespace StarFoxBrowser.Nodes
 			}
 		}
 
-		private readonly Vector2[] TexturePositions = new Vector2[]
-		{
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			// Fox Logo
-			new Vector2(6 * (32.0f / 256), 0 * (32.0f / 256)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			// Nova Bomb 1
-			new Vector2(1 * (32.0f / 256), 3 * (32.0f / 256)),
-			// Nova Bomb 2
-			new Vector2(2 * (32.0f / 256), 3 * (32.0f / 256)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			// Nova Bomb 3
-			new Vector2(4 * (32.0f / 256), 3 * (32.0f / 256)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			// Andross
-			new Vector2(3 * (64.0f / 256), 0 * (64.0f / 256)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			// Black Hole
-			new Vector2(2 * (32.0f / 256), 5 * (32.0f / 256)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-			new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		};
+		//private readonly Vector2[] TexturePositions = new Vector2[]
+		//{
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	// Fox Logo
+		//	new Vector2(6 * (32.0f / 256), 0 * (32.0f / 256)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	// Nova Bomb 1
+		//	new Vector2(1 * (32.0f / 256), 3 * (32.0f / 256)),
+		//	// Nova Bomb 2
+		//	new Vector2(2 * (32.0f / 256), 3 * (32.0f / 256)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	// Nova Bomb 3
+		//	new Vector2(4 * (32.0f / 256), 3 * (32.0f / 256)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	// Andross
+		//	new Vector2(3 * (64.0f / 256), 0 * (64.0f / 256)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	// Black Hole
+		//	new Vector2(2 * (32.0f / 256), 5 * (32.0f / 256)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
+		//};
 	}
 }

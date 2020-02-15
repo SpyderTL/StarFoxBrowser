@@ -87,13 +87,22 @@ namespace StarFoxBrowser.Nodes
 			materials.Nodes.Add(new StarFoxSurface { Text = "8899", Resource = Resource, Offset = 0x18899 });
 			materials.Nodes.Add(new StarFoxSurface { Text = "88d0", Resource = Resource, Offset = 0x188d0 });
 
+			var textureAddresses = new TreeNode("Texture Addresses");
 
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Space", Resource = Resource, Offset = 0x181f0 });
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Space", Resource = Resource, Offset = 0x18213 });
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Day", Resource = Resource, Offset = 0x182ed });
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x183c1 });
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x18481 });
-			//surfaces.Nodes.Add(new StarFoxSurface { Text = "Night", Resource = Resource, Offset = 0x18af1 });
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				stream.Position = TextureTableAddress;
+
+				for (int x = 0; x < 0x60; x++)
+				{
+					var data = reader.ReadBytes(3);
+
+					var texture = data[2] << 16 | data[1] << 8 | data[0];
+
+					textureAddresses.Nodes.Add(x.ToString("X2") + ": " + texture.ToString("X4"));
+				}
+			}
 
 			var palettes = new TreeNode("Palettes");
 
@@ -281,6 +290,7 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(models);
 			Nodes.Add(behaviors);
 			Nodes.Add(textures);
+			Nodes.Add(textureAddresses);
 			Nodes.Add(levels);
 			Nodes.Add(audioClips);
 
@@ -627,6 +637,7 @@ namespace StarFoxBrowser.Nodes
 		public static readonly int LevelTableAddress = 0x28000;
 		public static readonly int BehaviorTableAddress = 0x2840;
 		public static readonly int ModelTableAddress = 0x264b;
+		public static readonly int TextureTableAddress = 0x18918;
 
 		public static readonly int[] ObjectIndexes = new int[255];
 		public static readonly int[] BehaviorIndexes = new int[255];
