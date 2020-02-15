@@ -256,7 +256,7 @@ namespace StarFoxBrowser.Nodes
 				// Load Texture Addresses
 				stream.Position = 0x18918;
 
-				var textureAddresses = Enumerable.Range(0, 0x60)
+				var textureAddresses = Enumerable.Range(0, 0x80)
 					.Select(n => reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16)
 					.Select(x => ((x >> 16) * 0x8000) | (x & 0x7fff))
 					.ToArray();
@@ -333,17 +333,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
-								var columns = 256 / width;
-								var rows = 256 / height;
-								var column = (value2 & 0x7f) % columns;
-								var row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -353,17 +349,13 @@ namespace StarFoxBrowser.Nodes
 								width = 8;
 								height = 8;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -373,17 +365,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 16;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -393,17 +381,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 16;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -413,17 +397,13 @@ namespace StarFoxBrowser.Nodes
 								width = 32;
 								height = 8;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -433,17 +413,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -453,17 +429,13 @@ namespace StarFoxBrowser.Nodes
 								width = 16;
 								height = 8;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -489,17 +461,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -509,17 +477,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value2 & 0x7f) % columns;
-								row = (value2 & 0x7f) / columns;
-
+								index = value2 & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -566,17 +530,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value >> 7;
-								var columns = 256 / width;
-								var rows = 256 / height;
-								var column = (value & 0x7f) % columns;
-								var row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -586,17 +546,13 @@ namespace StarFoxBrowser.Nodes
 								width = 8;
 								height = 8;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -606,17 +562,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 16;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -626,17 +578,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 16;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -646,17 +594,13 @@ namespace StarFoxBrowser.Nodes
 								width = 32;
 								height = 8;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -666,17 +610,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -686,17 +626,13 @@ namespace StarFoxBrowser.Nodes
 								width = 16;
 								height = 8;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -722,17 +658,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
@@ -742,17 +674,13 @@ namespace StarFoxBrowser.Nodes
 								width = 64;
 								height = 64;
 								page = value >> 7;
-								columns = 256 / width;
-								rows = 256 / height;
-								column = (value & 0x7f) % columns;
-								row = (value & 0x7f) / columns;
-
+								index = value & 0x7f;
 								textures[entry] = new Vector2[]
 								{
-									new Vector2((column + 1) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 0) / (float)rows),
-									new Vector2((column + 0) / (float)columns, (row + 1) / (float)rows),
-									new Vector2((column + 1) / (float)columns, (row + 1) / (float)rows),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (0 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (0 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
+									new Vector2(texturePositions[index].X + (1 * (width / 256.0f)), texturePositions[index].Y + (1 * (height / 256.0f))),
 								};
 								texturePages[entry] = (byte)page;
 								break;
