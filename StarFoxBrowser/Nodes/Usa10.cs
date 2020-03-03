@@ -23,6 +23,11 @@ namespace StarFoxBrowser.Nodes
 			foreach (var image in ImageNames)
 				images.Nodes.Add(new StarFoxImage { Text = image.Value, Resource = Resource, Offset = image.Key, Size = ImageSizes[image.Key] });
 
+			var fonts = new TreeNode("Fonts");
+
+			foreach (var font in FontNames)
+				fonts.Nodes.Add(new StarFoxFont { Text = font.Value, Resource = Resource, Offset = font.Key, Size = FontSizes[font.Key] });
+
 			var materials = new TreeNode("Materials");
 
 			materials.Nodes.Add(new StarFoxSurface { Text = "0000", Resource = Resource, Offset = 0x10000 });
@@ -165,7 +170,10 @@ namespace StarFoxBrowser.Nodes
 
 			behaviors.Nodes.Add(indexedBehaviors);
 
-			//models.Nodes.Add(new Behavior { Text = "", Resource = Resource, Offset = 0x2840 });
+			foreach (var behavior in BehaviorNames)
+			{
+				behaviors.Nodes.Add(behavior.Key.ToString("X6") + ": " + behavior.Value);
+			}
 
 			var textures = new TreeNode("Textures");
 
@@ -285,6 +293,7 @@ namespace StarFoxBrowser.Nodes
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "ea73b", Resource = Resource, Offset = 0xea73b });
 
 			Nodes.Add(images);
+			Nodes.Add(fonts);
 			Nodes.Add(materials);
 			Nodes.Add(palettes);
 			Nodes.Add(models);
@@ -1552,7 +1561,13 @@ namespace StarFoxBrowser.Nodes
 			{ 0xbdf40, "Andross" },
 			{ 0xbe1c0, "Andross 2" },
 			{ 0xbe440, "Communication 6" },
-			{ 0x0208b, "Map Sprites" }
+			{ 0x0208b, "Map Sprites" },
+		};
+
+		public static readonly Dictionary<int, string> FontNames = new Dictionary<int, string>
+		{
+			{ 0x01099, "Debug Font" },
+			{ 0x0d996, "Font" }
 		};
 
 		public static readonly Dictionary<int, Size> ImageSizes = new Dictionary<int, Size>
@@ -1575,7 +1590,13 @@ namespace StarFoxBrowser.Nodes
 			{ 0xbdf40, new Size(4, 5) },
 			{ 0xbe1c0, new Size(4, 5) },
 			{ 0xbe440, new Size(4, 5) },
-			{ 0x0208b, new Size(30, 1) }
+			{ 0x0208b, new Size(30, 1) },
+		};
+
+		public static readonly Dictionary<int, Size> FontSizes = new Dictionary<int, Size>
+		{
+			{ 0x01099, new Size(64, 1) },
+			{ 0x0d996, new Size(64, 3) }
 		};
 	}
 }

@@ -32,51 +32,56 @@ namespace StarFoxBrowser.Nodes
 					{
 						case 0x00:
 							// 3D Object (16-bit vector) (8-bit lookup table index)
-							//reader.ReadBytes(10);
-							var z = reader.ReadInt16();
+							int timer = reader.ReadUInt16();
 							var x = reader.ReadInt16();
 							var y = reader.ReadInt16();
-							var timer = reader.ReadUInt16();
+							var z = reader.ReadInt16();
 							var objectIndex = reader.ReadByte();
 							var behaviorIndex = reader.ReadByte();
 							var behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							var behaviorName = Usa10.BehaviorNames[behaviorID];
-							objectIndex = Usa10.BehaviorObjects[behaviorIndex];
-							var behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							var objectName = "Unknown";
-							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
+							Usa10.ModelNames.TryGetValue(Usa10.ObjectIndexes[objectIndex], out objectName);
 
 							Nodes.Add("00 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x02:
 							// End Level
-							Nodes.Add("End Level");
+							Nodes.Add("02 - End Level");
 							read = false;
 							break;
 
 						case 0x04:
 							// Loop Segment
-							//reader.ReadBytes(4);
 							var loop = reader.ReadUInt16();
 							var times = reader.ReadUInt16();
 
 							Nodes.Add("04 - Loop Segment: " + loop + " (Times " + times + ")");
 							break;
 
+						case 0x08:
+							// No Op
+							Nodes.Add("08 - No Op");
+							break;
+
 						case 0x0a:
-							//reader.ReadBytes(15);
-							z = reader.ReadInt16();
+							// Group Object
+							timer = reader.ReadUInt16();
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
-							timer = reader.ReadUInt16();
+							z = reader.ReadInt16();
 							var objectID = reader.ReadUInt16();
-							var group = reader.ReadBytes(5);
+							var behaviorAddress = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+							var groupAddress = reader.ReadByte() | reader.ReadByte() << 8;
+							objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(objectID, out objectName);
 
-							Nodes.Add("0a - Random Object: " + objectID.ToString("X4") + " (" + x + ", " + y + ", " + z + ")");
+							Nodes.Add("0a - Group Object: " + objectID.ToString("X4") + " " + objectName + " (" + x + ", " + y + ", " + z + ")");
 							break;
 
 						case 0x0c:
+							// Random Object Data
 							reader.ReadBytes(4);
 							Nodes.Add("0c - Random Object Data (4 bytes)");
 							break;
@@ -94,8 +99,8 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x12:
 							// Z Timer (16-bit)
-							reader.ReadUInt16();
-							Nodes.Add("12 - Z-Timer");
+							timer = reader.ReadUInt16();
+							Nodes.Add("12 - Z-Timer: " + timer);
 							break;
 
 						case 0x14:
@@ -104,15 +109,68 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("14 - Change Music: " + music.ToString("X2"));
 							break;
 
+						case 0x16:
+							// Disable Surface Point Grid
+							Nodes.Add("16 - Disable Surface Point Grid");
+							break;
+
+						case 0x18:
+							// Enable Surface Point Grid
+							Nodes.Add("18 - Enable Surface Point Grid");
+							break;
+
+						case 0x1A:
+							// Enable Point Stars
+							Nodes.Add("1A - Enable Point Stars");
+							break;
+
+						case 0x1C:
+							// Unknown
+							var unknown = reader.ReadByte();
+							Nodes.Add("1C - Unknown " + unknown.ToString("X2"));
+							break;
+
+						case 0x1E:
+							// Enable Background Rotation
+							Nodes.Add("1E - Enable Background Rotation");
+							break;
+
+						case 0x20:
+							// Disable Background Rotation
+							Nodes.Add("20 - Disable Background Rotation");
+							break;
+
+						case 0x22:
+							// Unknown
+							Nodes.Add("22 - Unknown");
+							break;
+
+						case 0x24:
+							// Unknown
+							Nodes.Add("24 - Unknown");
+							break;
+
 						case 0x26:
-							reader.ReadBytes(11);
-							Nodes.Add("26 - Data");
+							// 3D Object With Rotation
+							timer = reader.ReadUInt16();
+							x = reader.ReadInt16();
+							y = reader.ReadInt16();
+							z = reader.ReadInt16();
+							objectIndex = reader.ReadByte();
+							behaviorIndex = reader.ReadByte();
+							var rotationZ = reader.ReadByte();
+							behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
+							behaviorName = Usa10.BehaviorNames[behaviorID];
+							objectName = "Unknown";
+							Usa10.ModelNames.TryGetValue(Usa10.ObjectIndexes[objectIndex], out objectName);
+
+							Nodes.Add("26 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Rotation: " + rotationZ + " Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x28:
 							// Warp w/ Return
-							var warp = reader.ReadBytes(3);
-							Nodes.Add("28 - Warp and Return: " + string.Join(string.Empty, warp.Reverse().Select(v => v.ToString("X2"))));
+							var warp = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+							Nodes.Add("28 - Warp and Return: " + warp.ToString("X6"));
 							break;
 
 						case 0x2a:
@@ -122,51 +180,97 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x2c:
-							// Warp If Condition
-							reader.ReadBytes(5);
-							//unknown = reader.ReadBytes(10);
-							Nodes.Add("2c - Warp If True");
+							// Call Native Function
+							var address = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
+
+							var condition = reader.ReadUInt16();
+
+							Nodes.Add("2c - Conditional Warp: " + address.ToString("X6") + " Condition: " + condition.ToString("X4"));
 							break;
 
 						case 0x2e:
 							// Warp
-							warp = reader.ReadBytes(3);
-							Nodes.Add("2e - Warp: " + string.Join(string.Empty, warp.Reverse().Select(v => v.ToString("X2"))));
+							warp = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+							Nodes.Add("2e - Warp: " + warp.ToString("X6"));
+							read = false;
+							break;
+
+						case 0x30:
+							// Set X Rotation
+							x = reader.ReadByte();
+
+							Nodes.Add("30 - Set X Rotation: " + x);
+							break;
+
+						case 0x32:
+							// Set Y Rotation
+							y = reader.ReadByte();
+
+							Nodes.Add("32 - Set Y Rotation: " + y);
+							break;
+
+						case 0x34:
+							// Set Z Rotation
+							z = reader.ReadByte();
+
+							Nodes.Add("34 - Set Z Rotation: " + z);
 							break;
 
 						case 0x36:
-							// Rotate Previous Object
-							//reader.ReadBytes(3);
-							var mode = reader.ReadByte();
-							var angle = reader.ReadUInt16();
-							Nodes.Add("36 - Rotate Previous Object (Mode: " + mode + " Angle: " + angle + ")");
+							// Set Byte Property
+							var offset = reader.ReadUInt16();
+							var value = reader.ReadByte();
+							Nodes.Add("36 - Set Byte Property: Offset " + offset.ToString("X4") + " Value: " + value);
 							break;
 
 						case 0x38:
-							reader.ReadBytes(4);
-							Nodes.Add("38 - Define Active Area For Previous Object");
+							// Set Short Property
+							offset = reader.ReadUInt16();
+							var value2 = reader.ReadByte() | reader.ReadByte() << 8;
+							Nodes.Add("36 - Set Short Property: Offset " + offset.ToString("X4") + " Value: " + value2.ToString("X4"));
+							break;
+
+						case 0x3a:
+							// Set Long Property
+							offset = reader.ReadUInt16();
+							var value3 = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
+							Nodes.Add("36 - Set Long Property: Offset " + offset.ToString("X4") + " Value: " + value3.ToString("X6"));
 							break;
 
 						case 0x3c:
-							x = reader.ReadByte();
-							y = reader.ReadByte();
-							z = reader.ReadByte();
-
-							Nodes.Add("3c - Offset Z-Position (" + x + ", " + y + ", " + z + ")");
+							// Set Byte Extended Property
+							offset = reader.ReadUInt16();
+							value = reader.ReadByte();
+							Nodes.Add("36 - Set Byte Extended Property: Offset " + offset.ToString("X4") + " Value: " + value);
 							break;
 
 						case 0x3e:
-							reader.ReadBytes(4);
-							Nodes.Add("3e - Unknown");
+							// Set Short Extended Property
+							offset = reader.ReadUInt16();
+							value2 = reader.ReadByte() | (reader.ReadByte() << 8);
+							Nodes.Add("36 - Set Short Extended Property: Offset " + offset.ToString("X4") + " Value: " + value2.ToString("X4"));
+							break;
+
+						case 0x40:
+							// Set Long Extended Property
+							offset = reader.ReadUInt16();
+							value3 = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
+							Nodes.Add("36 - Set Long Extended Property: Offset " + offset.ToString("X4") + " Value: " + value3.ToString("X6"));
 							break;
 
 						case 0x42:
-							Nodes.Add("42 - Unknown");
+							// Fade From Black (Slow)
+							Nodes.Add("42 - Fade From Black (Slow)");
 							break;
 
 						case 0x44:
-							// Fade Out
-							Nodes.Add("44 - Fade Out");
+							// Fade To Black (Slow)
+							Nodes.Add("44 - Fade To Black (Slow)");
+							break;
+
+						case 0x46:
+							reader.ReadBytes(6);
+							Nodes.Add("46 - Unknown");
 							break;
 
 						case 0x48:
@@ -176,7 +280,7 @@ namespace StarFoxBrowser.Nodes
 
 						case 0x4a:
 							reader.ReadBytes(3);
-							Nodes.Add("4a - Attach Parent To Previous Object");
+							Nodes.Add("4a - Unknown");
 							break;
 
 						case 0x4c:
@@ -184,11 +288,27 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x4e:
-							Nodes.Add("4e - Unknown");
+							Nodes.Add("4e - Fade From Black (Fast)");
 							break;
 
 						case 0x50:
-							Nodes.Add("50 - Unknown");
+							Nodes.Add("50 - Fade To Black (Fast)");
+							break;
+
+						case 0x52:
+							Nodes.Add("52 - Disable Screen");
+							break;
+
+						case 0x54:
+							Nodes.Add("54 - Enable Screen");
+							break;
+
+						case 0x56:
+							Nodes.Add("56 - Disable Foreground Rotation");
+							break;
+
+						case 0x58:
+							Nodes.Add("58 - Enable Foreground Rotation");
 							break;
 
 						case 0x5a:
@@ -196,23 +316,53 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x5c:
-							//reader.ReadBytes(4);
-							var value = reader.ReadByte();
-							var address = reader.ReadBytes(3);
+							// Set SNES RAM Byte
+							value = reader.ReadByte();
+							address = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
 
-							Nodes.Add("5c - Set SNES RAM (Value: " + value + " Address: " + string.Join(string.Empty, address.Reverse().Select(v => v.ToString("X2"))) + ")");
+							Nodes.Add("5c - Set SNES RAM Byte (Value: " + value + " Address: " + address.ToString("X6")  + ")");
 							break;
 
 						case 0x5e:
-							// Screen Transition
-							var data = reader.ReadBytes(5);
-							Nodes.Add("5e - Screen Transition: " + string.Join(" ", data.Select(v => v.ToString("X2"))));
+							// Set SNES RAM Short
+							value2 = reader.ReadByte() | reader.ReadByte() << 8;
+							address = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+
+							Nodes.Add("5c - Set SNES RAM Short (Value: " + value2.ToString("X4") + " Address: " + address.ToString("X6") + ")");
+							break;
+
+						case 0x60:
+							// Set SNES RAM Long
+							value3 = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+							address = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+
+							Nodes.Add("5c - Set SNES RAM Short (Value: " + value3.ToString("X6") + " Address: " + address.ToString("X6") + ")");
+							break;
+
+						case 0x62:
+							// Unknown
+							value3 = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+							address = reader.ReadByte() | reader.ReadByte() << 8 | reader.ReadByte() << 16;
+
+							Nodes.Add("62 - Unknown");
 							break;
 
 						case 0x64:
-							// Reset Camera
+							// Load Preset
 							value = reader.ReadByte();
-							Nodes.Add("64 - Reset Camera: " + value.ToString("X2"));
+							Nodes.Add("64 - Load Preset: " + value.ToString("X2"));
+							break;
+
+						case 0x66:
+							// Initialize Preset
+							value = reader.ReadByte();
+							Nodes.Add("66 - Initialize Preset: " + value.ToString("X2"));
+							break;
+
+						case 0x68:
+							// Unknown
+							reader.ReadBytes(5);
+							Nodes.Add("68 - Unknown");
 							break;
 
 						case 0x6a:
@@ -222,19 +372,18 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x6c:
-							// Invalid
-							Nodes.Add("6c - Invalid");
+							// Unknown
+							Nodes.Add("6c - Unknown");
 							break;
 
 						case 0x6e:
-							// Invalid
-							Nodes.Add("6e - Invalid");
+							// Unknown
+							Nodes.Add("6e - Unknown");
 							break;
 
 						case 0x70:
 							// 3D Object (8-bit vector) (8-bit lookup table index)
-							//reader.ReadBytes(6);
-							timer = reader.ReadByte();
+							timer = reader.ReadByte() << 4;
 							z = reader.ReadByte();
 							x = reader.ReadSByte();
 							y = reader.ReadSByte();
@@ -243,16 +392,14 @@ namespace StarFoxBrowser.Nodes
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
 							objectIndex = Usa10.BehaviorObjects[behavior[0]];
-							behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "Unknown";
-							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
+							Usa10.ModelNames.TryGetValue(Usa10.ObjectIndexes[objectIndex], out objectName);
 
-							Nodes.Add("70 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							Nodes.Add("70 - 3D Object: " + objectIndex + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x74:
 							// 3D Object Behavior (16-bit vector) (8-bit behavior lookup index)
-							//reader.ReadBytes(9);
 							timer = reader.ReadUInt16();
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
@@ -261,21 +408,19 @@ namespace StarFoxBrowser.Nodes
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
 							objectIndex = Usa10.BehaviorObjects[behavior[0]];
-							behaviorObject = Usa10.ObjectIndexes[objectIndex];
+							var behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add("74 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(string.Empty, behavior.Select(v => v.ToString("X2"))));
+							Nodes.Add("74 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x76:
 							// 3D Object (8-bit vector)
-							//reader.ReadBytes(5);
-							z = reader.ReadByte();
+							timer = reader.ReadByte() << 4;
 							x = reader.ReadSByte();
 							y = reader.ReadSByte();
-							//timer = reader.ReadUInt16();
-							timer = reader.ReadByte();
+							z = reader.ReadByte();
 							behavior = reader.ReadBytes(1);
 							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
@@ -284,7 +429,7 @@ namespace StarFoxBrowser.Nodes
 							objectName = "Unknown";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add("76 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(v => v.ToString("X2"))) + " (" + behaviorName + ")");
+							Nodes.Add("76 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x78:
@@ -312,13 +457,13 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x7a:
-							data = reader.ReadBytes(3);
-							Nodes.Add("7a - Transition: " + string.Join(" ", data.Select(d => d.ToString("X2"))));
+							address = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
+							Nodes.Add("7a - Transition: " + address.ToString("X6"));
 							break;
 
 						case 0x82:
 							// Unknown
-							data = reader.ReadBytes(1);
+							var data = reader.ReadBytes(1);
 							Nodes.Add("82 - Unknown: " + string.Join(" ", data.Select(d => d.ToString("X2"))));
 							break;
 
@@ -330,10 +475,10 @@ namespace StarFoxBrowser.Nodes
 						case 0x86:
 							// 3D Object (16-bit vector) (16-bit address)
 							//reader.ReadBytes(13);
-							z = reader.ReadInt16();
+							timer = reader.ReadUInt16();
 							x = reader.ReadInt16();
 							y = reader.ReadInt16();
-							timer = reader.ReadUInt16();
+							z = reader.ReadInt16();
 							objectID = reader.ReadUInt16();
 							behavior = reader.ReadBytes(3);
 
@@ -348,15 +493,22 @@ namespace StarFoxBrowser.Nodes
 							Nodes.Add("86 - 3D Object: " + objectID.ToString("X4") + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + string.Join(" ", behavior.Reverse().Select(d => d.ToString("X2"))) + " (" + behaviorName + ")");
 							break;
 
+						case 0x88:
+							// Change Music
+							value = reader.ReadByte();
+							Nodes.Add("88 - Set Music:" + value);
+							break;
+
 						case 0x8a:
 							// Z Timer (8-bit)
-							value = reader.ReadByte();
-							Nodes.Add("8a - Z-Timer:" + value);
+							value2 = reader.ReadByte() << 4;
+							Nodes.Add("8a - Z-Timer: " + value2);
 							break;
 
 						case 0x8c:
-							behavior = reader.ReadBytes(2);
-							Nodes.Add("8c - Attach Behavior To Previous Object:" + string.Join(" ", behavior.Select(d => d.ToString("X2"))));
+							// Set Event
+							value2 = reader.ReadByte() | reader.ReadByte() << 8;
+							Nodes.Add("8c - Attach Behavior To Previous Object:" + value2.ToString("X4"));
 							break;
 
 						default:

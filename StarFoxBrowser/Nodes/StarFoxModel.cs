@@ -457,7 +457,7 @@ namespace StarFoxBrowser.Nodes
 								break;
 
 							case 0x49:
-								// 64x64 Texture Polar Flipped
+								// 64x64 Texture Polar -45 Degrees
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
@@ -473,7 +473,7 @@ namespace StarFoxBrowser.Nodes
 								break;
 
 							case 0x4a:
-								// 64x64 Texture Polar
+								// 64x64 Texture Polar 45 Degrees
 								width = 64;
 								height = 64;
 								page = value2 >> 7;
@@ -654,7 +654,7 @@ namespace StarFoxBrowser.Nodes
 								break;
 
 							case 0x49:
-								// 64x64 Texture Polar Flipped
+								// 64x64 Texture Polar -45 Degrees
 								width = 64;
 								height = 64;
 								page = value >> 7;
@@ -670,7 +670,7 @@ namespace StarFoxBrowser.Nodes
 								break;
 
 							case 0x4a:
-								// 64x64 Texture Polar
+								// 64x64 Texture Polar 45 Degrees
 								width = 64;
 								height = 64;
 								page = value >> 7;
@@ -902,7 +902,6 @@ namespace StarFoxBrowser.Nodes
 											texture1Faces.Add(new Models.TextureFace
 											{
 												Indices = Enumerable.Range(0, indices.Length).ToArray(),
-												//Indices = indices,
 												PrimitiveCount = vertexCount - 2,
 												PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
 												Vertices = indices.Select((x, i) => new Models.TextureVertex
@@ -910,11 +909,6 @@ namespace StarFoxBrowser.Nodes
 													Position = vectors[x % vectors.Count],
 													TexturePosition = textures[colorNumber][i]
 												}).ToArray()
-												//Vertices = vectors.Select((vector, index) => new Models.TextureVertex
-												//{
-												//	Position = vector,
-												//	TexturePosition = textures[colorNumber][index % 4]
-												//}).ToArray()
 											});
 										}
 										else
@@ -922,7 +916,6 @@ namespace StarFoxBrowser.Nodes
 											texture2Faces.Add(new Models.TextureFace
 											{
 												Indices = Enumerable.Range(0, indices.Length).ToArray(),
-												//Indices = indices,
 												PrimitiveCount = vertexCount - 2,
 												PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
 												Vertices = indices.Select((x, i) => new Models.TextureVertex
@@ -930,11 +923,6 @@ namespace StarFoxBrowser.Nodes
 													Position = vectors[x % vectors.Count],
 													TexturePosition = textures[colorNumber][i]
 												}).ToArray()
-												//Vertices = vectors.Select((vector, index) => new Models.TextureVertex
-												//{
-												//	Position = vector,
-												//	TexturePosition = textures[colorNumber][index % 4]
-												//}).ToArray()
 											});
 										}
 										break;

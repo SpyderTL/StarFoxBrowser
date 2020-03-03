@@ -68,6 +68,7 @@
     <Compile Include="Nodes\Face.cs" />
     <Compile Include="Nodes\BspTreeNode.cs" />
     <Compile Include="Nodes\IndexList.cs" />
+    <Compile Include="Nodes\StarFoxFont.cs" />
     <Compile Include="Nodes\StarFoxLevel.cs" />
     <Compile Include="Nodes\StarFoxAnimatedSurface.cs" />
     <Compile Include="Nodes\StarFoxAudioClip.cs" />
