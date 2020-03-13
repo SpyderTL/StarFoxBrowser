@@ -38,9 +38,9 @@ namespace StarFoxBrowser.Nodes
 				var id3 = reader.ReadUInt16();
 				var id4 = reader.ReadUInt16();
 
-				Nodes.Add(new StarFoxModel { Text = "Space", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aca, MaterialOffset = 0x10000 + material });
-				Nodes.Add(new StarFoxModel { Text = "Night", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aea, MaterialOffset = 0x10000 + material });
-				Nodes.Add(new StarFoxModel { Text = "Day", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18b0a, MaterialOffset = 0x10000 + material });
+				Nodes.Add(new StarFoxModel { Text = "Space", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aca, MaterialOffset = 0x10000 + material, Scale = scale });
+				Nodes.Add(new StarFoxModel { Text = "Night", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18aea, MaterialOffset = 0x10000 + material, Scale = scale });
+				Nodes.Add(new StarFoxModel { Text = "Day", Resource = Resource, VertexOffset = ((bank - 1) * 0x8000) + verteces, FaceOffset = ((bank - 1) * 0x8000) + faces, PaletteOffset = 0x18b0a, MaterialOffset = 0x10000 + material, Scale = scale });
 			}
 		}
 

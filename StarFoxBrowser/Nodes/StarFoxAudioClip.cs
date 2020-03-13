@@ -21,19 +21,6 @@ namespace StarFoxBrowser.Nodes
 
 		public override object GetProperties()
 		{
-			//using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
-			//using (var reader = new BinaryReader(stream))
-			//{
-			//	stream.Position = Offset;
-
-			//	var palette = Enumerable.Range(0, 16)
-			//		.Select(n => reader.ReadUInt16())
-			//		.Select(n => Color.FromArgb((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3))
-			//		.ToArray();
-
-			//	return palette;
-			//}
-
 			return null;
 		}
 	}

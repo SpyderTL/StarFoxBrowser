@@ -269,13 +269,15 @@ technique Main {
 				ColorEffect.BeginPass(0);
 
 				Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+				//Device.SetRenderState(RenderState.CullMode, Cull.None);
 
 				// Update Camera
 				var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
 
-				var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 1000);
+				var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 10000);
 				//var view = Matrix.LookAtLH(new Vector3(0, 80, -150), new Vector3(0, 50, 0), Vector3.UnitY);
-				var view = Matrix.LookAtLH(new Vector3(0, 0, -150), new Vector3(0, 50, 0), Vector3.UnitY);
+				//var view = Matrix.LookAtLH(new Vector3(0, 0, -150), new Vector3(0, 50, 0), Vector3.UnitY);
+				var view = Matrix.LookAtLH(new Vector3(0, 250, -1000), new Vector3(0, 50, 0), Vector3.UnitY);
 
 				// Draw Model
 				Device.VertexDeclaration = ColorVertexDeclaration;

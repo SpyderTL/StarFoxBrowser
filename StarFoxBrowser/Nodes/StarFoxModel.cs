@@ -16,201 +16,430 @@ namespace StarFoxBrowser.Nodes
 		public int FaceOffset;
 		public int PaletteOffset;
 		public int MaterialOffset;
+		public int Scale;
 
 		public override void Reload()
 		{
 			Nodes.Clear();
 
-			if (VertexOffset <= 0)
-				return;
-
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
-				stream.Position = VertexOffset;
-
-				var read = true;
-
-				while (read)
+				if (VertexOffset != 0)
 				{
-					var listType = reader.ReadByte();
+					var vertecesNode = Nodes.Add("Verteces");
 
-					switch (listType)
+					stream.Position = VertexOffset;
+
+					var read = true;
+
+					while (read)
 					{
-						case 0x04:
-							// Vertex List (sbyte)
-							var vertexCount = reader.ReadByte();
+						var listType = reader.ReadByte();
 
-							var verteces = Enumerable.Range(0, vertexCount)
-								.Select(n => new Vertex
-								{
-									X = reader.ReadSByte(),
-									Y = reader.ReadSByte(),
-									Z = reader.ReadSByte()
-								}).ToArray();
+						switch (listType)
+						{
+							case 0x04:
+								// Vertex List (sbyte)
+								var vertexCount = reader.ReadByte();
 
-							Nodes.Add(new VertexList { Text = "04 - Vertex List", Verteces = verteces });
-							break;
+								var verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadSByte() * 16,
+										Y = reader.ReadSByte() * 16,
+										Z = reader.ReadSByte() * 16
+									}).ToArray();
 
-						case 0x08:
-							// Vertex List (short)
-							vertexCount = reader.ReadByte();
+								vertecesNode.Nodes.Add(new VertexList { Text = "04 - Vertex List", Verteces = verteces });
+								break;
 
-							verteces = Enumerable.Range(0, vertexCount)
-								.Select(n => new Vertex
-								{
-									X = reader.ReadInt16(),
-									Y = reader.ReadInt16(),
-									Z = reader.ReadInt16()
-								}).ToArray();
+							case 0x08:
+								// Vertex List (short)
+								vertexCount = reader.ReadByte();
 
-							Nodes.Add(new VertexList { Text = "08 - Vertex List (16-bit)", Verteces = verteces });
-							break;
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadInt16(),
+										Y = reader.ReadInt16(),
+										Z = reader.ReadInt16()
+									}).ToArray();
 
-						case 0x38:
-							// Mirrored Vertex List (sbyte)
-							vertexCount = reader.ReadByte();
+								vertecesNode.Nodes.Add(new VertexList { Text = "08 - Vertex List (16-bit)", Verteces = verteces });
+								break;
 
-							verteces = Enumerable.Range(0, vertexCount)
-								.Select(n => new Vertex
-								{
-									X = reader.ReadSByte(),
-									Y = reader.ReadSByte(),
-									Z = reader.ReadSByte()
-								}).ToArray();
+							case 0x38:
+								// Mirrored Vertex List (sbyte)
+								vertexCount = reader.ReadByte();
 
-							Nodes.Add(new VertexList { Text = "38 - Mirrored Vertex List", Verteces = verteces });
-							break;
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadSByte() * 16,
+										Y = reader.ReadSByte() * 16,
+										Z = reader.ReadSByte() * 16
+									}).ToArray();
 
-						case 0x1c:
-							// Animation
-							var frameCount = reader.ReadByte();
-							var frameOffsets = Enumerable.Range(0, frameCount)
-								.Select(n => reader.ReadInt16())
-								.ToArray();
+								vertecesNode.Nodes.Add(new VertexList { Text = "38 - Mirrored Vertex List", Verteces = verteces });
+								break;
 
-							Nodes.Add(new Animation { Text = "1C - Animation", Offsets = frameOffsets });
-							break;
+							case 0x1c:
+								// Animation
+								var frameCount = reader.ReadByte();
+								var frameOffsets = Enumerable.Range(0, frameCount)
+									.Select(n => reader.ReadInt16())
+									.ToArray();
 
-						case 0x20:
-							// Jump
-							var offset = reader.ReadInt16();
+								vertecesNode.Nodes.Add(new Animation { Text = "1C - Animation", Offsets = frameOffsets });
+								break;
 
-							Nodes.Add("20 - Jump (" + offset.ToString() + ")");
-							break;
+							case 0x20:
+								// Jump
+								var offset = reader.ReadInt16();
 
-						case 0x34:
-							// Mirrored Vertex List (short)
-							vertexCount = reader.ReadByte();
+								vertecesNode.Nodes.Add("20 - Jump (" + offset.ToString() + ")");
+								break;
 
-							verteces = Enumerable.Range(0, vertexCount)
-								.Select(n => new Vertex
-								{
-									X = reader.ReadInt16(),
-									Y = reader.ReadInt16(),
-									Z = reader.ReadInt16()
-								}).ToArray();
+							case 0x34:
+								// Mirrored Vertex List (short)
+								vertexCount = reader.ReadByte();
 
-							Nodes.Add(new VertexList { Text = "34 - Mirrored Vertex List (16-bit)", Verteces = verteces });
-							break;
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadInt16(),
+										Y = reader.ReadInt16(),
+										Z = reader.ReadInt16()
+									}).ToArray();
 
-						case 0x0c:
-							Nodes.Add("0C - End Vertex List");
-							break;
+								vertecesNode.Nodes.Add(new VertexList { Text = "34 - Mirrored Vertex List (16-bit)", Verteces = verteces });
+								break;
 
-						case 0x30:
-							// Triangle List
-							var triangleCount = reader.ReadByte();
+							case 0x0c:
+								read = false;
+								vertecesNode.Nodes.Add("0C - End Vertex List");
+								break;
 
-							var indeces = Enumerable.Range(0, triangleCount)
-								.Select(n => new int[] {
+							case 0x30:
+								// Triangle List
+								var triangleCount = reader.ReadByte();
+
+								var indeces = Enumerable.Range(0, triangleCount)
+									.Select(n => new int[] {
 									reader.ReadByte(),
 									reader.ReadByte(),
 									reader.ReadByte()
-								})
-								.ToArray();
-
-							Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
-							break;
-
-						case 0x3c:
-							// Start BSP Tree
-							Nodes.Add("3C - Start BSP Tree");
-							break;
-
-						case 0x28:
-							// BSP Tree Node
-							var triangle = reader.ReadByte();
-							var faceGroupOffset = reader.ReadUInt16();
-							var branchOffset = reader.ReadByte();
-
-							Nodes.Add(new BspTreeNode { Text = "28 - BSP Tree Node", Triangle = triangle, FaceGroupOffset = faceGroupOffset, BranchOffset = branchOffset });
-							break;
-
-						case 0x44:
-							// BSP Tree Leaf
-							faceGroupOffset = reader.ReadUInt16();
-
-							Nodes.Add("28 - BSP Tree Leaf (" + faceGroupOffset + ")");
-							break;
-
-						case 0x14:
-							// Face Group
-							var faceGroup = new System.Windows.Forms.TreeNode("14 - Face Group");
-
-							while (true)
-							{
-								vertexCount = reader.ReadByte();
-
-								if (vertexCount == 0xff || vertexCount == 0xfe)
-									break;
-
-								var faceNumber = reader.ReadByte();
-								var colorNumber = reader.ReadByte();
-								var normalX = reader.ReadSByte();
-								var normalY = reader.ReadSByte();
-								var normalZ = reader.ReadSByte();
-
-								var vertices = Enumerable.Range(0, vertexCount)
-									.Select(n => (int)reader.ReadByte())
+									})
 									.ToArray();
 
-								faceGroup.Nodes.Add(new Face { Text = "Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
-							}
+								vertecesNode.Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
+								break;
 
-							Nodes.Add(faceGroup);
-							break;
+							case 0x3c:
+								// Start BSP Tree
+								vertecesNode.Nodes.Add("3C - Start BSP Tree");
+								break;
 
-						case 0x00:
-							// End Face Data
-							Nodes.Add("00 - End Face Data");
-							read = false;
-							break;
+							case 0x28:
+								// BSP Tree Node
+								var triangle = reader.ReadByte();
+								var faceGroupOffset = reader.ReadUInt16();
+								var branchOffset = reader.ReadByte();
 
-						//case 0x01:
-						//Nodes.Add("00 - End Face Data");
-						//	break;
+								vertecesNode.Nodes.Add(new BspTreeNode { Text = "28 - BSP Tree Node", Triangle = triangle, FaceGroupOffset = faceGroupOffset, BranchOffset = branchOffset });
+								break;
 
-						case 0x0a:
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
+							case 0x44:
+								// BSP Tree Leaf
+								faceGroupOffset = reader.ReadUInt16();
 
-						case 0x0b:
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
+								vertecesNode.Nodes.Add("28 - BSP Tree Leaf (" + faceGroupOffset + ")");
+								break;
 
-						case 0x40:
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
+							case 0x14:
+								// Face Group
+								var faceGroup = new System.Windows.Forms.TreeNode("14 - Face Group");
 
-						case 0x78:
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
+								while (true)
+								{
+									vertexCount = reader.ReadByte();
 
-						default:
-							//read = false;
-							Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
-							break;
+									if (vertexCount == 0xff || vertexCount == 0xfe)
+										break;
+
+									var faceNumber = reader.ReadByte();
+									var colorNumber = reader.ReadByte();
+									var normalX = reader.ReadSByte();
+									var normalY = reader.ReadSByte();
+									var normalZ = reader.ReadSByte();
+
+									var vertices = Enumerable.Range(0, vertexCount)
+										.Select(n => (int)reader.ReadByte())
+										.ToArray();
+
+									faceGroup.Nodes.Add(new Face { Text = "Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+								}
+
+								vertecesNode.Nodes.Add(faceGroup);
+								break;
+
+							case 0x00:
+								// End Face Data
+								vertecesNode.Nodes.Add("00 - End Face Data");
+								read = false;
+								break;
+
+							//case 0x01:
+							//vertecesNode.Nodes.Add("00 - End Face Data");
+							//	break;
+
+							case 0x0a:
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x0b:
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x40:
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x50:
+								var data = reader.ReadBytes(37);
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x78:
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							default:
+								//read = false;
+								vertecesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+						}
+					}
+				}
+
+				if (FaceOffset != 0)
+				{
+					var facesNode = Nodes.Add("Faces");
+
+					stream.Position = FaceOffset;
+
+					var read = true;
+
+					while (read)
+					{
+						var listType = reader.ReadByte();
+
+						switch (listType)
+						{
+							case 0x04:
+								// Vertex List (sbyte)
+								var vertexCount = reader.ReadByte();
+
+								var verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadSByte() * 16,
+										Y = reader.ReadSByte() * 16,
+										Z = reader.ReadSByte() * 16
+									}).ToArray();
+
+								facesNode.Nodes.Add(new VertexList { Text = "04 - Vertex List", Verteces = verteces });
+								break;
+
+							case 0x08:
+								// Vertex List (short)
+								vertexCount = reader.ReadByte();
+
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadInt16(),
+										Y = reader.ReadInt16(),
+										Z = reader.ReadInt16()
+									}).ToArray();
+
+								facesNode.Nodes.Add(new VertexList { Text = "08 - Vertex List (16-bit)", Verteces = verteces });
+								break;
+
+							case 0x38:
+								// Mirrored Vertex List (sbyte)
+								vertexCount = reader.ReadByte();
+
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadSByte() * 16,
+										Y = reader.ReadSByte() * 16,
+										Z = reader.ReadSByte() * 16
+									}).ToArray();
+
+								facesNode.Nodes.Add(new VertexList { Text = "38 - Mirrored Vertex List", Verteces = verteces });
+								break;
+
+							case 0x1c:
+								// Animation
+								var frameCount = reader.ReadByte();
+								var frameOffsets = Enumerable.Range(0, frameCount)
+									.Select(n => reader.ReadInt16())
+									.ToArray();
+
+								facesNode.Nodes.Add(new Animation { Text = "1C - Animation", Offsets = frameOffsets });
+								break;
+
+							case 0x20:
+								// Jump
+								var offset = reader.ReadInt16();
+
+								facesNode.Nodes.Add("20 - Jump (" + offset.ToString() + ")");
+								break;
+
+							case 0x34:
+								// Mirrored Vertex List (short)
+								vertexCount = reader.ReadByte();
+
+								verteces = Enumerable.Range(0, vertexCount)
+									.Select(n => new Vertex
+									{
+										X = reader.ReadInt16(),
+										Y = reader.ReadInt16(),
+										Z = reader.ReadInt16()
+									}).ToArray();
+
+								facesNode.Nodes.Add(new VertexList { Text = "34 - Mirrored Vertex List (16-bit)", Verteces = verteces });
+								break;
+
+							case 0x0c:
+								read = false;
+								facesNode.Nodes.Add("0C - End Vertex List");
+								break;
+
+							case 0x30:
+								// Triangle List
+								var triangleCount = reader.ReadByte();
+
+								var indeces = Enumerable.Range(0, triangleCount)
+									.Select(n => new int[] {
+									reader.ReadByte(),
+									reader.ReadByte(),
+									reader.ReadByte()
+									})
+									.ToArray();
+
+								facesNode.Nodes.Add(new IndexList { Text = "30 - Triangle List", Indeces = indeces });
+								break;
+
+							case 0x3c:
+								// Start BSP Tree
+								facesNode.Nodes.Add("3C - Start BSP Tree");
+								break;
+
+							case 0x28:
+								// BSP Tree Node
+								var triangle = reader.ReadByte();
+								var faceGroupOffset = reader.ReadUInt16();
+								var branchOffset = reader.ReadByte();
+
+								facesNode.Nodes.Add(new BspTreeNode { Text = "28 - BSP Tree Node", Triangle = triangle, FaceGroupOffset = faceGroupOffset, BranchOffset = branchOffset });
+								break;
+
+							case 0x44:
+								// BSP Tree Leaf
+								faceGroupOffset = reader.ReadUInt16();
+
+								facesNode.Nodes.Add("28 - BSP Tree Leaf (" + faceGroupOffset + ")");
+								break;
+
+							case 0x14:
+								// Face Group
+								var faceGroup = new System.Windows.Forms.TreeNode("14 - Face Group");
+
+								while (true)
+								{
+									vertexCount = reader.ReadByte();
+
+									if (vertexCount == 0xff || vertexCount == 0xfe)
+										break;
+
+									var faceNumber = reader.ReadByte();
+									var colorNumber = reader.ReadByte();
+									var normalX = reader.ReadSByte();
+									var normalY = reader.ReadSByte();
+									var normalZ = reader.ReadSByte();
+
+									var vertices = Enumerable.Range(0, vertexCount)
+										.Select(n => (int)reader.ReadByte())
+										.ToArray();
+
+									faceGroup.Nodes.Add(new Face { Text = "Face (" + vertexCount + ")", FaceNumber = faceNumber, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+								}
+
+								facesNode.Nodes.Add(faceGroup);
+								break;
+
+							case 0x00:
+								// End Face Data
+								facesNode.Nodes.Add("00 - End Face Data");
+								read = false;
+								break;
+
+							//case 0x01:
+							//facesNode.Nodes.Add("00 - End Face Data");
+							//	break;
+
+							case 0x0a:
+								facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x0b:
+								facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x40:
+								facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							case 0x50:
+								{
+									//var data = reader.ReadBytes(37);
+
+									//vertexCount = reader.ReadByte();
+
+									//if (vertexCount == 0xff || vertexCount == 0xfe)
+									//	break;
+
+									var faceNumber = reader.ReadByte();
+									var colorNumber = reader.ReadByte();
+									var normalX = reader.ReadSByte();
+									var normalY = reader.ReadSByte();
+									var normalZ = reader.ReadSByte();
+
+									//var vertices = Enumerable.Range(0, vertexCount)
+									//	.Select(n => (int)reader.ReadByte())
+									//	.ToArray();
+
+									var vertices = Enumerable.Range(0, 4).ToArray();
+
+									facesNode.Nodes.Add(new Face { Text = "Face (" + 0 + ")", FaceNumber = 0, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+
+									//facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								}
+								break;
+
+							case 0x78:
+								facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+
+							default:
+								//read = false;
+								facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+								break;
+						}
 					}
 				}
 			}
@@ -689,6 +918,7 @@ namespace StarFoxBrowser.Nodes
 				}
 
 				stream.Position = VertexOffset;
+				var scale = 1 << Scale;
 
 				var read = true;
 
@@ -705,9 +935,9 @@ namespace StarFoxBrowser.Nodes
 							var vertices = Enumerable.Range(0, vertexCount)
 								.Select(n => new Vertex
 								{
-									X = reader.ReadSByte(),
-									Y = reader.ReadSByte(),
-									Z = reader.ReadSByte()
+									X = reader.ReadSByte() * scale,
+									Y = reader.ReadSByte() * scale,
+									Z = reader.ReadSByte() * scale
 								}).ToArray();
 
 							vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
@@ -720,9 +950,9 @@ namespace StarFoxBrowser.Nodes
 							vertices = Enumerable.Range(0, vertexCount)
 								.Select(n => new Vertex
 								{
-									X = reader.ReadInt16(),
-									Y = reader.ReadInt16(),
-									Z = reader.ReadInt16()
+									X = reader.ReadInt16() * scale,
+									Y = reader.ReadInt16() * scale,
+									Z = reader.ReadInt16() * scale
 								}).ToArray();
 
 							vectors.AddRange(vertices.Select(x => new Vector4(x.X, -x.Y, -x.Z, 1)));
@@ -736,9 +966,9 @@ namespace StarFoxBrowser.Nodes
 							vertices = Enumerable.Range(0, vertexCount)
 								.Select(n => new Vertex
 								{
-									X = reader.ReadSByte(),
-									Y = reader.ReadSByte(),
-									Z = reader.ReadSByte()
+									X = reader.ReadSByte() * scale,
+									Y = reader.ReadSByte() * scale,
+									Z = reader.ReadSByte() * scale
 								}).ToArray();
 
 							foreach (var vertex in vertices)
@@ -785,7 +1015,7 @@ namespace StarFoxBrowser.Nodes
 							break;
 
 						case 0x0c:
-							read = false;
+							//read = false;
 							break;
 
 						default:
@@ -933,6 +1163,67 @@ namespace StarFoxBrowser.Nodes
 						case 0x40:
 							break;
 
+						case 0x50:
+							{
+								//var data = reader.ReadBytes(37);
+								var faceNumber = reader.ReadByte();
+								var colorNumber = reader.ReadByte();
+								var normalX = reader.ReadSByte();
+								var normalY = reader.ReadSByte();
+								var normalZ = reader.ReadSByte();
+
+								//var vertices = Enumerable.Range(0, vertexCount)
+								//	.Select(n => (int)reader.ReadByte())
+								//	.ToArray();
+
+								var indices = new int[] { 2, 3, 0, 1 };
+
+								if (texturePages[colorNumber] == null)
+								{
+									colorFaces.Add(new Models.ColorFace
+									{
+										Indices = indices,
+										PrimitiveCount = 2,
+										PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+										Vertices = vectors.Select(x => new Models.Vertex
+										{
+											Position = x,
+											Color = colors[colorNumber]
+										}).ToArray()
+									});
+								}
+								else if (texturePages[colorNumber] == 0)
+								{
+									texture1Faces.Add(new Models.TextureFace
+									{
+										Indices = Enumerable.Range(0, indices.Length).ToArray(),
+										PrimitiveCount = 2,
+										PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+										Vertices = indices.Select((x, i) => new Models.TextureVertex
+										{
+											Position = vectors[x % vectors.Count],
+											TexturePosition = textures[colorNumber][i]
+										}).ToArray()
+									});
+								}
+								else
+								{
+									texture2Faces.Add(new Models.TextureFace
+									{
+										Indices = Enumerable.Range(0, indices.Length).ToArray(),
+										PrimitiveCount = 2,
+										PrimitiveType = SharpDX.Direct3D9.PrimitiveType.TriangleFan,
+										Vertices = indices.Select((x, i) => new Models.TextureVertex
+										{
+											Position = vectors[x % vectors.Count],
+											TexturePosition = textures[colorNumber][i]
+										}).ToArray()
+									});
+								}
+								read = false;
+							}
+							break;
+
 						case 0x00:
 							// End Face Data
 							read = false;
@@ -952,271 +1243,5 @@ namespace StarFoxBrowser.Nodes
 				};
 			}
 		}
-
-		//private readonly Vector2[] TexturePositions = new Vector2[]
-		//{
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	// Fox Logo
-		//	new Vector2(6 * (32.0f / 256), 0 * (32.0f / 256)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	// Nova Bomb 1
-		//	new Vector2(1 * (32.0f / 256), 3 * (32.0f / 256)),
-		//	// Nova Bomb 2
-		//	new Vector2(2 * (32.0f / 256), 3 * (32.0f / 256)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	// Nova Bomb 3
-		//	new Vector2(4 * (32.0f / 256), 3 * (32.0f / 256)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	// Andross
-		//	new Vector2(3 * (64.0f / 256), 0 * (64.0f / 256)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	// Black Hole
-		//	new Vector2(2 * (32.0f / 256), 5 * (32.0f / 256)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//	new Vector2(0 * (256 / 32), 0 * (256 / 32)),
-		//};
 	}
 }
