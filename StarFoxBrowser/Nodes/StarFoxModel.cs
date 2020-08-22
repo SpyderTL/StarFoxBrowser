@@ -425,9 +425,12 @@ namespace StarFoxBrowser.Nodes
 
 									var vertices = Enumerable.Range(0, 4).ToArray();
 
-									facesNode.Nodes.Add(new Face { Text = "Face (" + 0 + ")", FaceNumber = 0, ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+									facesNode.Nodes.Add(new Face { Text = "Face " + faceNumber.ToString(), ColorNumber = colorNumber, NormalX = normalX, NormalY = normalY, NormalZ = normalZ, Vertices = vertices });
+
+									var data = reader.ReadBytes(32);
 
 									//facesNode.Nodes.Add(listType.ToString("X2") + " - UNKNOWN");
+									read = false;
 								}
 								break;
 

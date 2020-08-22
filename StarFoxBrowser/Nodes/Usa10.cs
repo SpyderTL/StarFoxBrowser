@@ -202,6 +202,11 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "05d885", Resource = Resource, Offset = 0x2d885 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "05da0e", Resource = Resource, Offset = 0x2da0e });
 			levels.Nodes.Add(new StarFoxLevel { Text = "05da3f", Resource = Resource, Offset = 0x2da3f });
+			levels.Nodes.Add(new StarFoxLevel { Text = "05da67", Resource = Resource, Offset = 0x2da67 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "05dad2", Resource = Resource, Offset = 0x2dad2 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "05db21", Resource = Resource, Offset = 0x2db21 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "05db70", Resource = Resource, Offset = 0x2db70 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "05db8b", Resource = Resource, Offset = 0x2db8b });
 			levels.Nodes.Add(new StarFoxLevel { Text = "05dbae", Resource = Resource, Offset = 0x2dbae });
 			levels.Nodes.Add(new StarFoxLevel { Text = "05dd53", Resource = Resource, Offset = 0x2dd53 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "05deed", Resource = Resource, Offset = 0x2deed });
@@ -240,7 +245,7 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de52d", Resource = Resource, Offset = 0x6f52d });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0db8a9 Black Hole", Resource = Resource, Offset = 0x6c8a9 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0db8e5 Out Of This World", Resource = Resource, Offset = 0x6c8e5 });
-			levels.Nodes.Add(new StarFoxLevel { Text = "0dd068 Scramble", Resource = Resource, Offset = 0x6d068 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0dd068 Scramble 1/2", Resource = Resource, Offset = 0x6d068 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0dd0bb Corneria 1/2", Resource = Resource, Offset = 0x6d0bb });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0dd268 Asteroid 1", Resource = Resource, Offset = 0x6d268 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0dd2c3 Space Armada", Resource = Resource, Offset = 0x6d2c3 });
@@ -312,6 +317,22 @@ namespace StarFoxBrowser.Nodes
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e958d", Resource = Resource, Offset = 0xe958d });
 			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "ea73b", Resource = Resource, Offset = 0xea73b });
 
+
+			var songs = new TreeNode("Songs");
+
+			songs.Nodes.Add(new StarFoxSong { Text = "1aede Initialization Data", Resource = Resource, Offset = 0x01aede });
+			songs.Nodes.Add(new StarFoxSong { Text = "1aee7 Intro", Resource = Resource, Offset = 0x01aee7 });
+			songs.Nodes.Add(new StarFoxSong { Text = "1aefa Title", Resource = Resource, Offset = 0x01aefa });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af03 Controls", Resource = Resource, Offset = 0x01af03 });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af11 Training", Resource = Resource, Offset = 0x01af11 });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af1f Map", Resource = Resource, Offset = 0x01af1f });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af2d Continue", Resource = Resource, Offset = 0x01af2d });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af36 Black Hole", Resource = Resource, Offset = 0x01af36 });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af3f Scramble 1", Resource = Resource, Offset = 0x01af3f });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af52 Corneria 1", Resource = Resource, Offset = 0x01af52 });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af6a Asteroid 1", Resource = Resource, Offset = 0x01af6a });
+			songs.Nodes.Add(new StarFoxSong { Text = "1af78 Space Armada (Blast In)", Resource = Resource, Offset = 0x01af78 });
+
 			Nodes.Add(images);
 			Nodes.Add(fonts);
 			Nodes.Add(materials);
@@ -322,6 +343,7 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(textureAddresses);
 			Nodes.Add(levels);
 			Nodes.Add(audioClips);
+			Nodes.Add(songs);
 
 			//ExportAudioClips();
 			//ExportImages();
@@ -685,56 +707,56 @@ namespace StarFoxBrowser.Nodes
 			{ 0xACF5, "Unknown" },
 			{ 0xAD11, "Unknown" },
 			{ 0xAD2D, "Explosion" },
-			{ 0xAD49, "Unknown" },
-			{ 0xAD65, "Unknown" },
-			{ 0xAD81, "Unknown" },
-			{ 0xAD9D, "Unknown" },
-			{ 0xADB9, "Unknown" },
-			{ 0xADD5, "Unknown" },
-			{ 0xADF1, "Unknown" },
-			{ 0xAE0D, "Unknown" },
-			{ 0xAE29, "Unknown" },
+			{ 0xAD49, "Mine?" },
+			{ 0xAD65, "Projectile (Ring)" },
+			{ 0xAD81, "Projectile (Sphere)" },
+			{ 0xAD9D, "Projectile (Fire)" },
+			{ 0xADB9, "Projectile (Fire, Large)" },
+			{ 0xADD5, "Explosion" },
+			{ 0xADF1, "Explosion" },
+			{ 0xAE0D, "Explosion" },
+			{ 0xAE29, "Explosion (Large)" },
 			{ 0xAE45, "Unknown" },
 			{ 0xAE61, "Unknown" },
 			{ 0xAE7D, "Unknown" },
-			{ 0xAE99, "Unknown" },
-			{ 0xAEB5, "Unknown" },
-			{ 0xAED1, "Unknown" },
-			{ 0xAEED, "Unknown" },
-			{ 0xAF09, "Unknown" },
-			{ 0xAF25, "Unknown" },
-			{ 0xAF41, "Unknown" },
-			{ 0xAF5D, "Unknown" },
-			{ 0xAF79, "Unknown" },
-			{ 0xAF95, "Unknown" },
-			{ 0xAFB1, "Unknown" },
+			{ 0xAE99, "Mother (Virtual)" },
+			{ 0xAEB5, "Splash" },
+			{ 0xAED1, "Splash (Large)" },
+			{ 0xAEED, "Projectile (Energy)" },
+			{ 0xAF09, "Projectile (Energy, Large)" },
+			{ 0xAF25, "Mine (Large)" },
+			{ 0xAF41, "Nova Bomb" },
+			{ 0xAF5D, "Asteroid (Large)" },
+			{ 0xAF79, "Asteroid (Face, Large)" },
+			{ 0xAF95, "Asteroid" },
+			{ 0xAFB1, "Asteroid (Face)" },
 			{ 0xAFCD, "Big Asteroid" },
-			{ 0xAFE9, "Unknown" },
-			{ 0xB005, "Unknown" },
-			{ 0xB021, "Unknown" },
-			{ 0xB03D, "Unknown" },
-			{ 0xB059, "Unknown" },
-			{ 0xB075, "Unknown" },
-			{ 0xB091, "Unknown" },
-			{ 0xB0AD, "Unknown" },
+			{ 0xAFE9, "Asteroid" },
+			{ 0xB005, "Black Hole" },
+			{ 0xB021, "Projectile (Pulse)" },
+			{ 0xB03D, "Square (Gray)" },
+			{ 0xB059, "Egg" },
+			{ 0xB075, "Boost (Large)" },
+			{ 0xB091, "Boost" },
+			{ 0xB0AD, "Boost (Small)" },
 			{ 0xB0C9, "Nova bomb" },
 			{ 0xB0E5, "Nova bomb 2" },
-			{ 0xB101, "Explo 2" },
-			{ 0xB11D, "Big Explo 3" },
-			{ 0xB139, "Big Explo" },
-			{ 0xB155, "Big Explo" },
-			{ 0xB171, "Big Explo" },
-			{ 0xB18D, "Big Explo" },
-			{ 0xB1A9, "Big Explo" },
-			{ 0xB1C5, "Big Explo" },
-			{ 0xB1E1, "nothing?" },
-			{ 0xB1FD, "nothing?" },
-			{ 0xB219, "nothing?" },
+			{ 0xB101, "Explosion" },
+			{ 0xB11D, "Big Explosion" },
+			{ 0xB139, "Big Explosion" },
+			{ 0xB155, "Big Explosion" },
+			{ 0xB171, "Explosion" },
+			{ 0xB18D, "Leech" },
+			{ 0xB1A9, "Leech (Large)" },
+			{ 0xB1C5, "Projectile (Blaster, Small)" },
+			{ 0xB1E1, "Projectile (Pulse, Sphere)" },
+			{ 0xB1FD, "Projectile (Blaster, Large)" },
+			{ 0xB219, "Projectile (Blaster)" },
 			{ 0xB235, "”GAME”" },
 			{ 0xB251, "”OVER”" },
 			{ 0xB26D, "Alien pilot" },
 			{ 0xB289, "Sparks" },
-			{ 0xB2A5, "Nothing?" },
+			{ 0xB2A5, "Sparks 2" },
 			{ 0xB2C1, "Flashing antenna" },
 			{ 0xB2DD, "Bigger Flashing antenna" },
 			{ 0xB2F9, "Bigger Flashing antenna" },
@@ -743,9 +765,9 @@ namespace StarFoxBrowser.Nodes
 			{ 0xB34D, "Flashing yellow morphing fire" },
 			{ 0xB369, "Flashing blue morphing fire" },
 			{ 0xB385, "Flashing flat blue morphing shot" },
-			{ 0xB3A1, "Weird flat asteroid sprite (unused?)" },
-			{ 0xB3BD, "Same but bigger" },
-			{ 0xB3D9, "Same but even bigger" },
+			{ 0xB3A1, "Crater (Small)" },
+			{ 0xB3BD, "Crater" },
+			{ 0xB3D9, "Crater (Large)" },
 			{ 0xB3F5, "Walker with leg broken" },
 			{ 0xB411, "Walker with leg missing" },
 			{ 0xB42D, "Walker walking" },
@@ -965,22 +987,22 @@ namespace StarFoxBrowser.Nodes
 			{ 0xCC3C, "Mountain part 2 blue" },
 			{ 0xCC58, "Mountain part 2 white" },
 			{ 0xCC74, "Mountain part 3 orange" },
-			{ 0xCC90, "Unknown" },
-			{ 0xCCAC, "Unknown" },
+			{ 0xCC90, "Mountain part 3 blue" },
+			{ 0xCCAC, "Mountain part 3 white" },
 			{ 0xCCC8, "Mountain part 4 orange" },
-			{ 0xCCE4, "Unknown" },
-			{ 0xCD00, "Unknown" },
+			{ 0xCCE4, "Mountain part 4 blue" },
+			{ 0xCD00, "Mountain part 4 white" },
 			{ 0xCD1C, "Mountain part 5 orange" },
-			{ 0xCD38, "Unknown" },
-			{ 0xCD54, "Unknown" },
+			{ 0xCD38, "Mountain part 5 blue" },
+			{ 0xCD54, "Mountain part 5 white" },
 			{ 0xCD70, "Mountain part 6 orange" },
-			{ 0xCD8C, "Unknown" },
-			{ 0xCDA8, "Unknown" },
+			{ 0xCD8C, "Mountain part 6 blue" },
+			{ 0xCDA8, "Mountain part 6 white" },
 			{ 0xCDC4, "Helicopter" },
 			{ 0xCDE0, "Metal Crusher mines" },
 			{ 0xCDFC, "Mountain part 7 orange" },
-			{ 0xCE18, "Little mountain blue" },
-			{ 0xCE34, "Little mountain white" },
+			{ 0xCE18, "Mountain part 7 blue" },
+			{ 0xCE34, "Mountain part 7 white" },
 			{ 0xCE50, "Flying Fish" },
 			{ 0xCE6C, "Growing green leaf" },
 			{ 0xCE88, "Blossoming flower" },
@@ -989,7 +1011,7 @@ namespace StarFoxBrowser.Nodes
 			{ 0xCEDC, "Flower/Dragon part?" },
 			{ 0xCEF8, "Flower part" },
 			{ 0xCF14, "Flower part" },
-			{ 0xCF30, "Two sides Blue square" },
+			{ 0xCF30, "Two sides Gray square" },
 			{ 0xCF4C, "Small Flower" },
 			{ 0xCF68, "Big Flower" },
 			{ 0xCF84, "Flower part?" },
@@ -1001,13 +1023,13 @@ namespace StarFoxBrowser.Nodes
 			{ 0xD02C, "Long Octo Tunnel" },
 			{ 0xD048, "Diafragm Door Blue" },
 			{ 0xD064, "Interlocking Doors" },
-			{ 0xD080, "?? part" },
-			{ 0xD09C, "Vertical Creature" },
-			{ 0xD0B8, "Flashing White thing" },
-			{ 0xD0D4, "Flashing White Monolyte" },
-			{ 0xD0F0, "Pale Monolyte" },
-			{ 0xD10C, "Andross Face Squares" },
-			{ 0xD128, "Andross Face Squares big" },
+			{ 0xD080, "Ship Part" },
+			{ 0xD09C, "Ship Part (Center)" },
+			{ 0xD0B8, "Andross Face Square (Flash)" },
+			{ 0xD0D4, "Andross Face Square (Flash 2)" },
+			{ 0xD0F0, "Andross Face Square (Dark)" },
+			{ 0xD10C, "Andross Face Square" },
+			{ 0xD128, "Andross Face Square big" },
 			{ 0xD144, "Andross Face morph" },
 			{ 0xD160, "Andross Face morph 2" },
 			{ 0xD17C, "Prof Hanger part" },
@@ -1051,8 +1073,8 @@ namespace StarFoxBrowser.Nodes
 			{ 0xD5A4, "Opening Great Commander vent" },
 			{ 0xD5C0, "Explosion crater" },
 			{ 0xD5DC, "Explosion crater" },
-			{ 0xD5F8, "Unused?" },
-			{ 0xD614, "Unused?" },
+			{ 0xD5F8, "Cart" },
+			{ 0xD614, "Pillar" },
 			{ 0xD630, "Some horizontal beam" },
 			{ 0xD64C, "Some horizontal beam" },
 			{ 0xD668, "Beveled White box" },
@@ -1166,7 +1188,7 @@ namespace StarFoxBrowser.Nodes
 			{ 0xE254, "Rotating pod enemy white" },
 			{ 0xE270, "Rotating pod enemy white" },
 			{ 0xE28C, "Rotating pod enemy blue" },
-			{ 0xE2A8, "Rotating pod enemy blue" },
+			{ 0xE2A8, "Horizontal Doors Opening" },
 			{ 0xE2C4, "Medium Walker" },
 			{ 0xE2E0, "Mini Volcano" },
 			{ 0xE2FC, "Big Volcano" },
@@ -1184,7 +1206,7 @@ namespace StarFoxBrowser.Nodes
 			{ 0xE44C, "Flying crystal" },
 			{ 0xE468, "Hovercar (road level)" },
 			{ 0xE484, "Skii Truck  (road level)" },
-			{ 0xE4A0, "Unknown" },
+			{ 0xE4A0, "Space Mine" },
 			{ 0xE4BC, "Some Enemy part" },
 			{ 0xE4D8, "Energy yellow ring" },
 			{ 0xE4F4, "Mini Fish" },
@@ -1416,7 +1438,7 @@ namespace StarFoxBrowser.Nodes
 			{ 0x0A8F35, "Orange Tank Reversing/Shooting" },
 			{ 0x0A9029, "Unknown" },
 			{ 0x0A90E9, "Unknown" },
-			{ 0x0A9211, "Deferred Behavior" },
+			{ 0x0A9211, "Follow Path" },
 			{ 0x0A9216, "Warp Yellow Ring" },
 			{ 0x0A921B, "Warp Yellow Ring 2" },
 			{ 0x0A9F67, "Buildings" },
