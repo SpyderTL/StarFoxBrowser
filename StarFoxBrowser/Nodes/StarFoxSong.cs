@@ -34,7 +34,7 @@ namespace StarFoxBrowser.Nodes
 
 					var size = reader.ReadUInt16();
 
-					Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("X6") + " Size: " + size.ToString("X4"), Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
+					Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("X6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
 				}
 			}
 		}
@@ -76,10 +76,7 @@ namespace StarFoxBrowser.Nodes
 			public int Address;
 			public int Size;
 
-			public override string ToString()
-			{
-				return "Address; " + Address.ToString("X6") + " Size: " + Size.ToString("X4");
-			}
+			public override string ToString() => "Address; " + Address.ToString("X6") + " Size: " + Size;
 		}
 	}
 }

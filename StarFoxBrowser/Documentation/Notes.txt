@@ -16,8 +16,48 @@ Songs					0x01aede			0x03aede					*
 ??							0x01b000			0x03b000					*
 ??							0x0300d5			0x0680d5					8
 256-Color Palette	0x01d440			0x03d440					2
-??					0x0fdca8			0x1fdca8					4				0x60
-?? (RAM)			0x0fdca8			0x000100					4				0x60
+??							0x0fdca8			0x1fdca8					4					0x60
+?? (RAM)				0x0fdca8			0x000100					4					0x60
+Screen Wipes			0xa0000				
+Z Tables				0xa096c												
+Star Colors			0xa3c6c
+Snow Colors
+Fade Table
+Particle Circle Tbl
+Font						0xa3eda
+3D Messages			0xa48da
+Sprites					0xa4deb
+
+Screen Wipes
+	Scramble
+	Round Fill
+	Round Clear
+	Fill
+	Star
+
+Screen Wipe
+	Frameset[]
+		Flags					1
+		Frames[]
+			Values					5
+		End					1				(-1)
+	End					1				(-1)
+
+Z Table[6528]			2				// 128 + 6400
+
+Star Colors[64]		1
+
+Snow Colors[16]		1
+
+Fade Table[32]		1
+
+Particle Circle Table[256]		2
+	Value1					1
+	Value2					1
+
+Font
+	Characters[80]					// 16x16 (1bpp)
+		Row[16]			2
 
 Palettes
 	Entry[256]			2

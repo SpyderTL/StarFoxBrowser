@@ -39,7 +39,7 @@ namespace StarFoxBrowser
 			{
 				Direct3D = new Direct3D();
 
-				Device = new Device(Direct3D, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(panel.ClientSize.Width, panel.ClientSize.Height));
+				Device = new Device(Direct3D, 0, DeviceType.Hardware, panel.Handle, CreateFlags.HardwareVertexProcessing, new PresentParameters(2048, 2048));
 
 				ColorEffect = Effect.FromString(Device, @"
 float4x4 worldViewProjection;
@@ -272,7 +272,8 @@ technique Main {
 				//Device.SetRenderState(RenderState.CullMode, Cull.None);
 
 				// Update Camera
-				var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
+				//var ratio = panel.ClientSize.Width / (float)panel.ClientSize.Height;
+				var ratio = 1.0f;
 
 				var projection = Matrix.PerspectiveFovLH(3.14f / 3.0f, ratio, 1, 10000);
 				//var view = Matrix.LookAtLH(new Vector3(0, 80, -150), new Vector3(0, 50, 0), Vector3.UnitY);
