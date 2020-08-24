@@ -2,31 +2,32 @@
 
 Name					File Address		Memory Address		Entry Length	Table Length
 Textures				0x90000			0x1280000					1					0x10000
-Materials				0x10000			0x028000					3					0x59c1
-Materials (RAM)		0x10000			0x7e3193					3					0x59c1
-Behaviors				0x2840				0x00a840					4
-Models					0x264b				0x00a64b					2
-Palettes					0x18000											2
-Lighting					0x19000											1
+Materials				0x10000			0x028000						3					0x59c1
+Materials (RAM)	0x10000			0x7e3193						3					0x59c1
+Behaviors				0x2840				0x00a840						4
+Models					0x264b				0x00a64b						2
+Palettes				0x18000												2
+Lighting				0x19000												1
 Animated				0x18000											
-Strings					0x00e796			0x01e796					*
-Functions				0x01ad5d			0x03ad5d					*
-Map Sprites			0x00208b			0x00a08b					960
-Songs					0x01aede			0x03aede					*
-??							0x01b000			0x03b000					*
-??							0x0300d5			0x0680d5					8
-256-Color Palette	0x01d440			0x03d440					2
-??							0x0fdca8			0x1fdca8					4					0x60
-?? (RAM)				0x0fdca8			0x000100					4					0x60
-Screen Wipes			0xa0000				
+Strings					0x00e796			0x01e796						*
+Functions				0x01ad5d			0x03ad5d						*
+Map Sprites			0x00208b			0x00a08b						960
+Songs					0x01aede			0x03aede						*
+??							0x01b000			0x03b000						*
+??							0x0300d5			0x0680d5						8
+256-Color Palette0x01d440			0x03d440						2
+??							0x0fdca8			0x1fdca8						4					0x60
+?? (RAM)				0x0fdca8			0x000100						4					0x60
+Screen Wipes		0xa0000				
 Z Tables				0xa096c												
 Star Colors			0xa3c6c
 Snow Colors
 Fade Table
 Particle Circle Tbl
 Font						0xa3eda
-3D Messages			0xa48da
+3D Messages		0xa48da
 Sprites					0xa4deb
+Palettes				0x177f1
 
 Screen Wipes
 	Scramble
@@ -212,6 +213,122 @@ Game Modes
 		Copyright 1993 Nintendo
 		Transition (Fade In)
 		Transition (Fade Out)
+
+Game Flags
+	NoZRemove	
+	PlayerDying
+	BossDead
+	StrategyDone1
+	StrategyDone2
+	ViewRotation
+	PlayerDead
+	StageDone
+
+Game Flags 2
+	StrategyFlag1
+	StrategyFlag2
+	ViewClose
+	InGame
+
+Strategy Flags
+	NoFiring
+
+Boss Flags
+	Flag1
+	Flag2
+	Flag3
+	EasyMode
+	Dying
+
+Miss Bound Flags
+	Left
+	Right
+	Top
+	Bottom
+	LeftBottom
+	LeftTop
+	RightTop
+
+Player Ship Flags
+	BodyCollision
+	LeftWingCollision
+	RightWingCollision
+	BrokenLeftWing
+	BrokenRightWing
+	NoControl
+	NoFire
+	NoYControl
+
+Player Ship Flags 2
+	DoubleLaser
+	WireframeShip
+	NoSparks
+	Turn180
+	ForceBoost
+	Boosting
+	Braking
+	HPZero
+
+Player Ship Flags 3
+	InTunnel
+	EngineSound
+	ForceBrake
+	NoCollisions
+	BeamBall
+
+Player Fly Mode
+	DieFall
+	DieYRotation
+	Water
+	Shadows
+	Wobble
+
+Player Fly Mode 2
+	Normal
+	Close
+	ToInside
+	Inside
+	ToNormal
+	MaxMode
+
+Player Strategy Flags
+	NovdistC
+	Flag1
+	NoViewMove
+	InSequence
+	FirstFrameLaserCollision
+	NotDie
+
+Player Move Limit
+	LeftLeft
+	RightRight
+	LeftTop
+	LeftBottom
+	RightTop
+	RightBottom
+	BottomTop
+	BottomBottom
+
+Key Flags
+	LeftKeyDown
+	LeftRightKeyDown
+
+Functions
+	TriggerSoundEffect
+		SetPort3
+			If InGame and not PlayerHPZero
+			X = [sdspt3]
+			[sdport3+X] = A
+			A = [sdspt3]
+			A++
+			A &= 15
+			[sdspt3] = A
+
+
+Files
+	inccolfile
+	gamepal
+
 
 Routines
 

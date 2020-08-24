@@ -23,6 +23,9 @@ namespace StarFoxBrowser.Nodes
 			foreach (var image in ImageNames)
 				images.Nodes.Add(new StarFoxImage { Text = image.Value, Resource = Resource, Offset = image.Key, Size = ImageSizes[image.Key] });
 
+			foreach (var image in ImageNames2)
+				images.Nodes.Add(new StarFoxImage2 { Text = image.Value, Resource = Resource, Offset = image.Key, Size = ImageSizes[image.Key] });
+
 			var fonts = new TreeNode("Fonts");
 
 			foreach (var font in FontNames)
@@ -113,7 +116,13 @@ namespace StarFoxBrowser.Nodes
 
 			var palettes = new TreeNode("Palettes");
 
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a6a });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Sea", Resource = Resource, Offset = 0x177f1 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Ground", Resource = Resource, Offset = 0x17811 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Mist", Resource = Resource, Offset = 0x17831 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Mist2", Resource = Resource, Offset = 0x17851 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x17871 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Day2", Resource = Resource, Offset = 0x17891 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "GameOver", Resource = Resource, Offset = 0x178b1 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a8a });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18aaa });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Space", Resource = Resource, Offset = 0x18aca });
@@ -121,6 +130,7 @@ namespace StarFoxBrowser.Nodes
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x18b0a });
 
 			palettes.Nodes.Add(new StarFoxPalette3 { Text = "Color Data", Resource = Resource, Offset = 0x1d440 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Color Data 2", Resource = Resource, Offset = 0x1d620 });
 
 			//palettes.Nodes.Add(new StarFoxPalette2 { Text = "3D", Resource = Resource, Offset = 0x90000 });
 
@@ -1602,8 +1612,12 @@ namespace StarFoxBrowser.Nodes
 			{ 0xbdcc0, "Pepper 2" },
 			{ 0xbdf40, "Andross" },
 			{ 0xbe1c0, "Andross 2" },
-			{ 0xbe440, "Communication 6" },
-			{ 0x0208b, "Map Sprites" },
+			{ 0xbe440, "Communication 6" }
+		};
+
+		public static readonly Dictionary<int, string> ImageNames2 = new Dictionary<int, string>
+		{
+			{ 0x0208b, "Map Sprites" }
 		};
 
 		public static readonly Dictionary<int, string> FontNames = new Dictionary<int, string>
