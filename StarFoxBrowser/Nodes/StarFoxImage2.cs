@@ -25,7 +25,7 @@ namespace StarFoxBrowser.Nodes
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
-				// Load Palett
+				// Load Palette
 				stream.Position = 0x1d620;
 
 				var palette = Enumerable.Range(0, 16)

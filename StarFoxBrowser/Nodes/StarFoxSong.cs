@@ -23,7 +23,7 @@ namespace StarFoxBrowser.Nodes
 			{
 				stream.Position = Offset;
 
-				var songId = reader.ReadByte();
+				var flags = reader.ReadByte();
 
 				while (true)
 				{
@@ -34,7 +34,7 @@ namespace StarFoxBrowser.Nodes
 
 					var size = reader.ReadUInt16();
 
-					Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("X6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
+					Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("x6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
 				}
 			}
 		}
@@ -46,7 +46,7 @@ namespace StarFoxBrowser.Nodes
 			{
 				stream.Position = Offset;
 
-				var songId = reader.ReadByte();
+				var flags = reader.ReadByte();
 
 				var parts = new List<SongPart>();
 
@@ -65,7 +65,7 @@ namespace StarFoxBrowser.Nodes
 				return new
 				{
 					Offset,
-					SongID = songId,
+					Flags = flags,
 					Parts = parts.ToArray()
 				};
 			}

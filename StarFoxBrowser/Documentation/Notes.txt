@@ -22,12 +22,15 @@ Screen Wipes		0xa0000
 Z Tables				0xa096c												
 Star Colors			0xa3c6c
 Snow Colors
-Fade Table
+Fade Table			0x1d660												1					0x11
 Particle Circle Tbl
 Font						0xa3eda
 3D Messages		0xa48da
 Sprites					0xa4deb
 Palettes				0x177f1
+Stage Paths			0x1d671												2					0x03
+Player Map Ptr		0x28000
+Course Table		0x28003												2					0x03
 
 Screen Wipes
 	Scramble
@@ -36,13 +39,41 @@ Screen Wipes
 	Fill
 	Star
 
+Course Table
+	Level Table Addr		2
+
+Course Level Table
+	Level Address[]		3
+		Offset						2					(Minus 0x8000)
+		Bank							1
+	
+Stage Paths[3]
+	Path Offset				2
+
+Path
+	Start							1		(3)
+	One							1
+	Two							1
+	Three						1
+	Level Offset				2						(Minus 0x8000)
+	Level Bank				1
+	Five							1
+	Six							1
+	Segments[]
+		Character					2
+		X								1
+		Y								1
+	End							1		(-1)
+	Next							1		(0 = End, 1 = Path, 2 = Choice)
+	NextValue				2		(0 = Not Included, 1 = Path Offset, 2 = Path Number * 2)
+
 Screen Wipe
 	Frameset[]
 		Flags					1
 		Frames[]
 			Values					5
-		End					1				(-1)
-	End					1				(-1)
+		End						1				(-1)
+	End						1				(-1)
 
 Z Table[6528]			2				// 128 + 6400
 
@@ -62,7 +93,7 @@ Font
 
 Palettes
 	Entry[256]			2
-		Type					1
+		Type						1
 		Value					1
 
 LightingEntry
@@ -92,15 +123,15 @@ AnimatedEntry
 
 AnimatedData
 	FrameCount				1
-	Entry[FrameCount]		2
+	Entry[FrameCount]	2
 		Type							1
-		Value							1
+		Value						1
 
 
 Audio Clips
 
 SPC Transfer Block
-	Length			2
+	Length				2
 	Destination		2
 	Data[Length]
 

@@ -14,6 +14,18 @@ namespace StarFoxBrowser.Nodes
 	{
 		public string Resource;
 
+		public static readonly int PlayerLevelPointerAddress = 0x28000;
+		public static readonly int BehaviorTableAddress = 0x2840;
+		public static readonly int ModelTableAddress = 0x264b;
+		public static readonly int TextureTableAddress = 0x18918;
+		public static readonly int PathTableAddress = 0x1d671;
+		public static readonly int CourseTableAddress = 0x28003;
+		public static readonly int SongTableAddress = 0x01aede;
+
+		public static readonly int[] ObjectIndexes = new int[255];
+		public static readonly int[] BehaviorIndexes = new int[255];
+		public static readonly byte[] BehaviorObjects = new byte[255];
+
 		public override void Reload()
 		{
 			Nodes.Clear();
@@ -123,14 +135,16 @@ namespace StarFoxBrowser.Nodes
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x17871 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Day2", Resource = Resource, Offset = 0x17891 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "GameOver", Resource = Resource, Offset = 0x178b1 });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a8a });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18aaa });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Space", Resource = Resource, Offset = 0x18aca });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Night", Resource = Resource, Offset = 0x18aea });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x18b0a });
+			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a8a });
+			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18aaa });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Space", Resource = Resource, Offset = 0x18aca });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Night", Resource = Resource, Offset = 0x18aea });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Day", Resource = Resource, Offset = 0x18b0a });
 
 			palettes.Nodes.Add(new StarFoxPalette3 { Text = "Color Data", Resource = Resource, Offset = 0x1d440 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Color Data 2", Resource = Resource, Offset = 0x1d620 });
+
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Yellow", Resource = Resource, Offset = 0x1d640 });
 
 			//palettes.Nodes.Add(new StarFoxPalette2 { Text = "3D", Resource = Resource, Offset = 0x90000 });
 
@@ -191,6 +205,24 @@ namespace StarFoxBrowser.Nodes
 
 			textures.Nodes.Add(new StarFoxTexture { Text = "Texture", Resource = Resource, Offset = 0x90000, Page = 0 });
 			textures.Nodes.Add(new StarFoxTexture { Text = "Texture", Resource = Resource, Offset = 0x90000, Page = 1 });
+
+			var courses = new TreeNode("Courses");
+
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				stream.Position = CourseTableAddress;
+
+				courses.Nodes.Add(new StarFoxCourse { Text = "Level 2", Path = 0, Offset = reader.ReadUInt16(), Count = 6, Resource = Resource });
+				courses.Nodes.Add(new StarFoxCourse { Text = "Level 1", Path = 1, Offset = reader.ReadUInt16(), Count = 6, Resource = Resource });
+				courses.Nodes.Add(new StarFoxCourse { Text = "Level 3", Path = 2, Offset = reader.ReadUInt16(), Count = 7, Resource = Resource });
+			}
+
+			var paths = new TreeNode("Paths");
+
+			paths.Nodes.Add(new StarFoxPath { Text = "Level 2", Path = 0, Resource = Resource });
+			paths.Nodes.Add(new StarFoxPath { Text = "Level 1", Path = 1, Resource = Resource });
+			paths.Nodes.Add(new StarFoxPath { Text = "Level 3", Path = 2, Resource = Resource });
 
 			var levels = new TreeNode("Levels");
 
@@ -268,8 +300,8 @@ namespace StarFoxBrowser.Nodes
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de085 Venom 1/2 Space", Resource = Resource, Offset = 0x6e085 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de0f5 Highway", Resource = Resource, Offset = 0x6e0f5 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de3cf Scramble 3", Resource = Resource, Offset = 0x6e3cf });
-			levels.Nodes.Add(new StarFoxLevel { Text = "0de5f6", Resource = Resource, Offset = 0x6e5f6 });
-			levels.Nodes.Add(new StarFoxLevel { Text = "0de62a Asteroid 3", Resource = Resource, Offset = 0x6e62a });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0de5f6 Asteroid 3", Resource = Resource, Offset = 0x6e5f6 });
+			levels.Nodes.Add(new StarFoxLevel { Text = "0de62a Asteroid 3 (cont)", Resource = Resource, Offset = 0x6e62a });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de651 Fortuna", Resource = Resource, Offset = 0x6e651 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de6d8 Sector Z", Resource = Resource, Offset = 0x6e6d8 });
 			levels.Nodes.Add(new StarFoxLevel { Text = "0de7bc Sector Z", Resource = Resource, Offset = 0x6e7bc });
@@ -291,57 +323,92 @@ namespace StarFoxBrowser.Nodes
 
 
 			var audioClips = new TreeNode("Audio Clips");
-			
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3a64", Resource = Resource, Offset = 0xc3a64 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3fc5", Resource = Resource, Offset = 0xc3fc5 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c4589", Resource = Resource, Offset = 0xc4589 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c512c", Resource = Resource, Offset = 0xc512c });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c5ebe", Resource = Resource, Offset = 0xc5ebe });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c6d31", Resource = Resource, Offset = 0xc6d31 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7547", Resource = Resource, Offset = 0xc7547 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c775a", Resource = Resource, Offset = 0xc775a });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7f0d", Resource = Resource, Offset = 0xc7f0d });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c877d", Resource = Resource, Offset = 0xc877d });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c8fc9", Resource = Resource, Offset = 0xc8fc9 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9ad3", Resource = Resource, Offset = 0xc9ad3 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9d42", Resource = Resource, Offset = 0xc9d42 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cd4aa", Resource = Resource, Offset = 0xcd4aa });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cebe7", Resource = Resource, Offset = 0xcebe7 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cffca", Resource = Resource, Offset = 0xcffca });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d1282", Resource = Resource, Offset = 0xd1282 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d12b6", Resource = Resource, Offset = 0xd12b6 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d2add", Resource = Resource, Offset = 0xd2add });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d4f1c", Resource = Resource, Offset = 0xd4f1c });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d6995", Resource = Resource, Offset = 0xd6995 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d7727", Resource = Resource, Offset = 0xd7727 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d791f", Resource = Resource, Offset = 0xd791f });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "da6ba", Resource = Resource, Offset = 0xda6ba });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dc3fb", Resource = Resource, Offset = 0xdc3fb });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dcef3", Resource = Resource, Offset = 0xdcef3 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e1bec", Resource = Resource, Offset = 0xe1bec });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e2b76", Resource = Resource, Offset = 0xe2b76 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e3974", Resource = Resource, Offset = 0xe3974 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e5c8a", Resource = Resource, Offset = 0xe5c8a });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e6f35", Resource = Resource, Offset = 0xe6f35 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e7b25", Resource = Resource, Offset = 0xe7b25 });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e958d", Resource = Resource, Offset = 0xe958d });
-			audioClips.Nodes.Add(new StarFoxAudioClip { Text = "ea73b", Resource = Resource, Offset = 0xea73b });
+
+			foreach (var clip in AudioClipNames)
+			{
+				audioClips.Nodes.Add(new StarFoxAudioClip { Text = clip.Key.ToString("x6") + " " + clip.Value, Resource = Resource, Offset = clip.Key });
+			}
+
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3a64", Resource = Resource, Offset = 0xc3a64 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c3fc5", Resource = Resource, Offset = 0xc3fc5 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c4589", Resource = Resource, Offset = 0xc4589 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c512c", Resource = Resource, Offset = 0xc512c });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c5ebe", Resource = Resource, Offset = 0xc5ebe });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c6d31", Resource = Resource, Offset = 0xc6d31 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7547", Resource = Resource, Offset = 0xc7547 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c775a", Resource = Resource, Offset = 0xc775a });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c7f0d", Resource = Resource, Offset = 0xc7f0d });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c877d", Resource = Resource, Offset = 0xc877d });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c8fc9", Resource = Resource, Offset = 0xc8fc9 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9ad3", Resource = Resource, Offset = 0xc9ad3 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "c9d42", Resource = Resource, Offset = 0xc9d42 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cd4aa", Resource = Resource, Offset = 0xcd4aa });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cebe7", Resource = Resource, Offset = 0xcebe7 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "cffca", Resource = Resource, Offset = 0xcffca });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d1282", Resource = Resource, Offset = 0xd1282 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d12b6", Resource = Resource, Offset = 0xd12b6 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d2add", Resource = Resource, Offset = 0xd2add });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d4f1c", Resource = Resource, Offset = 0xd4f1c });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d6995", Resource = Resource, Offset = 0xd6995 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d7727", Resource = Resource, Offset = 0xd7727 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "d791f", Resource = Resource, Offset = 0xd791f });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "da6ba", Resource = Resource, Offset = 0xda6ba });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dc3fb", Resource = Resource, Offset = 0xdc3fb });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "dcef3", Resource = Resource, Offset = 0xdcef3 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e1bec", Resource = Resource, Offset = 0xe1bec });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e2b76", Resource = Resource, Offset = 0xe2b76 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e3974", Resource = Resource, Offset = 0xe3974 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e5c8a", Resource = Resource, Offset = 0xe5c8a });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e6f35", Resource = Resource, Offset = 0xe6f35 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e7b25", Resource = Resource, Offset = 0xe7b25 });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "e958d", Resource = Resource, Offset = 0xe958d });
+			//audioClips.Nodes.Add(new StarFoxAudioClip { Text = "ea73b", Resource = Resource, Offset = 0xea73b });
 
 
-			var songs = new TreeNode("Songs");
+			var songs = new TreeNode("Song Data");
 
-			songs.Nodes.Add(new StarFoxSong { Text = "1aede Initialization Data", Resource = Resource, Offset = 0x01aede });
-			songs.Nodes.Add(new StarFoxSong { Text = "1aee7 Intro", Resource = Resource, Offset = 0x01aee7 });
-			songs.Nodes.Add(new StarFoxSong { Text = "1aefa Title", Resource = Resource, Offset = 0x01aefa });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af03 Controls", Resource = Resource, Offset = 0x01af03 });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af11 Training", Resource = Resource, Offset = 0x01af11 });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af1f Map", Resource = Resource, Offset = 0x01af1f });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af2d Continue", Resource = Resource, Offset = 0x01af2d });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af36 Black Hole", Resource = Resource, Offset = 0x01af36 });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af3f Scramble 1", Resource = Resource, Offset = 0x01af3f });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af52 Corneria 1", Resource = Resource, Offset = 0x01af52 });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af6a Asteroid 1", Resource = Resource, Offset = 0x01af6a });
-			songs.Nodes.Add(new StarFoxSong { Text = "1af78 Space Armada (Blast In)", Resource = Resource, Offset = 0x01af78 });
+			// 35 songs
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				stream.Position = SongTableAddress;
+
+				for (int x = 0; x < 35; x++)
+				{
+					var offset = (int)stream.Position;
+
+					var flags = reader.ReadByte();
+
+					var song = new StarFoxSong { Text = x.ToString() + " " + offset.ToString("x6") + " " + SongNames[offset], Resource = Resource, Offset = offset };
+
+					songs.Nodes.Add(song);
+
+					while (true)
+					{
+						var address = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
+
+						if (address == 0)
+							break;
+
+						var size = reader.ReadUInt16();
+
+						song.Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("x6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
+					}
+				}
+			}
+
+			//songs.Nodes.Add(new StarFoxSong { Text = "1aede Initialization Data", Resource = Resource, Offset = 0x01aede });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1aee7 Intro", Resource = Resource, Offset = 0x01aee7 });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1aefa Title", Resource = Resource, Offset = 0x01aefa });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af03 Controls", Resource = Resource, Offset = 0x01af03 });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af11 Training", Resource = Resource, Offset = 0x01af11 });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af1f Map", Resource = Resource, Offset = 0x01af1f });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af2d Continue", Resource = Resource, Offset = 0x01af2d });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af36 Black Hole", Resource = Resource, Offset = 0x01af36 });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af3f Scramble 1", Resource = Resource, Offset = 0x01af3f });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af52 Corneria 1", Resource = Resource, Offset = 0x01af52 });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af6a Asteroid 1", Resource = Resource, Offset = 0x01af6a });
+			//songs.Nodes.Add(new StarFoxSong { Text = "1af78 Space Armada (Blast In)", Resource = Resource, Offset = 0x01af78 });
 
 			Nodes.Add(images);
 			Nodes.Add(fonts);
@@ -351,6 +418,8 @@ namespace StarFoxBrowser.Nodes
 			Nodes.Add(behaviors);
 			Nodes.Add(textures);
 			Nodes.Add(textureAddresses);
+			Nodes.Add(courses);
+			Nodes.Add(paths);
 			Nodes.Add(levels);
 			Nodes.Add(audioClips);
 			Nodes.Add(songs);
@@ -694,15 +763,6 @@ namespace StarFoxBrowser.Nodes
 				};
 			}
 		}
-
-		public static readonly int LevelTableAddress = 0x28000;
-		public static readonly int BehaviorTableAddress = 0x2840;
-		public static readonly int ModelTableAddress = 0x264b;
-		public static readonly int TextureTableAddress = 0x18918;
-
-		public static readonly int[] ObjectIndexes = new int[255];
-		public static readonly int[] BehaviorIndexes = new int[255];
-		public static readonly byte[] BehaviorObjects = new byte[255];
 
 		public static readonly Dictionary<int, string> ModelNames = new Dictionary<int, string>
 		{
@@ -1517,80 +1577,119 @@ namespace StarFoxBrowser.Nodes
 		public static readonly Dictionary<int, string> AudioClipNames = new Dictionary<int, string>
 		{
 			{ 0xc292a, "Unknown" },
-			{ 0xc2b22, "Unknown" },
-			{ 0xc2f00, "Unknown" },
+			{ 0xc2b22, "Mechanical" },
+			{ 0xc2f00, "Mechanical 2" },
 			{ 0xc36c3, "Unknown" },
-			{ 0xc3a64, "Unknown" },
-			{ 0xc3fc5, "Unknown" },
-			{ 0xc4589, "Unknown" },
-			{ 0xc512c, "Unknown" },
-			{ 0xc5ebe, "Unknown" },
-			{ 0xc6482, "Unknown" },
-			{ 0xc64e5, "Unknown" },
-			{ 0xc679a, "Unknown" },
-			{ 0xc6d31, "Unknown" },
-			{ 0xc7547, "Unknown" },
-			{ 0xc775a, "Unknown" },
-			{ 0xc7f0d, "Unknown" },
-			{ 0xc877d, "Unknown" },
-			{ 0xc8b1c, "Unknown" },
-			{ 0xc8fc9, "Unknown" },
-			{ 0xc9572, "Unknown" },
-			{ 0xc976a, "Unknown" },
-			{ 0xc9ad3, "Unknown" },
+			{ 0xc3a64, "Laser" },
+			{ 0xc3fc5, "Bomb" },
+			{ 0xc4589, "Laser 2" },
+			{ 0xc512c, "Crash" },
+			{ 0xc5ebe, "Hit" },
+			{ 0xc6482, "Noise 3" },
+			{ 0xc64e5, "Noise 2" },
+			{ 0xc679a, "Mechanical 3" },
+			{ 0xc6d31, "Incoming Enemy" },
+			{ 0xc7547, "Wing" },
+			{ 0xc775a, "Damaged" },
+			{ 0xc7f0d, "Twin Blaster" },
+			{ 0xc877d, "Shield" },
+			{ 0xc8b1c, "Andross Laugh" },
+			{ 0xc8fc9, "Repaired" },
+			{ 0xc9572, "Mechanical 4" },
+			{ 0xc976a, "Calliope" },
+			{ 0xc9ad3, "Noise" },
 			{ 0xc9cd6, "Unknown" },
 			{ 0xc9d0c, "Unknown" },
-			{ 0xc9d42, "Unknown" },
-			{ 0xcb08f, "Unknown" },
-			{ 0xcb74f, "Unknown" },
-			{ 0xcc505, "Unknown" },
-			{ 0xcc5d4, "Unknown" },
-			{ 0xcd26a, "Unknown" },
-			{ 0xcd2a0, "Unknown" },
-			{ 0xcd4aa, "Unknown" },
-			{ 0xcdb34, "Unknown" },
-			{ 0xcdc15, "Unknown" },
-			{ 0xcdd08, "Unknown" },
-			{ 0xce233, "Unknown" },
-			{ 0xce272, "Unknown" },
-			{ 0xce767, "Unknown" },
-			{ 0xceaf4, "Unknown" },
+			{ 0xc9d42, "Timpani" },
+			{ 0xcb08f, "Horns" },
+			{ 0xcb74f, "Strings" },
+			{ 0xcc505, "Beep 2" },
+			{ 0xcc5d4, "Beep" },
+			{ 0xcd26a, "Click 2" },
+			{ 0xcd2a0, "Click" },
+			{ 0xcd4aa, "Snare" },
+			{ 0xcdb34, "Beep 3" },
+			{ 0xcdc15, "Bass Guitar" },
+			{ 0xcdd08, "Synth Lead" },
+			{ 0xce233, "Click 3" },
+			{ 0xce272, "Noise 4" },
+			{ 0xce767, "Tom" },
+			{ 0xceaf4, "Beep 4" },
 			{ 0xceb4f, "Unknown" },
-			{ 0xcebe7, "Unknown" },
-			{ 0xcf163, "Unknown" },
+			{ 0xcebe7, "Orchestra Hit" },
+			{ 0xcf163, "Beep 5" },
 			{ 0xcf1c6, "Unknown" },
-			{ 0xcf661, "Unknown" },
-			{ 0xcf886, "Unknown" },
-			{ 0xcffca, "Unknown" },
-			{ 0xd10e0, "Unknown" },
-			{ 0xd1282, "Unknown" },
-			{ 0xd12b6, "Unknown" },
-			{ 0xd2add, "Unknown" },
-			{ 0xd4f1c, "Unknown" },
-			{ 0xd6995, "Unknown" },
-			{ 0xd7727, "Unknown" },
-			{ 0xd791f, "Unknown" },
-			{ 0xda6ba, "Unknown" },
-			{ 0xdb606, "Unknown" },
-			{ 0xdc3fb, "Unknown" },
-			{ 0xdcef3, "Unknown" },
-			{ 0xe1bec, "Unknown" },
-			{ 0xe2b76, "Unknown" },
-			{ 0xe3974, "Unknown" },
-			{ 0xe5c8a, "Unknown" },
-			{ 0xe6f35, "Unknown" },
-			{ 0xe79af, "Unknown" },
-			{ 0xe7a7e, "Unknown" },
-			{ 0xe7b25, "Unknown" },
-			{ 0xe958d, "Unknown" },
-			{ 0xec3c7, "Unknown" },
-			{ 0xec50b, "Unknown" },
-			{ 0xed2d3, "Unknown" },
-			{ 0xed324, "Unknown" },
-			{ 0xed540, "Unknown" },
-			{ 0xea73b, "Unknown" },
-			{ 0xeed82, "Unknown" },
-			{ 0xeefa7, "Unknown" },
+			{ 0xcf661, "Flute" },
+			{ 0xcf886, "Horns 2" },
+			{ 0xcffca, "Crash 2" },
+			{ 0xd10e0, "Treads" },
+			{ 0xd1282, "Click 5" },
+			{ 0xd12b6, "Emergency" },
+			{ 0xd2add, "Prepare For Launch" },
+			{ 0xd4f1c, "Radio Chatter" },
+			{ 0xd6995, "Crash 3" },
+			{ 0xd7727, "Synth Lead 2" },
+			{ 0xd791f, "Incoming Enemy Fighters" },
+			{ 0xda6ba, "Good Luck" },
+			{ 0xdb606, "Haunting Music" },
+			{ 0xdc3fb, "Orchestra Hit 2" },
+			{ 0xdcef3, "Orchestra Hit 3" },
+			{ 0xe1bec, "This Is Corneria" },
+			{ 0xe2b76, "Pepper Speaking" },
+			{ 0xe3974, "Congratulations" },
+			{ 0xe5c8a, "I'm Heading Back To Corneria" },
+			{ 0xe6f35, "Crash 4" },
+			{ 0xe79af, "Synth Lead 3" },
+			{ 0xe7a7e, "Beep 6" },
+			{ 0xe7b25, "Roger" },
+			{ 0xe958d, "Let's Go" },
+			{ 0xec3c7, "Horns 3" },
+			{ 0xec50b, "French Horns" },
+			{ 0xed2d3, "Beep 7" },
+			{ 0xed324, "Strings Hit" },
+			{ 0xed540, "Horns 4" },
+			{ 0xea73b, "Noise 5" },
+			{ 0xeed82, "Flute 2" },
+			{ 0xeefa7, "Horns 5" },
+		};
+
+		public static readonly Dictionary<int, string> SongNames = new Dictionary<int, string>
+		{
+			{ 0x01aede, "Initialization Data" },
+			{ 0x01aee7, "Intro" },
+			{ 0x01aefa, "Title" },
+			{ 0x01af03, "Controls" },
+			{ 0x01af11, "Training" },
+			{ 0x01af1f, "Map" },
+			{ 0x01af2d, "Continue" },
+			{ 0x01af36, "Black Hole" },
+			{ 0x01af3f, "1-0 Scramble 1" },
+			{ 0x01af52, "1-1 Corneria 1" },
+			{ 0x01af6a, "1-2 Asteroid 1" },
+			{ 0x01af78, "1-3 Space Armada (Blast In)" },
+			{ 0x01af86, "1-3b Space Armada" },
+			{ 0x01af94, "1-4 Meteor" },
+			{ 0x01afac, "1-5 Venom (Space)" },
+			{ 0x01afba, "1-6 Venom (Ground)" },
+			{ 0x01afcd, "2-0 Scramble 2" },
+			{ 0x01afe0, "2-1 Corneria 2" },
+			{ 0x01afee, "2-2 Sector X" },
+			{ 0x01affc, "2-3 Titania" },
+			{ 0x01b014, "2-4 Sector Y" },
+			{ 0x01b022, "2-5 Venom 2 (Space)" },
+			{ 0x01b030, "2-6 Venom 2 (Ground)" },
+			{ 0x01b043, "3-0 Scramble 3" },
+			{ 0x01b056, "3-1 Corneria 3" },
+			{ 0x01b064, "3-2 Asteroid 2" },
+			{ 0x01b072, "3-3 Fortuna" },
+			{ 0x01b08a, "3-4 Sector Z" },
+			{ 0x01b098, "3-5 Macbeth" },
+			{ 0x01b0ab, "3-6 Venom 3 (Space)" },
+			{ 0x01b0b9, "3-7 Venom 3 (Ground)" },
+			{ 0x01b0cc, "End Sequence" },
+			{ 0x01b0d5, "Staff" },
+			{ 0x01b0de, "Game Over" },
+			{ 0x01b0e7, "Special" },
 		};
 
 		public static readonly Dictionary<int, string> ImageNames = new Dictionary<int, string>
