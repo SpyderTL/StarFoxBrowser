@@ -43,6 +43,9 @@ namespace StarFoxBrowser.Nodes
 			foreach (var font in FontNames)
 				fonts.Nodes.Add(new StarFoxFont { Text = font.Value, Resource = Resource, Offset = font.Key, Size = FontSizes[font.Key] });
 
+			foreach (var font in FontNames2)
+				fonts.Nodes.Add(new StarFoxFont2 { Text = font.Value, Resource = Resource, Offset = font.Key });
+
 			var materials = new TreeNode("Materials");
 
 			materials.Nodes.Add(new StarFoxSurface { Text = "0000", Resource = Resource, Offset = 0x10000 });
@@ -1723,6 +1726,11 @@ namespace StarFoxBrowser.Nodes
 		{
 			{ 0x01099, "Debug Font" },
 			{ 0x0d996, "Font" }
+		};
+
+		public static readonly Dictionary<int, string> FontNames2 = new Dictionary<int, string>
+		{
+			{ 0xa3eda, "3D Font" }
 		};
 
 		public static readonly Dictionary<int, Size> ImageSizes = new Dictionary<int, Size>

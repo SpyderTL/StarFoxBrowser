@@ -24,13 +24,39 @@ Star Colors			0xa3c6c
 Snow Colors
 Fade Table			0x1d660												1					0x11
 Particle Circle Tbl
-Font						0xa3eda
+3D Font				0xa3eda
 3D Messages		0xa48da
 Sprites					0xa4deb
 Palettes				0x177f1
 Stage Paths			0x1d671												2					0x03
 Player Map Ptr		0x28000
 Course Table		0x28003												2					0x03
+
+BGM:
+	bgma = sgbgma.bin				// Scramble, Corneria
+	bgmb = sgbgmb.bin				// 1-4
+	bgmc = sgbgmc.bin				// 2-3
+	bgmo = sgbgmo.bin				// Training
+	bgme = sgbgme.bin
+	bgmf = sgbgmf.bin					// 1-2, 1-5
+	bgmg = sgbgmg.bin				// 1-3
+	bgmh = sgbgmh.bin
+	bgmi = sgbgmi.bin
+	bgmj = sgbgmj.bin
+	bgmk = sgbgmk.bin				// 1-6
+	bgml = sgbgml.bin					// Black Hole
+	bgmm = sgbgmm.bin				// Intro
+	bgmn = sgbgmn.bin				// Controls
+	bgmp = sgbgmp.bin
+	bgm1 = sgbgm1.bin				// Scramble, Corneria
+	bgm2 = sgbgm2.bin
+	bgm4 = sgbgm4.bin				// 2-3
+	bgm5 = sgbgm5.bin				// 1-4
+	bgm6 = sgbgm6.bin				// 1-3
+	bgm7 = sgbgm7.bin				// 1-2
+	bgm8 = sgbgm8.bin				// 1-5, 1-6
+	bgm9 = sgbgm9.bin
+	bgm10 = sgbgm10.bin			// 1-6
 
 Screen Wipes
 	Scramble
@@ -87,7 +113,7 @@ Particle Circle Table[256]		2
 	Value1					1
 	Value2					1
 
-Font
+3D Font
 	Characters[80]					// 16x16 (1bpp)
 		Row[16]			2
 
