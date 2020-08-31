@@ -38,6 +38,13 @@ namespace StarFoxBrowser.Nodes
 			foreach (var image in ImageNames2)
 				images.Nodes.Add(new StarFoxImage2 { Text = image.Value, Resource = Resource, Offset = image.Key, Size = ImageSizes[image.Key] });
 
+
+			// Testing
+			images.Nodes.Add(new StarFoxImage3 { Text = "Andross", Resource = Resource, Offset = 0x02F738, Length = 2108, Size = new Size(12, 8) });
+			images.Nodes.Add(new StarFoxImage3 { Text = "Continue", Resource = Resource, Offset = 0x0A6403, Length = 3664, Size = new Size(7, 20) });
+
+			//images.Nodes.Add(new StarFoxImage2 { Text = "Test", Resource = Resource, Offset = 0xB8A94, Size = new Size(16, 16) });
+
 			var fonts = new TreeNode("Fonts");
 
 			foreach (var font in FontNames)
@@ -134,10 +141,10 @@ namespace StarFoxBrowser.Nodes
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Sea", Resource = Resource, Offset = 0x177f1 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Ground", Resource = Resource, Offset = 0x17811 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Mist", Resource = Resource, Offset = 0x17831 });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Mist2", Resource = Resource, Offset = 0x17851 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Mist 2", Resource = Resource, Offset = 0x17851 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Day", Resource = Resource, Offset = 0x17871 });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "Day2", Resource = Resource, Offset = 0x17891 });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "GameOver", Resource = Resource, Offset = 0x178b1 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Day 2", Resource = Resource, Offset = 0x17891 });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "Game Over", Resource = Resource, Offset = 0x178b1 });
 			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a8a });
 			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18aaa });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Space", Resource = Resource, Offset = 0x18aca });
