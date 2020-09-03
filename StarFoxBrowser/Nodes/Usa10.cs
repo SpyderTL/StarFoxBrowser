@@ -40,10 +40,12 @@ namespace StarFoxBrowser.Nodes
 
 
 			// Testing
-			images.Nodes.Add(new StarFoxImage3 { Text = "Andross", Resource = Resource, Offset = 0x02F738, Length = 2108, Size = new Size(12, 8) });
-			images.Nodes.Add(new StarFoxImage3 { Text = "Continue", Resource = Resource, Offset = 0x0A6403, Length = 3664, Size = new Size(7, 20) });
+			images.Nodes.Add(new StarFoxImage3 { Text = "Andross", Resource = Resource, Offset = 0x02F738, Length = 2108, Size = new Size(7, 8) });
+			images.Nodes.Add(new StarFoxImage3 { Text = "Continue", Resource = Resource, Offset = 0x0A6403, Length = 3664, Size = new Size(16, 11) });
+			images.Nodes.Add(new StarFoxImage3 { Text = "Corneria", Resource = Resource, Offset = 0x0A7577, Length = 2332, Size = new Size(80, 1) });
 
-			//images.Nodes.Add(new StarFoxImage2 { Text = "Test", Resource = Resource, Offset = 0xB8A94, Size = new Size(16, 16) });
+			images.Nodes.Add(new StarFoxImage4 { Text = "Map", Resource = Resource, TileOffset = 0x0ADE64, TileLength = 2612, TileCount = 192, MapOffset = 0x0B3050, MapLength = 740, MapSize = new Size(32, 32) });
+			images.Nodes.Add(new StarFoxImage4 { Text = "Continue", Resource = Resource, TileOffset = 0x0A6403, TileLength = 3664, TileCount = 176, MapOffset = 0x0A7253, MapLength = 456, MapSize = new Size(32, 32) });
 
 			var fonts = new TreeNode("Fonts");
 

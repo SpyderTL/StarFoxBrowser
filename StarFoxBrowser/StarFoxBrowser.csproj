@@ -71,6 +71,7 @@
     <Compile Include="Nodes\IndexList.cs" />
     <Compile Include="Nodes\StarFoxCourse.cs" />
     <Compile Include="Nodes\StarFoxFont2.cs" />
+    <Compile Include="Nodes\StarFoxImage4.cs" />
     <Compile Include="Nodes\StarFoxImage3.cs" />
     <Compile Include="Nodes\StarFoxImage2.cs" />
     <Compile Include="Nodes\StarFoxPath.cs" />

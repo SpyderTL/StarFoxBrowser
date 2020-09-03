@@ -98,8 +98,8 @@ namespace StarFoxBrowser.Nodes
 								{
 									var value = data[(y * 8) + x];
 
-									//bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, Color.FromArgb(value * 16, value * 16, value * 16));
-									bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, palette[value]);
+									bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, Color.FromArgb(value * 16, value * 16, value * 16));
+									//bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, palette[value]);
 								}
 							}
 						}

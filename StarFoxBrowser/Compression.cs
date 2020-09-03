@@ -13,6 +13,14 @@ namespace StarFoxBrowser
 
 		public static void Decompress()
 		{
+			src = new byte[0x10000]; // source buffer
+			dest = new byte[0x10000]; // destination buffer
+			s = 0;
+			d = 0;
+			d_length = 0;
+			buffer = 0;
+			b = 0;
+
 			Array.Copy(CompressedData, src, CompressedData.Length);
 
 			s = CompressedData.Length;
