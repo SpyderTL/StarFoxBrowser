@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class StarFoxImage4 : DataNode
+	public class StarFoxTileImage2Bpp : DataNode
 	{
 		public string Resource;
 		public int TileOffset;
@@ -74,25 +74,6 @@ namespace StarFoxBrowser.Nodes
 							data[(row * 8) + 5] |= ((plane0 >> 2) & 0x01) | ((plane1 >> 1) & 0x02);
 							data[(row * 8) + 6] |= ((plane0 >> 1) & 0x01) | ((plane1 >> 0) & 0x02);
 							data[(row * 8) + 7] |= ((plane0 >> 0) & 0x01) | ((plane1 << 1) & 0x02);
-						}
-
-						// Plane Row 1
-						for (var row = 0; row < 8; row++)
-						{
-							// Plane 2
-							var plane2 = reader2.ReadByte();
-
-							// Plane 3
-							var plane3 = reader2.ReadByte();
-
-							data[(row * 8) + 0] |= ((plane2 >> 5) & 0x04) | ((plane3 >> 4) & 0x08);
-							data[(row * 8) + 1] |= ((plane2 >> 4) & 0x04) | ((plane3 >> 3) & 0x08);
-							data[(row * 8) + 2] |= ((plane2 >> 3) & 0x04) | ((plane3 >> 2) & 0x08);
-							data[(row * 8) + 3] |= ((plane2 >> 2) & 0x04) | ((plane3 >> 1) & 0x08);
-							data[(row * 8) + 4] |= ((plane2 >> 1) & 0x04) | ((plane3 >> 0) & 0x08);
-							data[(row * 8) + 5] |= ((plane2 >> 0) & 0x04) | ((plane3 << 1) & 0x08);
-							data[(row * 8) + 6] |= ((plane2 << 1) & 0x04) | ((plane3 << 2) & 0x08);
-							data[(row * 8) + 7] |= ((plane2 << 2) & 0x04) | ((plane3 << 3) & 0x08);
 						}
 
 						for (var y = 0; y < 8; y++)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class StarFoxImage3 : DataNode
+	public class StarFoxTileSet4Bpp : DataNode
 	{
 		public string Resource;
 		public int Offset;

@@ -71,8 +71,10 @@
     <Compile Include="Nodes\IndexList.cs" />
     <Compile Include="Nodes\StarFoxCourse.cs" />
     <Compile Include="Nodes\StarFoxFont2.cs" />
-    <Compile Include="Nodes\StarFoxImage4.cs" />
-    <Compile Include="Nodes\StarFoxImage3.cs" />
+    <Compile Include="Nodes\StarFoxTileImage2Bpp.cs" />
+    <Compile Include="Nodes\StarFoxTileImage4Bpp.cs" />
+    <Compile Include="Nodes\StarFoxTileSet2Bpp.cs" />
+    <Compile Include="Nodes\StarFoxTileSet4Bpp.cs" />
     <Compile Include="Nodes\StarFoxImage2.cs" />
     <Compile Include="Nodes\StarFoxPath.cs" />
     <Compile Include="Nodes\StarFoxPathSegment.cs" />
@@ -120,6 +122,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\StarFoxUsa10.bin" />
+    <EmbeddedResource Include="Resources\StarFoxUsa12.bin" />
+    <None Include="Resources\Star Fox - Version 1.2 %28US%29.smc" />
     <None Include="Star Fox %28USA%29 modified.sfc" />
   </ItemGroup>
   <ItemGroup>
