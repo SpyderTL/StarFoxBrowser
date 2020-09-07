@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StarFoxBrowser.Nodes
 {
-	public class StarFoxTileImage4Bpp : DataNode
+	public class StarFoxTileImage4BppPalette : DataNode
 	{
 		public string Resource;
 		public int TileOffset;
@@ -18,6 +18,7 @@ namespace StarFoxBrowser.Nodes
 		public int MapOffset;
 		public int MapLength;
 		public Size MapSize;
+		public int PaletteOffset;
 
 		public override void Reload()
 		{
@@ -29,23 +30,30 @@ namespace StarFoxBrowser.Nodes
 			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 			using (var reader = new BinaryReader(stream))
 			{
-				// Load Palette
-				//stream.Position = 0x18b0a;
-				stream.Position = 0x1d440;
-				//stream.Position = 0x17831;
+				// Decompress Palette
+				stream.Position = 0x0be6c0;
 
-				//var palette = Enumerable.Range(0, 16)
-				var palette = Enumerable.Range(0, 256)
-				//var palette = Enumerable.Range(0, 80)
-					.Select(n => reader.ReadUInt16())
-					.Select(n => Color.FromArgb((n & 0x1f) << 3, (n >> 5 & 0x1f) << 3, (n >> 10) << 3))
-					.ToArray();
+				var compressedData = reader.ReadBytes(2908);
 
+				Compression.CompressedData = compressedData;
+
+				Compression.Decompress();
+
+				Color[] palette = null;
+
+				using (var stream2 = new MemoryStream(Compression.Data))
+				using (var reader2 = new BinaryReader(stream2))
+				{
+					palette = Enumerable.Range(0, 2560)
+						.Select(x => reader2.ReadUInt16())
+						.Select(x => Color.FromArgb((x & 0x1f) << 3, (x >> 5 & 0x1f) << 3, (x >> 10) << 3))
+						.ToArray();
+				}
 
 				// Decompress Tile Data
 				stream.Position = TileOffset;
 
-				var compressedData = reader.ReadBytes(TileLength);
+				compressedData = reader.ReadBytes(TileLength);
 
 				Compression.CompressedData = compressedData;
 
@@ -135,6 +143,8 @@ namespace StarFoxBrowser.Nodes
 							var horizontalFlip = (value >> 14) & 0x01;
 							var verticalFlip = (value >> 15) & 0x01;
 
+							var palette3 = palette2 + PaletteOffset;
+
 							for (var y = 0; y < 8; y++)
 							{
 								for (var x = 0; x < 8; x++)
@@ -148,12 +158,12 @@ namespace StarFoxBrowser.Nodes
 											if (verticalFlip == 0)
 											{
 												//bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, Color.FromArgb(index * 16, index * 16, index * 16));
-												bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, palette[(palette2 * 16) + index]);
+												bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + y, palette[(palette3 * 16) + index]);
 											}
 											else
 											{
 												//bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + 7 - y, Color.FromArgb(index * 16, index * 16, index * 16));
-												bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + 7 - y, palette[(palette2 * 16) + index]);
+												bitmap.SetPixel((tileX * 8) + x, (tileY * 8) + 7 - y, palette[(palette3 * 16) + index]);
 											}
 										}
 										else
@@ -161,12 +171,12 @@ namespace StarFoxBrowser.Nodes
 											if (verticalFlip == 0)
 											{
 												//bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + y, Color.FromArgb(index * 16, index * 16, index * 16));
-												bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + y, palette[(palette2 * 16) + index]);
+												bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + y, palette[(palette3 * 16) + index]);
 											}
 											else
 											{
 												//bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + 7 - y, Color.FromArgb(index * 16, index * 16, index * 16));
-												bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + 7 - y, palette[(palette2 * 16) + index]);
+												bitmap.SetPixel((tileX * 8) + 7 - x, (tileY * 8) + 7 - y, palette[(palette3 * 16) + index]);
 											}
 										}
 									}

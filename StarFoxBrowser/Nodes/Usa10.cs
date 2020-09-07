@@ -45,23 +45,34 @@ namespace StarFoxBrowser.Nodes
 			//images.Nodes.Add(new StarFoxTileSet4Bpp { Text = "Corneria", Resource = Resource, Offset = 0x0A7577, Length = 2332, Size = new Size(80, 1) });
 
 			// Tile Images
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "B", Resource = Resource, TileOffset = 0x0A5B23, TileLength = 16, TileCount = 6, MapOffset = 0x0A5B33, MapLength = 160 });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "E-TEST", Resource = Resource, TileOffset = 0x0A60C3, TileLength = 372, TileCount = 24, MapOffset = 0x0A6237, MapLength = 80, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "E-TEST2", Resource = Resource, TileOffset = 0x0A6287, TileLength = 160, TileCount = 128, MapOffset = 0x0A6327, MapLength = 220, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Sector X (Background)", Resource = Resource, TileOffset = 0x0A81E4, TileLength = 2668, TileCount = 192, MapOffset = 0x0B0000, MapLength = 968 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Black Hole (Background)", Resource = Resource, TileOffset = 0x0B2014, TileLength = 1588, TileCount = 192, MapOffset = 0x0B6024, MapLength = 3344 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Titania (Background)", Resource = Resource, TileOffset = 0x0A8C50, TileLength = 3832, TileCount = 192, MapOffset = 0x0B2A20, MapLength = 548 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-4 (Background)", Resource = Resource, TileOffset = 0x0B9E54, TileLength = 2604, TileCount = 192, MapOffset = 0x0B7344, MapLength = 1864 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Fortuna Space (Background)", Resource = Resource, TileOffset = 0x0ABC14, TileLength = 3408, TileCount = 144, MapOffset = 0x0B3944, MapLength = 1460 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Fortuna (Background)", Resource = Resource, TileOffset = 0x0ACE8C, TileLength = 4056, TileCount = 192, MapOffset = 0x0B513C, MapLength = 548 });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "HOLE-A", Resource = Resource, TileOffset = 0x0A585B, TileLength = 712, TileCount = 64, MapOffset = 0x0B6D34, MapLength = 240, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "Intro", Resource = Resource, TileOffset = 0x0BA880, TileLength = 4416, TileCount = 192, MapOffset = 0x0B827C, MapLength = 608, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Intro (Background)", Resource = Resource, TileOffset = 0x0A4DEB, TileLength = 1924, TileCount = 80, MapOffset = 0x0A556F, MapLength = 748 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "B", Resource = Resource, TileOffset = 0x0A5B23, TileLength = 16, TileCount = 6, MapOffset = 0x0A5B33, MapLength = 160, PaletteOffset = 7 });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "E-TEST", Resource = Resource, TileOffset = 0x0A60C3, TileLength = 372, TileCount = 24, MapOffset = 0x0A6237, MapLength = 80, MapSize = new Size(32, 32), PaletteOffset = 141 });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "E-TEST2", Resource = Resource, TileOffset = 0x0A6287, TileLength = 160, TileCount = 128, MapOffset = 0x0A6327, MapLength = 220, MapSize = new Size(32, 32), PaletteOffset = 148 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "1-1 Corneria (Background)", Resource = Resource, TileOffset = 0x0A7577, TileLength = 2332, TileCount = 176, MapOffset = 0x0A8000, MapLength = 484, PaletteOffset = 27 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "1-2 Asteroid (Background)", Resource = Resource, TileOffset = 0x0A9C38, TileLength = 2000, TileCount = 176, MapOffset = 0x0B3334, MapLength = 1552, PaletteOffset = 106 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "1-7 Venom (Background)", Resource = Resource, TileOffset = 0x0B1150, TileLength = 3780, TileCount = 192, MapOffset = 0x0FF625, MapLength = 936, PaletteOffset = 0 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "1-7 Tunnel (Background)", Resource = Resource, TileOffset = 0x0B84DC, TileLength = 540, TileCount = 64, MapOffset = 0x0B7A8C, MapLength = 1288, PaletteOffset = 71 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "1-7 Andross (Background)", Resource = Resource, TileOffset = 0x0B84DC, TileLength = 540, TileCount = 64, MapOffset = 0x0B7A8C, MapLength = 1288, PaletteOffset = 71 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-2 Sector X (Background)", Resource = Resource, TileOffset = 0x0A81E4, TileLength = 2668, TileCount = 192, MapOffset = 0x0B0000, MapLength = 968, PaletteOffset = 99 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-3 Titania (Background)", Resource = Resource, TileOffset = 0x0A8C50, TileLength = 3832, TileCount = 192, MapOffset = 0x0B2A20, MapLength = 548, PaletteOffset = 0 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-3 Bridge (Background)", Resource = Resource, TileOffset = 0x0A741B, TileLength = 348, TileCount = 48, MapOffset = 0x0B2C44, MapLength = 1036, PaletteOffset = 85 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-3 Tunnel (Background)", Resource = Resource, TileOffset = 0x0B86F8, TileLength = 572, TileCount = 64, MapOffset = 0x0B2648, MapLength = 984, PaletteOffset = 71 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-4 Sector Y (Background)", Resource = Resource, TileOffset = 0x0B9E54, TileLength = 2604, TileCount = 192, MapOffset = 0x0B7344, MapLength = 1864, PaletteOffset = 43 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "2-6 Highway (Background)", Resource = Resource, TileOffset = 0x0B8934, TileLength = 468, TileCount = 64, MapOffset = 0x0AEB10, MapLength = 1060, PaletteOffset = 64 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "3-1 Corneria", Resource = Resource, TileOffset = 0x0A7577, TileLength = 2332, TileCount = 176, MapOffset = 0x0A8000, MapLength = 484, PaletteOffset = 50 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "3-3 Fortuna Space (Background)", Resource = Resource, TileOffset = 0x0ABC14, TileLength = 3408, TileCount = 144, MapOffset = 0x0B3944, MapLength = 1460, PaletteOffset = 7 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "3-4 Fortuna (Background)", Resource = Resource, TileOffset = 0x0ACE8C, TileLength = 4056, TileCount = 192, MapOffset = 0x0B513C, MapLength = 548, PaletteOffset = 20 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "3-4 Tunnel (Background)", Resource = Resource, TileOffset = 0x0B86F8, TileLength = 572, TileCount = 64, MapOffset = 0x0B6E24, MapLength = 1312, PaletteOffset = 71 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "3-6 Macbeth (Background)", Resource = Resource, TileOffset = 0x0B03C8, TileLength = 3464, TileCount = 192, MapOffset = 0x0B571C, MapLength = 728, PaletteOffset = 20 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Black Hole (Background)", Resource = Resource, TileOffset = 0x0B2014, TileLength = 1588, TileCount = 192, MapOffset = 0x0B6024, MapLength = 3344, PaletteOffset = 27 });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "HOLE-A", Resource = Resource, TileOffset = 0x0A585B, TileLength = 712, TileCount = 64, MapOffset = 0x0B6D34, MapLength = 240, MapSize = new Size(32, 32), PaletteOffset = 27 });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "Intro", Resource = Resource, TileOffset = 0x0BA880, TileLength = 4416, TileCount = 192, MapOffset = 0x0B827C, MapLength = 608, MapSize = new Size(32, 32), PaletteOffset = 120 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Intro (Background)", Resource = Resource, TileOffset = 0x0A4DEB, TileLength = 1924, TileCount = 80, MapOffset = 0x0A556F, MapLength = 748, PaletteOffset = 7 });
 			images.Nodes.Add(new StarFoxTileImage2Bpp { Text = "Title", Resource = Resource, TileOffset = 0x0B98C4, TileLength = 1072, TileCount = 128, MapOffset = 0x0B9CF4, MapLength = 352, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "Andross", Resource = Resource, TileOffset = 0x02F738, TileLength = 2108, TileCount = 96, MapOffset = 0x007C57, MapLength = 831, MapSize = new Size(32, 32) });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "Andross", Resource = Resource, TileOffset = 0x02F738, TileLength = 2108, TileCount = 96, MapOffset = 0x007C57, MapLength = 831, MapSize = new Size(32, 32), PaletteOffset = 34 });
 			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "Map", Resource = Resource, TileOffset = 0x0ADE64, TileLength = 2612, TileCount = 192, MapOffset = 0x0B3050, MapLength = 740, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "Continue", Resource = Resource, TileOffset = 0x0A6403, TileLength = 3664, TileCount = 176, MapOffset = 0x0A7253, MapLength = 456, MapSize = new Size(32, 32) });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Corneria", Resource = Resource, TileOffset = 0x0A7577, TileLength = 2332, TileCount = 176, MapOffset = 0x0A8000, MapLength = 484 });
+			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "Continue", Resource = Resource, TileOffset = 0x0A6403, TileLength = 3664, TileCount = 176, MapOffset = 0x0A7253, MapLength = 456, MapSize = new Size(32, 32), PaletteOffset = 7 });
+			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Corneria", Resource = Resource, TileOffset = 0x0A7577, TileLength = 2332, TileCount = 176, MapOffset = 0x0A8000, MapLength = 484, PaletteOffset = 7 });
 
 			var fonts = new TreeNode("Fonts");
 
@@ -165,14 +176,18 @@ namespace StarFoxBrowser.Nodes
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Game Over", Resource = Resource, Offset = 0x178b1 });
 			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18a8a });
 			//palettes.Nodes.Add(new StarFoxPalette { Text = "Unknown", Resource = Resource, Offset = 0x18aaa });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Space", Resource = Resource, Offset = 0x18aca });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Night", Resource = Resource, Offset = 0x18aea });
-			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Day", Resource = Resource, Offset = 0x18b0a });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Night", Resource = Resource, Offset = 0x18aca });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Red", Resource = Resource, Offset = 0x18aea });
+			palettes.Nodes.Add(new StarFoxPalette { Text = "3D Blue", Resource = Resource, Offset = 0x18b0a });
 
 			palettes.Nodes.Add(new StarFoxPalette3 { Text = "Color Data", Resource = Resource, Offset = 0x1d440 });
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Color Data 2", Resource = Resource, Offset = 0x1d620 });
 
 			palettes.Nodes.Add(new StarFoxPalette { Text = "Yellow", Resource = Resource, Offset = 0x1d640 });
+
+			palettes.Nodes.Add(new StarFoxPalette4 { Text = "All Colors", Resource = Resource, Offset = 0x0be6c0, Length = 2908 });
+
+			//BE6C0
 
 			//palettes.Nodes.Add(new StarFoxPalette2 { Text = "3D", Resource = Resource, Offset = 0x90000 });
 

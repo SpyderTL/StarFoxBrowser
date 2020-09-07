@@ -71,8 +71,10 @@
     <Compile Include="Nodes\IndexList.cs" />
     <Compile Include="Nodes\StarFoxCourse.cs" />
     <Compile Include="Nodes\StarFoxFont2.cs" />
+    <Compile Include="Nodes\StarFoxPalette4.cs" />
     <Compile Include="Nodes\StarFoxTileImage2Bpp.cs" />
     <Compile Include="Nodes\StarFoxBackgroundTileImage4Bpp.cs" />
+    <Compile Include="Nodes\StarFoxTileImage4BppPalette.cs" />
     <Compile Include="Nodes\StarFoxTileImage4Bpp.cs" />
     <Compile Include="Nodes\StarFoxTileSet2Bpp.cs" />
     <Compile Include="Nodes\StarFoxTileSet4Bpp.cs" />
