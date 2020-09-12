@@ -19,6 +19,26 @@ namespace StarFoxBrowser.Nodes
 		public override void Reload()
 		{
 			Nodes.Clear();
+
+			using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
+			using (var reader = new BinaryReader(stream))
+			{
+				stream.Position = Offset;
+
+				while (true)
+				{
+					var length = reader.ReadUInt16();
+
+					if (length == 0)
+						break;
+
+					var destination = reader.ReadUInt16();
+
+					var data = reader.ReadBytes(length);
+
+					Nodes.Add(destination.ToString("X4") + " " + length + " bytes");
+				}
+			}
 		}
 
 		public override object GetProperties()

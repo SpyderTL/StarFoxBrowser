@@ -72,7 +72,6 @@ namespace StarFoxBrowser.Nodes
 			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "Andross", Resource = Resource, TileOffset = 0x02F738, TileLength = 2108, TileCount = 96, MapOffset = 0x007C57, MapLength = 831, MapSize = new Size(32, 32), PaletteOffset = 34 });
 			images.Nodes.Add(new StarFoxTileImage4Bpp { Text = "Map", Resource = Resource, TileOffset = 0x0ADE64, TileLength = 2612, TileCount = 192, MapOffset = 0x0B3050, MapLength = 740, MapSize = new Size(32, 32) });
 			images.Nodes.Add(new StarFoxTileImage4BppPalette { Text = "Continue", Resource = Resource, TileOffset = 0x0A6403, TileLength = 3664, TileCount = 176, MapOffset = 0x0A7253, MapLength = 456, MapSize = new Size(32, 32), PaletteOffset = 7 });
-			images.Nodes.Add(new StarFoxBackgroundTileImage4Bpp { Text = "Corneria", Resource = Resource, TileOffset = 0x0A7577, TileLength = 2332, TileCount = 176, MapOffset = 0x0A8000, MapLength = 484, PaletteOffset = 7 });
 
 			var fonts = new TreeNode("Fonts");
 
@@ -420,7 +419,7 @@ namespace StarFoxBrowser.Nodes
 				{
 					var offset = (int)stream.Position;
 
-					var flags = reader.ReadByte();
+					var index = reader.ReadByte();
 
 					var song = new StarFoxSong { Text = x.ToString() + " " + offset.ToString("x6") + " " + SongNames[offset], Resource = Resource, Offset = offset };
 

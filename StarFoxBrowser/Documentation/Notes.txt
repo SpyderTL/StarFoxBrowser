@@ -2,35 +2,35 @@
 
 Name					File Address		Memory Address		Entry Length	Table Length
 Textures				0x90000			0x1280000					1					0x10000
-Materials				0x10000			0x028000						3					0x59c1
-Materials (RAM)	0x10000			0x7e3193						3					0x59c1
-Behaviors				0x2840				0x00a840						4
-Models					0x264b				0x00a64b						2
-Palettes				0x18000												2
-Lighting				0x19000												1
+Materials				0x10000			0x028000					3					0x59c1
+Materials (RAM)		0x10000			0x7e3193					3					0x59c1
+Behaviors				0x2840				0x00a840					4
+Models					0x264b				0x00a64b					2
+Palettes					0x18000											2
+Lighting					0x19000											1
 Animated				0x18000											
-Strings					0x00e796			0x01e796						*
-Functions				0x01ad5d			0x03ad5d						*
-Map Sprites			0x00208b			0x00a08b						960
-Songs					0x01aede			0x03aede						*
-??							0x01b000			0x03b000						*
-??							0x0300d5			0x0680d5						8
-256-Color Palette0x01d440			0x03d440						2
-??							0x0fdca8			0x1fdca8						4					0x60
-?? (RAM)				0x0fdca8			0x000100						4					0x60
-Screen Wipes		0xa0000				
+Strings					0x00e796			0x01e796					*
+Functions				0x01ad5d			0x03ad5d					*
+Map Sprites			0x00208b			0x00a08b					960
+Songs					0x01aede			0x03aede					*
+??							0x01b000			0x03b000					*
+??							0x0300d5			0x0680d5					8
+256-Color Palette	0x01d440			0x03d440					2
+??							0x0fdca8			0x1fdca8					4					0x60
+?? (RAM)				0x0fdca8			0x000100					4					0x60
+Screen Wipes			0xa0000				
 Z Tables				0xa096c												
 Star Colors			0xa3c6c
 Snow Colors
-Fade Table			0x1d660												1					0x11
+Fade Table				0x1d660											1					0x11
 Particle Circle Tbl
-3D Font				0xa3eda
-3D Messages		0xa48da
+3D Font					0xa3eda
+3D Messages			0xa48da
 Sprites					0xa4deb
-Palettes				0x177f1
-Stage Paths			0x1d671												2					0x03
+Palettes					0x177f1
+Stage Paths			0x1d671											2					0x03
 Player Map Ptr		0x28000
-Course Table		0x28003												2					0x03
+Course Table			0x28003											2					0x03
 
 BGM:
 	bgma = sgbgma.bin				// Scramble, Corneria
@@ -38,14 +38,14 @@ BGM:
 	bgmc = sgbgmc.bin				// 2-3
 	bgmo = sgbgmo.bin				// Training
 	bgme = sgbgme.bin
-	bgmf = sgbgmf.bin					// 1-2, 1-5
+	bgmf = sgbgmf.bin				// 1-2, 1-5
 	bgmg = sgbgmg.bin				// 1-3
 	bgmh = sgbgmh.bin
 	bgmi = sgbgmi.bin
 	bgmj = sgbgmj.bin
 	bgmk = sgbgmk.bin				// 1-6
-	bgml = sgbgml.bin					// Black Hole
-	bgmm = sgbgmm.bin				// Intro
+	bgml = sgbgml.bin				// Black Hole
+	bgmm = sgbgmm.bin			// Intro
 	bgmn = sgbgmn.bin				// Controls
 	bgmp = sgbgmp.bin
 	bgm1 = sgbgm1.bin				// Scramble, Corneria
@@ -57,6 +57,18 @@ BGM:
 	bgm8 = sgbgm8.bin				// 1-5, 1-6
 	bgm9 = sgbgm9.bin
 	bgm10 = sgbgm10.bin			// 1-6
+
+Songs[35]
+	Index							1
+	Blocks[]
+		Address					3
+		Length						2
+	End							3			// (0)
+
+Song Block
+	Length						2
+	Destination				2			// Sent to APU Port 2-3
+	Data[Length]							// Sent to APU Port 1
 
 Screen Wipes
 	Scramble
