@@ -398,7 +398,7 @@ namespace StarFoxBrowser.Nodes
 
 						var size = reader.ReadUInt16();
 
-						song.Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("x6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
+						//song.Nodes.Add(new StarFoxSongPart { Text = "Address: " + address.ToString("x6") + " Size: " + size, Address = address, Size = size, Resource = Resource, Offset = ((address & 0xff0000) >> 1) | (address & 0x7fff) });
 					}
 				}
 			}
@@ -595,7 +595,7 @@ namespace StarFoxBrowser.Nodes
 				{
 					stream.Position = clip.Key;
 
-					var stream2 = File.Create(clip.Key.ToString("X2") + ".wav");
+					var stream2 = File.Create(clip.Key.ToString("X2") + " " + clip.Value + ".wav");
 					var writer = new BinaryWriter(stream2);
 
 					writer.Write(Encoding.ASCII.GetBytes("RIFF"));

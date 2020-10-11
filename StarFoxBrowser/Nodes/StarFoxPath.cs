@@ -44,12 +44,12 @@ namespace StarFoxBrowser.Nodes
 
 					while (true)
 					{
-						var character = reader.ReadInt16();
+						var character = reader.ReadUInt16();
 
-						if (character == -1)
+						if (character == 0xffff)
 							break;
 
-						segment.Nodes.Add(character.ToString());
+						segment.Nodes.Add(character.ToString("X4"));
 					}
 
 					var type = reader.ReadByte();

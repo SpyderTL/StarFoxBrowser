@@ -50,6 +50,8 @@ namespace StarFoxBrowser.Nodes
 				// Read Parts
 				var spc = new byte[0x10000];
 
+				partOffsets = new int[] { 0x0C0000 }.Concat(partOffsets).ToList();
+
 				for (var part = 0; part < partOffsets.Count; part++)
 				{
 					stream.Position = partOffsets[part];
@@ -86,97 +88,54 @@ namespace StarFoxBrowser.Nodes
 
 					for (var song = 0; song < songOffsets.Length; song++)
 					{
-						var songNode = new TreeNode(song.ToString("X2") + " " + songOffsets[song].ToString("X4"));
-
-						if (songOffsets[song] != 0)
-						{
-							stream2.Position = songOffsets[song];
-
-							var repeat = -1;
-							var repeatPosition = -1L;
-
-							var trackPositions = new List<long>();
-							var trackOffsets = new List<int>();
-
-							while (true)
-							{
-								var position = stream2.Position;
-								var trackOffset = reader2.ReadUInt16();
-
-								if (trackOffset == 0x83)
-								{
-									repeat = reader2.ReadUInt16();
-									repeatPosition = position;
-									break;
-								}
-
-								if (trackOffset == 0)
-									break;
-
-								trackPositions.Add(position);
-								trackOffsets.Add(trackOffset);
-							}
-
-							for (var track = 0; track < trackOffsets.Count; track++)
-							{
-								var trackNode = new TreeNode(trackPositions[track].ToString("X4") + ": " + trackOffsets[track].ToString("X4"));
-
-								stream2.Position = trackOffsets[track];
-
-								var channelOffsets = new int[8];
-
-								for (var channel = 0; channel < channelOffsets.Length; channel++)
-									channelOffsets[channel] = reader2.ReadUInt16();
-
-								for (var channel = 0; channel < channelOffsets.Length; channel++)
-								{
-									var channelNode = new TreeNode(channelOffsets[channel].ToString("X4"));
-
-									// Read Channel
-									stream2.Position = channelOffsets[channel];
-
-									while (true)
-									{
-										var position = stream2.Position;
-
-										var type = reader2.ReadByte();
-
-										if (type == 0x00 || type == 0xC9 || type == 0x89)
-										{
-											channelNode.Nodes.Add(new TreeNode(position.ToString("X4") + ": " + type.ToString("X2")));
-											break;
-										}
-										else if (type >= 0xe0)
-										{
-											var data = reader2.ReadBytes(RomSongs.EventTypes[type - 0xe0].Length);
-
-											channelNode.Nodes.Add(new TreeNode(position.ToString("X4") + ": " + type.ToString("X2") + ": " + string.Join(" ", data.Select(x => x.ToString("X2")))));
-										}
-										else
-										{
-											channelNode.Nodes.Add(new TreeNode(position.ToString("X4") + ": " + type.ToString("X2")));
-										}
-									}
-
-									trackNode.Nodes.Add(channelNode);
-								}
-
-								songNode.Nodes.Add(trackNode);
-							}
-
-							if (repeat != -1)
-							{
-								var repeatNode = new TreeNode(repeatPosition.ToString("X4") + ": Repeat " + repeat.ToString("X4"));
-
-								songNode.Nodes.Add(repeatNode);
-							}
-						}
+						var songNode = new StarFoxSong { Text = song.ToString("X2") + " " + songOffsets[song].ToString("X4"), Offset = songOffsets[song], DataOffset = Offset, Resource = Resource };
 
 						songsNode.Nodes.Add(songNode);
 					}
-
-					Nodes.Add(songsNode);
 				}
+
+				Nodes.Add(songsNode);
+
+				// Read Voices
+				var voicesNode = new TreeNode("Voices");
+
+				using (var stream2 = new MemoryStream(spc))
+				using (var reader2 = new BinaryReader(stream2))
+				{
+					stream2.Position = 0x3d00;
+
+					for (var voice = 0; voice < 55; voice++)
+					{
+						var sample = reader2.ReadByte();
+						var envelope = reader2.ReadByte();
+						var envelope2 = reader2.ReadByte();
+						var gain = reader2.ReadByte();
+						var echo = reader2.ReadUInt16();
+
+						voicesNode.Nodes.Add(voice.ToString("X2") + ": " + sample.ToString("X2"));
+					}
+				}
+
+				Nodes.Add(voicesNode);
+
+				// Read Samples
+				var samplesNode = new TreeNode("Samples");
+
+				using (var stream2 = new MemoryStream(spc))
+				using (var reader2 = new BinaryReader(stream2))
+				{
+					stream2.Position = 0x3c00;
+
+					for (var voice = 0; voice < 0x40; voice++)
+					{
+						var start = reader2.ReadUInt16();
+						var loop = reader2.ReadUInt16();
+
+						samplesNode.Nodes.Add(voice.ToString("X2") + ": " + start.ToString("X4") + " - " + loop.ToString("X4"));
+					}
+				}
+
+				Nodes.Add(samplesNode);
 			}
 		}
 

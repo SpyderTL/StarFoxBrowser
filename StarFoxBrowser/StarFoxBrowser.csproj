@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,10 +66,20 @@
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Compression.cs" />
+    <Compile Include="Midi.cs" />
+    <Compile Include="MidiPlayer.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Nodes\Face.cs" />
     <Compile Include="Nodes\BspTreeNode.cs" />
     <Compile Include="Nodes\IndexList.cs" />
+    <Compile Include="PlayerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerForm.Designer.cs">
+      <DependentUpon>PlayerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SongPlayer.cs" />
+    <Compile Include="Nodes\StarFoxSong.cs" />
     <Compile Include="Nodes\StarFoxCourse.cs" />
     <Compile Include="Nodes\StarFoxFont2.cs" />
     <Compile Include="Nodes\StarFoxPalette4.cs" />
@@ -103,7 +114,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RomSongs.cs" />
+    <Compile Include="SfcFile.cs" />
+    <Compile Include="Snes.cs" />
+    <Compile Include="ChannelReader.cs" />
+    <Compile Include="SongPlayerForm.cs" />
+    <Compile Include="TrackReader.cs" />
+    <Compile Include="Spc.cs" />
     <Compile Include="StarFoxRom.cs" />
+    <Compile Include="PropertiesBase.cs" />
+    <Compile Include="SongReader.cs" />
     <EmbeddedResource Include="BrowserForm.resx">
       <DependentUpon>BrowserForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -122,6 +141,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="PlayerForm.resx">
+      <DependentUpon>PlayerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
