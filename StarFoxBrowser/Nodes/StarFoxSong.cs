@@ -349,7 +349,10 @@ namespace StarFoxBrowser.Nodes
 
 					var partOffsets = new List<int>
 					{
-						0x0C0000
+						0x0C0000,
+						0x0C28C2,
+						0x0C9C8E,
+						0x0DA6A2,
 					};
 
 					while (true)
@@ -364,6 +367,10 @@ namespace StarFoxBrowser.Nodes
 
 						partOffsets.Add(offset);
 					}
+
+					SpcInstruments.BlockAddresses = new List<int>();
+					SpcInstruments.BlockLengths = new List<int>();
+					SpcInstruments.BlockOffsets = new List<int>();
 
 					for (var part = 0; part < partOffsets.Count; part++)
 					{
@@ -383,6 +390,10 @@ namespace StarFoxBrowser.Nodes
 							var data = reader.ReadBytes(length);
 
 							Array.Copy(data, 0, Spc.Ram, destination, data.Length);
+
+							SpcInstruments.BlockAddresses.Add(destination);
+							SpcInstruments.BlockLengths.Add(length);
+							SpcInstruments.BlockOffsets.Add(offset);
 						}
 					}
 

@@ -118,6 +118,7 @@
     <Compile Include="Snes.cs" />
     <Compile Include="ChannelReader.cs" />
     <Compile Include="SongPlayerForm.cs" />
+    <Compile Include="SpcInstruments.cs" />
     <Compile Include="TrackReader.cs" />
     <Compile Include="Spc.cs" />
     <Compile Include="StarFoxRom.cs" />

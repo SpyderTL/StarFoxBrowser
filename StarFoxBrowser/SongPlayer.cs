@@ -8,11 +8,16 @@ namespace StarFoxBrowser
 {
 	public static class SongPlayer
 	{
+		public static bool[] ChannelNoteOn = new bool[8];
 		public static int[] ChannelNotes = new int[8];
 		public static int[] ChannelVelocities = new int[8];
 		public static int[] ChannelPan = new int[8];
 		public static int[] ChannelPhase = new int[8];
+		public static int[] ChannelInstruments = new int[8];
+		public static int[] ChannelVolume = new int[8];
+		public static int[] ChannelVolumeFade = new int[8];
 		public static double Tempo;
+		public static int PercussionInstrumentOffset = 0;
 		public static bool Stopped;
 
 		private static double[] ChannelTimers = new double[8];
@@ -48,6 +53,16 @@ namespace StarFoxBrowser
 			Repeat = -1;
 			Tempo = 1000.0f;
 
+			PercussionInstrumentOffset = 0;
+			ChannelNotes = new int[8];
+			NoteTimers = new double[8];
+			ChannelLengths = new int[8];
+			ChannelDurations = new int[8];
+			ChannelVelocities = new int[8];
+			ChannelPan = Enumerable.Repeat(10, 8).ToArray();
+			ChannelVolume = Enumerable.Repeat(0xFF, 8).ToArray();
+			ChannelVolumeFade = new int[8];
+
 			while (!Stopped)
 			{
 				SongReader.Read();
@@ -81,8 +96,6 @@ namespace StarFoxBrowser
 						break;
 				}
 			}
-
-			Midi.Disable();
 		}
 
 		private static IEnumerable PlayTrack()
@@ -91,16 +104,11 @@ namespace StarFoxBrowser
 
 			TrackReader.Read();
 
-			ChannelNotes = new int[8];
+			ChannelNoteOn = new bool[8];
 			ChannelTimers = new double[8];
-			NoteTimers = new double[8];
-			ChannelLengths = new int[8];
-			ChannelDurations = new int[8];
-			ChannelVelocities = new int[8];
 			ChannelReturnPositions = new int[8];
 			ChannelRepeatPositions = new int[8];
 			ChannelRepeatCounts = new int[8];
-			ChannelPan = Enumerable.Repeat(10, 8).ToArray();
 			ChannelPhase = new int[8];
 
 			var last = Environment.TickCount;
@@ -112,11 +120,11 @@ namespace StarFoxBrowser
 				var time = Environment.TickCount;
 				var elapsed = (time - last) * 0.0001;
 
+				for (var channel = 0; channel < 8; channel++)
+					ChannelNoteOn[channel] = false;
+
 				for (var channel = 0; channel < 8 && !stopped; channel++)
 				{
-					if (TrackReader.Channels[channel] == 0)
-						continue;
-
 					if (NoteTimers[channel] > 0.0)
 					{
 						NoteTimers[channel] -= elapsed * Tempo;
@@ -124,6 +132,9 @@ namespace StarFoxBrowser
 						if (NoteTimers[channel] <= 0.0)
 							ChannelNotes[channel] = 0;
 					}
+
+					if (TrackReader.Channels[channel] == 0)
+						continue;
 
 					ChannelTimers[channel] -= elapsed * Tempo;
 
@@ -136,6 +147,7 @@ namespace StarFoxBrowser
 						if (ChannelReader.EventType == ChannelReader.EventTypes.Note)
 						{
 							ChannelNotes[channel] = ChannelReader.Note;
+							ChannelNoteOn[channel] = true;
 
 							ChannelTimers[channel] += ChannelLengths[channel] / 18.0f;
 							NoteTimers[channel] = ChannelDurations[channel] / 1.0f;
@@ -161,6 +173,13 @@ namespace StarFoxBrowser
 							ChannelDurations[channel] = ChannelReader.Duration;
 							ChannelVelocities[channel] = ChannelReader.Velocity;
 						}
+						else if (ChannelReader.EventType == ChannelReader.EventTypes.Instrument)
+						{
+							if ((ChannelReader.Instrument & 0x80) == 0)
+								ChannelInstruments[channel] = ChannelReader.Instrument;
+							else
+								ChannelInstruments[channel] = ChannelReader.Instrument - 0xCA + PercussionInstrumentOffset;
+						}
 						else if (ChannelReader.EventType == ChannelReader.EventTypes.Pan)
 						{
 							ChannelPan[channel] = ChannelReader.Pan;
@@ -176,6 +195,19 @@ namespace StarFoxBrowser
 						else if (ChannelReader.EventType == ChannelReader.EventTypes.Tempo)
 						{
 							Tempo = ChannelReader.Tempo;
+						}
+						else if (ChannelReader.EventType == ChannelReader.EventTypes.PercussionInstrumentOffset)
+						{
+							PercussionInstrumentOffset = ChannelReader.PercussionInstrumentOffset;
+						}
+						else if (ChannelReader.EventType == ChannelReader.EventTypes.Volume)
+						{
+							ChannelVolume[channel] = ChannelReader.Volume;
+						}
+						else if (ChannelReader.EventType == ChannelReader.EventTypes.VolumeFade)
+						{
+							ChannelVolume[channel] = ChannelReader.Volume;
+							ChannelVolumeFade[channel] = ChannelReader.Fade;
 						}
 						else if (ChannelReader.EventType == ChannelReader.EventTypes.Other)
 						{
@@ -210,7 +242,7 @@ namespace StarFoxBrowser
 
 				last = time;
 
-				if (!stopped)
+				//if (!stopped)
 					yield return null;
 			}
 		}
