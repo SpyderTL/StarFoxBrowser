@@ -340,6 +340,8 @@ namespace StarFoxBrowser.Nodes
 
 			private void Play(object sender, EventArgs e)
 			{
+				SongPlayerForm.Close();
+
 				using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource))
 				using (var reader = new BinaryReader(stream))
 				{

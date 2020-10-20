@@ -25,6 +25,10 @@ namespace StarFoxBrowser
 		public static int PercussionInstrumentOffset;
 		public static int Volume;
 		public static int Fade;
+		public static int Transpose;
+		public static int Tuning;
+		public static int PitchSlide;
+		public static int Delay;
 
 		public static void Read()
 		{
@@ -52,6 +56,21 @@ namespace StarFoxBrowser
 			{
 				EventType = EventTypes.Note;
 				Note = Value - RomSongs.FirstNote;
+
+				if (Spc.Ram[Position] != 0xf9)
+				{
+					Delay = 0;
+					Duration = 0;
+					PitchSlide = 0;
+				}
+				else
+				{
+					Position++;
+
+					Delay = Spc.Ram[Position++];
+					Duration = Spc.Ram[Position++];
+					PitchSlide = Spc.Ram[Position++];
+				}
 			}
 			else if (Value == RomSongs.Tie)
 				EventType = EventTypes.Tie;
@@ -73,10 +92,38 @@ namespace StarFoxBrowser
 				Pan = Spc.Ram[Position] & 0x2F;
 				Phase = Spc.Ram[Position++] >> 6;
 			}
+			else if (Value == 0xE2)
+			{
+				EventType = EventTypes.PanFade;
+				Fade = Spc.Ram[Position++];
+				Pan = Spc.Ram[Position++] & 0x2F;
+			}
+			else if (Value == 0xE5)
+			{
+				EventType = EventTypes.MasterVolume;
+				Volume = Spc.Ram[Position++];
+			}
+			else if (Value == 0xE6)
+			{
+				EventType = EventTypes.MasterVolumeFade;
+				Fade = Spc.Ram[Position++];
+				Volume = Spc.Ram[Position++];
+			}
 			else if (Value == 0xE7)
 			{
 				EventType = EventTypes.Tempo;
 				Tempo = Spc.Ram[Position++];
+			}
+			else if (Value == 0xE8)
+			{
+				EventType = EventTypes.TempoFade;
+				Fade = Spc.Ram[Position++];
+				Tempo = Spc.Ram[Position++];
+			}
+			else if (Value == 0xEA)
+			{
+				EventType = EventTypes.Transpose;
+				Transpose = (sbyte)Spc.Ram[Position++];
 			}
 			else if (Value == 0xED)
 			{
@@ -97,6 +144,18 @@ namespace StarFoxBrowser
 
 				Position += 3;
 			}
+			else if (Value == 0xF4)
+			{
+				EventType = EventTypes.Tuning;
+				Tuning = Spc.Ram[Position++];
+			}
+			else if (Value == 0xF9)
+			{
+				EventType = EventTypes.PitchSlide;
+				Delay = Spc.Ram[Position++];
+				Duration = Spc.Ram[Position++];
+				PitchSlide = Spc.Ram[Position++];
+			}
 			else if (Value == 0xFA)
 			{
 				EventType = EventTypes.PercussionInstrumentOffset;
@@ -107,6 +166,8 @@ namespace StarFoxBrowser
 				EventType = EventTypes.Other;
 
 				Position += RomSongs.EventTypes[Value - RomSongs.FirstEvent].Length;
+
+				System.Diagnostics.Debug.WriteLine("Unknown Event: " + Value.ToString("X2"));
 			}
 		}
 
@@ -118,8 +179,10 @@ namespace StarFoxBrowser
 			Length,
 			LengthDurationVelocity,
 			Pan,
+			PanFade,
 			Percussion,
 			Tempo,
+			TempoFade,
 			Call,
 			Other,
 			Stop,
@@ -127,6 +190,11 @@ namespace StarFoxBrowser
 			PercussionInstrumentOffset,
 			Volume,
 			VolumeFade,
+			Transpose,
+			Tuning,
+			PitchSlide,
+			MasterVolume,
+			MasterVolumeFade,
 		}
 	}
 }

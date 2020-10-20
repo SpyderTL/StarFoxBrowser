@@ -9,17 +9,38 @@ namespace StarFoxBrowser
 	public static class SongPlayerForm
 	{
 		public static PlayerForm Form;
+		public static int Song;
 
 		public static void Show()
 		{
-			Form = new PlayerForm();
+			if (Form == null)
+			{
+				Form = new PlayerForm();
 
-			Form.PlayButton.Click += PlayButton_Click;
-			Form.StopButton.Click += StopButton_Click;
-			Form.Timer.Tick += Timer_Tick;
-			Form.FormClosing += Form_FormClosing;
+				Form.PlayButton.Click += PlayButton_Click;
+				Form.StopButton.Click += StopButton_Click;
+				Form.Timer.Tick += Timer_Tick;
+				Form.FormClosing += Form_FormClosing;
+			}
 
 			Form.Show();
+		}
+
+		public static void Close()
+		{
+			if (Form != null)
+			{
+				Form.Close();
+
+				Form.PlayButton.Click -= PlayButton_Click;
+				Form.StopButton.Click -= StopButton_Click;
+				Form.Timer.Tick -= Timer_Tick;
+				Form.FormClosing -= Form_FormClosing;
+
+				Form.Dispose();
+
+				Form = null;
+			}
 		}
 
 		private static void Timer_Tick(object sender, EventArgs e)
@@ -65,15 +86,22 @@ namespace StarFoxBrowser
 
 		private static void PlayButton_Click(object sender, EventArgs e)
 		{
-			MidiPlayer.Start();
+			if (!SongPlayer.Playing)
+			{
+				Song = SongReader.Position;
 
-			SongPlayer.Play();
+				MidiPlayer.Start();
 
-			Form.Timer.Start();
+				SongPlayer.Play();
+
+				Form.Timer.Start();
+			}
 		}
 
 		private static void StopButton_Click(object sender, EventArgs e)
 		{
+			SongReader.Position = Song;
+
 			Form.Timer.Stop();
 
 			MidiPlayer.Stop();
@@ -83,11 +111,14 @@ namespace StarFoxBrowser
 
 		private static void Form_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
 		{
-			Form.Timer.Stop();
+			if (SongPlayer.Playing)
+			{
+				Form.Timer.Stop();
 
-			MidiPlayer.Stop();
+				MidiPlayer.Stop();
 
-			SongPlayer.Stop();
+				SongPlayer.Stop();
+			}
 		}
 	}
 }
