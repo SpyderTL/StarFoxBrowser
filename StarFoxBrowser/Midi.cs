@@ -26,7 +26,8 @@ namespace StarFoxBrowser
 		{
 			if (Handle == IntPtr.Zero)
 			{
-				var result = midiOutOpen(out Handle, 0xFFFFFFFF, IntPtr.Zero, IntPtr.Zero, 0);
+				//var result = midiOutOpen(out Handle, 0xFFFFFFFF, IntPtr.Zero, IntPtr.Zero, 0);
+				var result = midiOutOpen(out Handle, 0, IntPtr.Zero, IntPtr.Zero, 0);
 
 				//System.Diagnostics.Debug.WriteLine(result);
 			}

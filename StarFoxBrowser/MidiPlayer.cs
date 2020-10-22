@@ -1,4 +1,5 @@
-﻿using StarFoxBrowser.Nodes;
+﻿using SharpDX.Direct3D9;
+using StarFoxBrowser.Nodes;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace StarFoxBrowser
 		public static int[] NoteOffsets;
 		public static int[] Transpose;
 		public static int[] Tuning;
-		public static int[] Pitch;
+		public static int[] Portamento;
 
 		public static void Start()
 		{
@@ -30,7 +31,7 @@ namespace StarFoxBrowser
 			NoteOffsets = new int[8];
 			Transpose = new int[8];
 			Tuning = new int[8];
-			Pitch = new int[8];
+			Portamento = new int[8];
 
 			Midi.Enable();
 
@@ -43,6 +44,8 @@ namespace StarFoxBrowser
 				Midi.ControlChange(channel, 0x5d, 127);
 				Midi.ControlChange(channel, 0x5e, 127);
 				Midi.ControlChange(channel, 0x5f, 127);
+
+				Midi.ControlChange(channel, Midi.Controls.Portamento, 1);
 
 				//Midi.ProgramChange(channel, 49);
 			}
@@ -66,18 +69,7 @@ namespace StarFoxBrowser
 				UpdateVolume(channel);
 				UpdatePan(channel);
 				UpdateTuning(channel);
-				UpdatePitch(channel);
 				UpdateNotes(channel);
-			}
-		}
-
-		private static void UpdatePitch(int channel)
-		{
-			if (Pitch[channel] != SongPlayer.ChannelPitch[channel])
-			{
-				int value = 0x2000 + (int)((SongPlayer.ChannelPitch[channel] / 255.0f) * 0x1000);
-				Midi.PitchBendChange(channel, value);
-				Pitch[channel] = SongPlayer.ChannelPitch[channel];
 			}
 		}
 
@@ -106,6 +98,12 @@ namespace StarFoxBrowser
 			{
 				if (Drums[channel] == 0)
 				{
+					if (SongPlayer.ChannelPortamento[channel] != Portamento[channel])
+					{
+						Midi.ControlChange(channel, Midi.Controls.PortamentoEnable, SongPlayer.ChannelPortamento[channel] == 0 ? 0 : 127);
+						Portamento[channel] = SongPlayer.ChannelPortamento[channel];
+					}
+
 					if (Notes[channel] != 0)
 						Midi.NoteOff(channel, Notes[channel] + NoteOffsets[channel] + SongPlayer.ChannelTranspose[channel], 0);
 
@@ -114,11 +112,13 @@ namespace StarFoxBrowser
 				}
 				else
 				{
-					if (Notes[channel] != 0)
-						Midi.NoteOff(9, Drums[channel], 0);
+					//if (Notes[channel] != 0)
+					//	Midi.NoteOff(9, Drums[channel], 0);
 
 					if (SongPlayer.ChannelNotes[channel] != 0)
 						Midi.NoteOn(9, Drums[channel], (int)((SongPlayer.ChannelVelocities[channel] / 15.0f) * 127.0f));
+
+					Midi.NoteOff(9, Drums[channel], 0);
 				}
 
 				Notes[channel] = SongPlayer.ChannelNotes[channel];
@@ -142,7 +142,7 @@ namespace StarFoxBrowser
 			{
 				for (var channel = 0; channel < 8; channel++)
 				{
-					var value = (int)((Volume[channel] / (double)0xff) * (MasterVolume / (double)0xff) * 0x7f);
+					var value = (int)((Volume[channel] / (double)0xff) * (SongPlayer.Volume / (double)0xff) * 0x7f);
 
 					Midi.ControlChange(channel, 7, value);
 				}
@@ -155,7 +155,7 @@ namespace StarFoxBrowser
 		{
 			if (Volume[channel] != SongPlayer.ChannelVolume[channel])
 			{
-				var value = (int)((Volume[channel] / (double)0xff) * (MasterVolume / (double)0xff) * 0x7f);
+				var value = (int)((SongPlayer.ChannelVolume[channel] / (double)0xff) * (SongPlayer.Volume / (double)0xff) * 0x7f);
 
 				Midi.ControlChange(channel, 7, value);
 				Volume[channel] = SongPlayer.ChannelVolume[channel];
@@ -199,24 +199,23 @@ namespace StarFoxBrowser
 
 								switch (name)
 								{
+									case "Bass Guitar":
+										NoteOffsets[channel] = 12;
+										break;
+
 									case "Orchestra Hit":
 										NoteOffsets[channel] = 60;
 										break;
 
-									case "Orchestra Hit 2":
-										NoteOffsets[channel] = 36;
-										break;
-
-									case "Orchestra Hit 3":
-										NoteOffsets[channel] = 24;
-										break;
-
+									case "Overdrive Guitar":
 									case "Haunting Music":
 									case "French Horns":
 									case "Calliope":
 									case "Flute":
 									case "Flute 2":
 									case "Strings Hit":
+									case "Orchestra Hit 2":
+									case "Beep 7":
 										NoteOffsets[channel] = 36;
 										break;
 

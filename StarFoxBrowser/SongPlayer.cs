@@ -13,7 +13,7 @@ namespace StarFoxBrowser
 		public static int[] ChannelVelocities = new int[8];
 		public static int[] ChannelTranspose = new int[8];
 		public static int[] ChannelTuning = new int[8];
-		public static int[] ChannelPitch = new int[8];
+		public static int[] ChannelPortamento = new int[8];
 		public static int[] ChannelPan = new int[8];
 		public static int[] ChannelPhase = new int[8];
 		public static int[] ChannelInstruments = new int[8];
@@ -31,9 +31,9 @@ namespace StarFoxBrowser
 		private static int[] ChannelReturnPositions = new int[8];
 		private static int[] ChannelRepeatPositions = new int[8];
 		private static int[] ChannelRepeatCounts = new int[8];
-		private static double[] ChannelPitchDelay = new double[8];
-		private static double[] ChannelPitchDuration = new double[8];
-		private static int[] ChannelPitchSlide = new int[8];
+		private static double[] ChannelPortamentoTimer = new double[8];
+		private static int[] ChannelPortamentoSpeed = new int[8];
+		private static int[] ChannelPortamentoTarget = new int[8];
 		private static int[] ChannelPanTarget = new int[8];
 		private static double[] ChannelPanTimer = new double[8];
 		private static int VolumeTarget;
@@ -89,10 +89,8 @@ namespace StarFoxBrowser
 			ChannelVolume = Enumerable.Repeat(0xFF, 8).ToArray();
 			ChannelVolumeTarget = Enumerable.Repeat(0xFF, 8).ToArray();
 			ChannelVolumeTimer = new double[8];
-			ChannelPitch = new int[8];
-			ChannelPitchDelay = new double[8];
-			ChannelPitchDuration = new double[8];
-			ChannelPitchSlide = new int[8];
+			ChannelPortamentoSpeed = new int[8];
+			ChannelPortamentoTimer = new double[8];
 
 			while (Playing)
 			{
@@ -181,7 +179,7 @@ namespace StarFoxBrowser
 				for (var channel = 0; channel < 8 && !stopped; channel++)
 				{
 					if (NoteTimers[channel] > 0.0)
-						NoteTimers[channel] -= elapsed * Tempo;
+						NoteTimers[channel] -= elapsed * Tempo * 19.2;
 
 					if (ChannelVolumeTimer[channel] > 0.0)
 					{
@@ -207,21 +205,21 @@ namespace StarFoxBrowser
 					else
 						ChannelPan[channel] = ChannelPanTarget[channel];
 
-					if (ChannelPitchDelay[channel] > 0.0)
-						ChannelPitchDelay[channel] -= elapsed * Tempo;
-					else if (ChannelPitchDuration[channel] > 0.0)
+					if (ChannelPortamentoTimer[channel] > 0.0)
 					{
-						ChannelPitch[channel] = Math.Min(ChannelPitch[channel] + 64, ChannelPitchSlide[channel]);
-						ChannelPitchDuration[channel] -= elapsed * Tempo;
-					}
-					else
-					{
-						ChannelPitch[0] = 0;
+						ChannelPortamentoTimer[channel] -= elapsed * Tempo * 19.2;
+
+						if (ChannelPortamentoTimer[channel] <= 0.0)
+						{
+							ChannelPortamento[channel] = ChannelPortamentoSpeed[channel];
+							ChannelNotes[channel] = ChannelPortamentoTarget[channel];
+							ChannelNoteStart[channel] = true;
+						}
 					}
 
 					if (TrackReader.Channels[channel] != 0)
 					{
-						ChannelTimers[channel] -= elapsed * Tempo;
+						ChannelTimers[channel] -= elapsed * Tempo * 19.2;
 
 						while (ChannelTimers[channel] < 0 && !stopped)
 						{
@@ -233,23 +231,23 @@ namespace StarFoxBrowser
 							{
 								ChannelNotes[channel] = ChannelReader.Note;
 								ChannelNoteStart[channel] = true;
+								ChannelPortamento[channel] = 0;
 
-								ChannelTimers[channel] += ChannelLengths[channel] / 18.0f;
-								NoteTimers[channel] = (ChannelLengths[channel] / 18.0f) * ((ChannelDurations[channel] + 1) / 8.0f);
+								ChannelTimers[channel] += ChannelLengths[channel];
+								NoteTimers[channel] = ((ChannelDurations[channel] + 1.0) / 8.0) * ChannelLengths[channel];
 
-								ChannelPitch[channel] = 0;
-								ChannelPitchSlide[channel] = ChannelReader.PitchSlide;
-								ChannelPitchDelay[channel] = (ChannelLengths[channel] / 18.0f) * ((ChannelReader.Delay) / 16.0f);
-								ChannelPitchDuration[channel] = (ChannelLengths[channel] / 18.0f) * ((ChannelReader.Duration) / 16.0f);
+								ChannelPortamentoTarget[channel] = ChannelReader.PitchSlide;
+								ChannelPortamentoTimer[channel] = (ChannelReader.Delay / 16.0) * ChannelLengths[channel];
+								ChannelPortamentoSpeed[channel] = ChannelReader.Duration;
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Tie)
 							{
-								ChannelTimers[channel] += ChannelLengths[channel] / 18.0f;
-								NoteTimers[channel] = (ChannelLengths[channel] / 18.0f) * ((ChannelDurations[channel] + 1) / 8.0f);
+								ChannelTimers[channel] += ChannelLengths[channel];
+								NoteTimers[channel] = ((ChannelDurations[channel] + 1.0) / 8.0) * ChannelLengths[channel];
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Rest)
 							{
-								ChannelTimers[channel] += ChannelLengths[channel] / 18.0f;
+								ChannelTimers[channel] += ChannelLengths[channel];
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Length)
 							{
@@ -321,7 +319,7 @@ namespace StarFoxBrowser
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.MasterVolumeFade)
 							{
-								VolumeTimer = ChannelReader.Fade / 18.0f;
+								VolumeTimer = ChannelReader.Fade;
 								VolumeTarget = ChannelReader.Volume;
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Transpose)
@@ -334,9 +332,9 @@ namespace StarFoxBrowser
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.PitchSlide)
 							{
-								ChannelPitchDelay[channel] = (ChannelLengths[channel] / 18.0f) * (ChannelReader.Delay / 8.0f);
-								ChannelPitchDuration[channel] = (ChannelLengths[channel] / 18.0f) * (ChannelReader.Duration / 8.0f);
-								ChannelPitchSlide[channel] = ChannelReader.PitchSlide;
+								ChannelPortamentoTimer[channel] = (ChannelReader.Delay / 16.0) * ChannelLengths[channel];
+								ChannelPortamentoSpeed[channel] = ChannelReader.Duration;
+								ChannelPortamentoTarget[channel] = ChannelReader.PitchSlide;
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Other)
 							{
@@ -344,7 +342,7 @@ namespace StarFoxBrowser
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Percussion)
 							{
-								ChannelTimers[channel] += ChannelLengths[channel] / 18.0f;
+								ChannelTimers[channel] += ChannelLengths[channel];
 							}
 							else if (ChannelReader.EventType == ChannelReader.EventTypes.Stop)
 							{

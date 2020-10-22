@@ -69,7 +69,7 @@ namespace StarFoxBrowser
 
 					Delay = Spc.Ram[Position++];
 					Duration = Spc.Ram[Position++];
-					PitchSlide = Spc.Ram[Position++];
+					PitchSlide = Spc.Ram[Position++] - RomSongs.FirstNote;
 				}
 			}
 			else if (Value == RomSongs.Tie)

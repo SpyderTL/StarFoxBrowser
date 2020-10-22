@@ -17,6 +17,8 @@ namespace StarFoxBrowser
 			{ "Orchestra Hit", 55 },
 			{ "Orchestra Hit 2", 55 },
 			{ "Orchestra Hit 3", 55 },
+			//{ "Overdrive Guitar", 29 },
+			{ "Overdrive Guitar", 30 },
 			{ "Haunting Music", 53 },
 			//{ "Haunting Music", 86 },
 			//{ "Haunting Music", 54 },
@@ -35,7 +37,7 @@ namespace StarFoxBrowser
 			{ "Beep 4", 86 },
 			{ "Beep 5", 87 },
 			{ "Beep 6", 88 },
-			{ "Beep 7", 89 },
+			{ "Beep 7", 82 },
 			{ "Horns", 56 },
 			{ "Horns 2", 60 },
 			//{ "Horns 3", 59 },
@@ -44,7 +46,8 @@ namespace StarFoxBrowser
 			//{ "Horns 5", 61 },
 			{ "Horns 5", 49 },
 			{ "French Horns", 60 },
-			{ "Calliope", 82 },
+			//{ "Calliope", 82 },
+			{ "Calliope", 83 },
 			{ "Mechanical", 117 },
 			{ "Mechanical 2", 117 },
 			{ "Mechanical 3", 117 },
@@ -57,6 +60,8 @@ namespace StarFoxBrowser
 			{ "Strings Hit", 45 },
 			{ "Flute 2", 72 },
 			{ "Noise 5", 127 },
+			{ "Choir", 52 },
+			{ "Click 2", 81 }
 		};
 
 		public static readonly Dictionary<string, int> Drums = new Dictionary<string, int>
@@ -64,9 +69,9 @@ namespace StarFoxBrowser
 			{ "Snare", 40 },
 			{ "Snare 2", 38 },
 			{ "Bass Drum", 36 },
-			{ "Noise 4", 35 },
+			//{ "Overdrive Guitar", 35 },
 			{ "Click", 31 },
-			{ "Click 2", 37 },
+			//{ "Click 2", 37 },
 			{ "Click 3", 31 },
 		};
 	}
