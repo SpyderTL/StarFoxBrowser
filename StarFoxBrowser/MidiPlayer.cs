@@ -129,9 +129,9 @@ namespace StarFoxBrowser
 		{
 			if (Pan[channel] != SongPlayer.ChannelPan[channel])
 			{
-				var value = (int)((((SongPlayer.ChannelPan[channel] - 10) / 10.0f) * 63.5f) + 63.5f);
+				var value = (int)((SongPlayer.ChannelPan[channel] / 20.0) * 127.0);
 
-				Midi.ControlChange(channel, 10, value);
+				Midi.ControlChange(channel, Midi.Controls.Pan, value);
 				Pan[channel] = SongPlayer.ChannelPan[channel];
 			}
 		}

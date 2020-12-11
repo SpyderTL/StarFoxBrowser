@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StarFoxBrowser
@@ -10,6 +11,7 @@ namespace StarFoxBrowser
 	{
 		public static PlayerForm Form;
 		public static int Song;
+		public static Timer Timer = new Timer(Timer_Elapsed, null, Timeout.Infinite, 10);
 
 		public static void Show()
 		{
@@ -43,11 +45,15 @@ namespace StarFoxBrowser
 			}
 		}
 
-		private static void Timer_Tick(object sender, EventArgs e)
+		private static void Timer_Elapsed(object state)
 		{
 			SongPlayer.Update();
 			MidiPlayer.Update();
+		}
 
+
+		private static void Timer_Tick(object sender, EventArgs e)
+		{
 			Form.SongLabel.Text = SongReader.Position.ToString("X4");
 			Form.TrackLabel.Text = TrackReader.Position.ToString("X4");
 
@@ -95,11 +101,15 @@ namespace StarFoxBrowser
 				SongPlayer.Play();
 
 				Form.Timer.Start();
+
+				Timer.Change(0, 10);
 			}
 		}
 
 		private static void StopButton_Click(object sender, EventArgs e)
 		{
+			Timer.Change(0, Timeout.Infinite);
+
 			SongReader.Position = Song;
 
 			Form.Timer.Stop();
@@ -113,6 +123,8 @@ namespace StarFoxBrowser
 		{
 			if (SongPlayer.Playing)
 			{
+				Timer.Change(0, Timeout.Infinite);
+
 				Form.Timer.Stop();
 
 				MidiPlayer.Stop();
