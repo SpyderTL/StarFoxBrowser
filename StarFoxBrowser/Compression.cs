@@ -114,6 +114,9 @@ namespace StarFoxBrowser
 
 		static void put_lzw(int run, int offset)
 		{
+			if (d == 0)
+				return;
+
 			// write bytes from destination buffer (lzw)
 			while (run-- != 0) put_byte(dest[d + offset - 1]);
 		}
