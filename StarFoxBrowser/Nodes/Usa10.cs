@@ -1331,7 +1331,7 @@ namespace StarFoxBrowser.Nodes
 			{ 0x050005, "Unknown" },
 			{ 0x068593, "Unknown" },
 			{ 0x068599, "Unknown" },
-			{ 0x0685AF, "Solid Object" },
+			{ 0x0685AF, "Solid Object, Rotate Y 180 Degress" },
 			{ 0x0685B9, "Walker" },
 			{ 0x0685D9, "Active Volcano" },
 			{ 0x0685F9, "Flying Fish" },

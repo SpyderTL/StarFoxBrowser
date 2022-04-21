@@ -46,6 +46,7 @@ namespace StarFoxBrowser.Nodes
 							int z = reader.ReadInt16();
 							int objectIndex = reader.ReadByte();
 							int behaviorIndex = reader.ReadByte();
+
 							int behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							var behaviorName = Usa10.BehaviorNames[behaviorID];
 							var objectName = "Unknown";
@@ -284,6 +285,7 @@ namespace StarFoxBrowser.Nodes
 							objectIndex = reader.ReadByte();
 							behaviorIndex = reader.ReadByte();
 							var rotationZ = reader.ReadByte();
+
 							behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
 							objectName = "Unknown";
@@ -518,21 +520,23 @@ namespace StarFoxBrowser.Nodes
 							y = -reader.ReadSByte() * 4;
 							z = reader.ReadByte() * 16;
 							objectIndex = reader.ReadByte();
-							var behavior = reader.ReadBytes(1);
-							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorIndex = reader.ReadByte();
+
+							behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
 							objectName = "Unknown";
-							Usa10.ModelNames.TryGetValue(Usa10.ObjectIndexes[objectIndex], out objectName);
+							Usa10.ModelNames.TryGetValue(Usa10.ObjectIndexes[Usa10.BehaviorObjects[objectIndex]], out objectName);
 
-							Nodes.Add(position.ToString("X6") + " 70 - 3D Object: " + objectIndex.ToString("X2") + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
+							Nodes.Add(position.ToString("X6") + " 70 - 3D Object: " + objectIndex.ToString("X2") + " (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x72:
-							// 3D Object (8-bit vector) (8-bit lookup table index) (OBJ 8)
+							// 3D Object (8-bit vector) (8-bit lookup table index) (OBJ 8) -- NOT USED
 							timer = reader.ReadByte() * 16;
 							x = reader.ReadSByte() * 4;
 							y = -reader.ReadSByte() * 4;
 							z = reader.ReadByte() * 16;
+							objectID = reader.ReadUInt16();
 							behaviorID = reader.ReadByte() | (reader.ReadByte() << 8) | (reader.ReadByte() << 16);
 							behaviorName = Usa10.BehaviorNames[behaviorID];
 
@@ -545,15 +549,16 @@ namespace StarFoxBrowser.Nodes
 							x = reader.ReadInt16();
 							y = -reader.ReadInt16();
 							z = reader.ReadInt16();
-							behavior = reader.ReadBytes(1);               // TODO: Find lookup table
-							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorIndex = reader.ReadByte();               // TODO: Find lookup table
+
+							behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
-							objectIndex = Usa10.BehaviorObjects[behavior[0]];
+							objectIndex = Usa10.BehaviorObjects[behaviorIndex];
 							var behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "None";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add(position.ToString("X6") + " 74 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
+							Nodes.Add(position.ToString("X6") + " 74 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x76:
@@ -562,15 +567,16 @@ namespace StarFoxBrowser.Nodes
 							x = reader.ReadSByte() * 4;
 							y = -reader.ReadSByte() * 4;
 							z = reader.ReadByte() * 4;
-							behavior = reader.ReadBytes(1);
-							behaviorID = Usa10.BehaviorIndexes[behavior[0]];
+							behaviorIndex = reader.ReadByte();
+
+							behaviorID = Usa10.BehaviorIndexes[behaviorIndex];
 							behaviorName = Usa10.BehaviorNames[behaviorID];
-							objectIndex = Usa10.BehaviorObjects[behavior[0]];
+							objectIndex = Usa10.BehaviorObjects[behaviorIndex];
 							behaviorObject = Usa10.ObjectIndexes[objectIndex];
 							objectName = "None";
 							Usa10.ModelNames.TryGetValue(behaviorObject, out objectName);
 
-							Nodes.Add(position.ToString("X6") + " 76 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behavior[0].ToString("X2") + " (" + behaviorName + ")");
+							Nodes.Add(position.ToString("X6") + " 76 - 3D Object: Behavior Default (" + objectName + ") (" + x + ", " + y + ", " + z + ") Timer: " + timer + " Behavior: " + behaviorIndex.ToString("X2") + " (" + behaviorName + ")");
 							break;
 
 						case 0x78:
